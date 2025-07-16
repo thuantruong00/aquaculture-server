@@ -1,0 +1,60 @@
+[
+  {
+    "page_id": "a1",
+    "title": "Control",
+    "href": "/control-device",
+    "page_name": "page/control-device",
+    "child": []
+  },
+  {
+    "page_id": "a2",
+    "title": "Device setting",
+    "href": "/edit-device",
+    "page_name": "page/edit-device",
+    "child": []
+  },
+  {
+    "page_id": "a6",
+    "title": "Add new device",
+    "href": "/add-device",
+    "page_name": "page/add-device",
+    "child": []
+  },
+  {
+    "page_id": "a5",
+    "title": "Data",
+    "href": "/data",
+    "page_name": "page/data",
+    "child": []
+  },
+
+  {
+    "page_id": "a7",
+    "title": "Timer",
+    "href": "/timer/set",
+    "page_name": "page/set-timer",
+    "child": [
+      {
+        "page_id": "a71",
+        "title": "Set timer",
+        "href": "/timer/set",
+        "page_name": "page/set-timer",
+        "child": []
+      },
+      {
+        "page_id": "a72",
+        "title": "History timer",
+        "href": "/timer/history",
+        "page_name": "page/history-timer",
+        "child": []
+      }
+    ]
+  },
+  {
+    "page_id": "a8",
+    "title": "Limit temperature",
+    "href": "/set-temp",
+    "page_name": "page/set-temp",
+    "child": []
+  }
+]

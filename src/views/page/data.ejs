@@ -1,0 +1,27 @@
+<div class="container modal-id mt-5 ml-5">
+ <div>
+    <label>Chose device: </label>
+    <div class="d-flex  ">
+        <% arrayName.forEach(item => { %>
+            <div class="m-4">
+                <label>
+              <input type="checkbox" name="options" class="cb-id-port p-2" value="<%= item %>">
+            <%= item %></label>
+            </div> 
+          <% }); %>
+            
+          
+      </div>
+      <div>
+        <div  for="startDate">Start Date:</div >
+        <input type="date" id="from-date" name="startDate" required><br><br>
+      
+        <div  for="endDate">End Date:</div >
+        <input type="date" id="to-date" name="endDate" required><br><br>
+      </div>
+ </div>
+ <button onclick="handleExportData()" class="btn-primary btn btn-download" >Download </button>
+ <div id="result">
+    
+ </div>
+</div>
