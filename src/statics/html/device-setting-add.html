@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+
+
+  <!-- <%- include('../partials/cms/meta.ejs') %> -->
+
+  <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../assets/fonts/fontawesome/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/setup.css" />
+
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <link rel="stylesheet" href="../cms/styles/header-footer.css" />
+  <link rel="stylesheet" href="../cms/styles/body.css" />
+  <link rel="stylesheet" href="../cms/styles/login.css" />
+</head>
+
+<body>
+  <!-- ----- ----- header ----- ------->
+  <div class="header">
+    <div class="header-contain d-flex justify-content-between">
+      <div class="wrap-logo">
+        <a href="/" target="_blank">
+          <img src="../cms/images/index/home.png" alt="">
+          <span>brand</span>
+        </a>
+      </div>
+      <div class="profile-user relative">
+        <a href="#" class="profile-btn my-dropdown-button" dropdown-menu-name="#profile">
+          <span>admin</span>
+          <img src="../cms/images/index/profile-user.png" alt="">
+        </a>
+        <div class="wrap-list list-style-1 d-none" id="profile">
+          <ul>
+            <!-- <li><a href="/auth/forgot-password">Đổi mật khẩu</a></li> -->
+            <li><a href="/auth/sign-out">Đăng xuất</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- ----- ----- header ----- ------->
+
+  <!-- ----- ----- body ----- ------->
+  <div class="body-contain d-flex">
+    <!-- ----- ----- sidebar ----- ------->
+    <div class="wrap-sidebar">
+      <div class="sidebar">
+        <ul>
+          <li>
+            <div class="line">
+              <a href="#">tài khoản</a>
+            </div>
+          </li>
+          <li>
+            <div class="line active">
+              <a href="#">
+                <span>nội dung tĩnh</span>
+              </a>
+              <a href="#" class="wrap-arrow my-dropdown-button" dropdown-menu-name="#name1">
+                <img class="arrow-down" src="/cms/images/index/arrow-down.png" alt="">
+              </a>
+            </div>
+            <div class="wrap-child d-none" id="name1">
+              <ul>
+                <li class=""><a href="#">danh sách</a></li>
+                <li><a href="#">thông báo</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div class="line">
+              <a href="#">
+                <span>bài viết</span>
+              </a>
+              <a href="#" class="wrap-arrow my-dropdown-button" dropdown-menu-name="#name2">
+                <img class="arrow-down" src="/cms/images/index/arrow-down.png" alt="">
+              </a>
+            </div>
+            <div class="wrap-child d-none" id="name2">
+              <ul>
+                <li><a href="#">danh sách</a></li>
+                <li><a href="#">cài đặt hiển thị</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div class="line">
+              <a href="#">Thư viện ảnh</a>
+            </div>
+          </li>
+          <li>
+            <div class="line">
+              <a href="#">
+                <span>sản phẩm</span>
+              </a>
+              <a href="#" class="wrap-arrow my-dropdown-button" dropdown-menu-name="#name4">
+                <img class="arrow-down" src="/cms/images/index/arrow-down.png" alt="">
+              </a>
+            </div>
+            <div class="wrap-child d-none" id="name4">
+              <ul>
+                <li><a href="#">danh mục sản phẩm</a></li>
+                <li><a href="#">sản phẩm</a></li>
+                <li><a href="#">cài đặt hiển thị</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div class="line">
+              <a href="#">custom</a>
+            </div>
+          </li>
+
+        </ul>
+
+
+      </div>
+    </div>
+    <!-- ----- ----- sidebar ----- ------->
+
+    <!-- ----- ----- main ----- ------->
+    <div class="main">
+      <div class="container modal-id">
+        <div class="base-list pending-devices-list pt-2">
+          <div class="wrap-box">
+            <ul class="">
+              <li class="d-flex">
+                <span>Stt</span>
+                <span class="device-name">Tên thiết bị</span>
+                <span>Trạng thái</span>
+                <span>Model</span>
+                <span>Nhóm</span>
+                <span>Khu vực</span>
+                <span class="action">Hành động</span>
+              </li>
+              <li class="d-flex">
+                <span>1</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" /></span>
+                <span class="short-text">Trạng thái 11</span>
+                <span title="123123" class="short-text">model 1231231232131232</span>
+                <span title="123123" class="short-text">grou123123123123123123p</span>
+                <span title="123123" class="short-text">123123123123123123123</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>2</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" class="" /></span>
+                <span class="short-text">Trạng thái</span>
+                <span title="123123">model</span>
+                <span title="123123">group</span>
+                <span title="123123">zone</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>1</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" /></span>
+                <span class="short-text">Trạng thái 11</span>
+                <span title="123123" class="short-text">model 1231231232131232</span>
+                <span title="123123" class="short-text">grou123123123123123123p</span>
+                <span title="123123" class="short-text">123123123123123123123</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>2</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" class="" /></span>
+                <span class="short-text">Trạng thái</span>
+                <span title="123123">model</span>
+                <span title="123123">group</span>
+                <span title="123123">zone</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>1</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" /></span>
+                <span class="short-text">Trạng thái 11</span>
+                <span title="123123" class="short-text">model 1231231232131232</span>
+                <span title="123123" class="short-text">grou123123123123123123p</span>
+                <span title="123123" class="short-text">123123123123123123123</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>2</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" class="" /></span>
+                <span class="short-text">Trạng thái</span>
+                <span title="123123">model</span>
+                <span title="123123">group</span>
+                <span title="123123">zone</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>1</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" /></span>
+                <span class="short-text">Trạng thái 11</span>
+                <span title="123123" class="short-text">model 1231231232131232</span>
+                <span title="123123" class="short-text">grou123123123123123123p</span>
+                <span title="123123" class="short-text">123123123123123123123</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>2</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" class="" /></span>
+                <span class="short-text">Trạng thái</span>
+                <span title="123123">model</span>
+                <span title="123123">group</span>
+                <span title="123123">zone</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>1</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" /></span>
+                <span class="short-text">Trạng thái 11</span>
+                <span title="123123" class="short-text">model 1231231232131232</span>
+                <span title="123123" class="short-text">grou123123123123123123p</span>
+                <span title="123123" class="short-text">123123123123123123123</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>2</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" class="" /></span>
+                <span class="short-text">Trạng thái</span>
+                <span title="123123">model</span>
+                <span title="123123">group</span>
+                <span title="123123">zone</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+                            <li class="d-flex ">
+                <span>1</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" /></span>
+                <span class="short-text">Trạng thái 11</span>
+                <span title="123123" class="short-text">model 1231231232131232</span>
+                <span title="123123" class="short-text">grou123123123123123123p</span>
+                <span title="123123" class="short-text">123123123123123123123</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>2</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" class="" /></span>
+                <span class="short-text">Trạng thái</span>
+                <span title="123123">model</span>
+                <span title="123123">group</span>
+                <span title="123123">zone</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+                            <li class="d-flex ">
+                <span>1</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" /></span>
+                <span class="short-text">Trạng thái 11</span>
+                <span title="123123" class="short-text">model 1231231232131232</span>
+                <span title="123123" class="short-text">grou123123123123123123p</span>
+                <span title="123123" class="short-text">123123123123123123123</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>2</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" class="" /></span>
+                <span class="short-text">Trạng thái</span>
+                <span title="123123">model</span>
+                <span title="123123">group</span>
+                <span title="123123">zone</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+                            <li class="d-flex ">
+                <span>1</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" /></span>
+                <span class="short-text">Trạng thái 11</span>
+                <span title="123123" class="short-text">model 1231231232131232</span>
+                <span title="123123" class="short-text">grou123123123123123123p</span>
+                <span title="123123" class="short-text">123123123123123123123</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+              <li class="d-flex ">
+                <span>2</span>
+                <span class="device-name"><input type="text" name="" id="" value="123123123" class="" /></span>
+                <span class="short-text">Trạng thái</span>
+                <span title="123123">model</span>
+                <span title="123123">group</span>
+                <span title="123123">zone</span>
+                <span class="action">
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+                  <button title="id=123123" value=".item-<%=device._id %>" class="primary-btn delete-device-btn">×</button>
+                </span>
+              </li>
+
+
+
+
+
+              <!-- <% for (const device of listDevice) { %>
+            <li class="item-<%=device._id %> d-flex justify-content-around">
+              <span class="device-id"><%= device._id %></span>
+              <span class="device-name"><input type="text" name="" id="" value="<%= device.name %>"><%= device.name %></span>
+              <span><%= device.status %></span>
+              <span><%= device.deviceModel.name?device.deviceModel.name:"*" %></span>
+              <span><%= device.group?device.group:"*" %></span>
+              <span><%= device.zone?device.zone:"*" %></span>
+              <span><button value=".item-<%=device._id %>" class="active-device-btn">Kích hoạt</button></span>
+            </li>
+            <% } %> -->
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- ----- ----- main ----- ------->
+  </div>
+  <!-- ----- ----- body ----- ------->
+
+  <!-- Toast container -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+  <!-- footer -->
+  <!-- <%- include('../partials/cms/footer.ejs') %> -->
+  <!-- footer -->
+</body>
+
+<!-- /*-----*-----*-- lib-javascript --*-----*-----*/ -->
+
+<!-- <script src="https://code.jquery.com/jquery-3.7.0.js"></script> -->
+
+<script src="../assets/bootstrap/js/jquery-3.4.1.min.js"></script>
+<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="../assets/socket-client/index.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+    integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+    crossorigin="anonymous"></script> -->
+
+<!-- /*-----*-----*-- my-script --*-----*-----*/ -->
+<script src="../assets/function.js"></script>
+<script src="../cms/scripts/refactor.js"></script>
+<script src="../cms/scripts/func.js"></script>
+<script src="../cms/scripts/main.js"></script>
+<!-- <script src="/cms/scripts/handle-image.js"></script> -->
+<!-- <script src="component/slider/script.js"></script> -->
+
+</html>

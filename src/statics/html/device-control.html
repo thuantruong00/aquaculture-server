@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+
+
+  <!-- <%- include('../partials/cms/meta.ejs') %> -->
+
+  <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../assets/fonts/fontawesome/css/all.min.css" />
+  <link rel="stylesheet" href="../assets/setup.css" />
+
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <link rel="stylesheet" href="../cms/styles/header-footer.css" />
+  <link rel="stylesheet" href="../cms/styles/body.css" />
+  <link rel="stylesheet" href="../cms/styles/login.css" />
+</head>
+
+<body>
+  <!-- ----- ----- header ----- ------->
+  <div class="header">
+    <div class="header-contain d-flex justify-content-between">
+      <div class="wrap-logo">
+        <a href="/" target="_blank">
+          <img src="../cms/images/index/home.png" alt="">
+          <span>brand</span>
+        </a>
+      </div>
+      <div class="profile-user relative">
+        <a href="#" class="profile-btn my-dropdown-button" dropdown-menu-name="#profile">
+          <span>admin</span>
+          <img src="../cms/images/index/profile-user.png" alt="">
+        </a>
+        <div class="wrap-list list-style-1 d-none" id="profile">
+          <ul>
+            <!-- <li><a href="/auth/forgot-password">Đổi mật khẩu</a></li> -->
+            <li><a href="/auth/sign-out">Đăng xuất</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- ----- ----- header ----- ------->
+
+  <!-- ----- ----- body ----- ------->
+  <div class="body-contain d-flex">
+    <!-- ----- ----- sidebar ----- ------->
+    <div class="wrap-sidebar d-none">
+      <div class="sidebar">
+        <ul>
+          <li>
+            <div class="line">
+              <a href="#">tài khoản</a>
+            </div>
+          </li>
+          <li>
+            <div class="line active">
+              <a href="#">
+                <span>nội dung tĩnh</span>
+              </a>
+              <a href="#" class="wrap-arrow my-dropdown-button" dropdown-menu-name="#name1">
+                <img class="arrow-down" src="/cms/images/index/arrow-down.png" alt="">
+              </a>
+            </div>
+            <div class="wrap-child d-none" id="name1">
+              <ul>
+                <li class=""><a href="#">danh sách</a></li>
+                <li><a href="#">thông báo</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div class="line">
+              <a href="#">
+                <span>bài viết</span>
+              </a>
+              <a href="#" class="wrap-arrow my-dropdown-button" dropdown-menu-name="#name2">
+                <img class="arrow-down" src="/cms/images/index/arrow-down.png" alt="">
+              </a>
+            </div>
+            <div class="wrap-child d-none" id="name2">
+              <ul>
+                <li><a href="#">danh sách</a></li>
+                <li><a href="#">cài đặt hiển thị</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div class="line">
+              <a href="#">Thư viện ảnh</a>
+            </div>
+          </li>
+          <li>
+            <div class="line">
+              <a href="#">
+                <span>sản phẩm</span>
+              </a>
+              <a href="#" class="wrap-arrow my-dropdown-button" dropdown-menu-name="#name4">
+                <img class="arrow-down" src="/cms/images/index/arrow-down.png" alt="">
+              </a>
+            </div>
+            <div class="wrap-child d-none" id="name4">
+              <ul>
+                <li><a href="#">danh mục sản phẩm</a></li>
+                <li><a href="#">sản phẩm</a></li>
+                <li><a href="#">cài đặt hiển thị</a></li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div class="line">
+              <a href="#">custom</a>
+            </div>
+          </li>
+
+        </ul>
+
+
+      </div>
+    </div>
+    <!-- ----- ----- sidebar ----- ------->
+
+    <!-- ----- ----- main ----- ------->
+    <div class="main">
+      <div class="container modal-id">
+        <div class="control-devices-list pt-2">
+          <div class="wrap-box">
+            <div class="row">
+              <div class="col-md-4 col-sm-12 device-group #group-id-here">
+                <div class="wrap-device-group">
+                  <h4 class="group-name">Ao số 1</h4>
+                  <br>
+                  <div class="row">
+                    <div class="col-6 my-2 #device-id-here">
+                      <div class="device-item">
+                        <div class="wrap-device-item">
+                          <h6>Cảm biến Oxy</h6>
+                          <div class="sensor-value"><span class="value">100</span><span class="unit">mm/pp</span></div>
+                          <div><small><i>15 giờ 40 phút</i></small></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 my-2 #device-id-here">
+                      <div class="device-item">
+                        <div class="wrap-device-item">
+                          <h6>Cảm biến PH</h6>
+                          <div class="sensor-value"><span class="value">8</span><span class="unit">%</span></div>
+                          <div><small><i>15 giờ 40 phút</i></small></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 my-2 #device-id-here">
+                      <div class="device-item">
+                        <div class="wrap-device-item">
+                          <h6 class="name">Máy bơm Oxy</h6>
+                          <div class="box">
+                            <div class="device-status device-status-online">
+                              <div class="text">Đang hoạt động</div>
+                            </div>
+                            <div><small><i>15 giờ 40 phút</i></small></div>
+                            <br>
+                            <Button class="control-device disable">Tắt</Button>
+                            <Button class="control-device">Mở</Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-12 device-group">
+                <div class="wrap-device-group">
+                  <h4 class="group-name">Ao số 2</h4>
+                  <br />
+                  <div class="row">
+                    <div class="col-6 my-2">
+                      <div class="device-item device-warning">
+                        <div class="wrap-device-item">
+                          <h6>Cảm biến Oxy</h6>
+                          <div class="sensor-value"><span class="value">100</span><span class="unit">mm/pp</span></div>
+                          <div><small><i>15 giờ 40 phút</i></small></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 my-2">
+                      <div class="device-item">
+                        <div class="wrap-device-item">
+                          <h6>Cảm biến PH</h6>
+                          <div class="sensor-value"><span class="value">8</span><span class="unit">%</span></div>
+                          <div><small><i>15 giờ 40 phút</i></small></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br />
+                  <div class="device-item">
+                    <div class="wrap-device-item">
+                      <h6 class="name">Máy bơm Oxy</h6>
+                      <div class="box">
+                        <div class="device-status device-status-online">
+                          <div class="text">Đang hoạt động</div>
+                        </div>
+                        <div><small><i>15 giờ 40 phút</i></small></div>
+                        <br>
+                        <Button class="control-device">Tắt</Button>
+                        <Button class="control-device">Mở</Button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-12 device-group">
+                <div class="wrap-device-group">
+                  <h4 class="group-name">Ao số 3 sau nhà</h4>
+                  <br />
+                  <div class="row">
+                    <div class="col-6 my-2">
+                      <div class="device-item">
+                        <div class="wrap-device-item">
+                          <h6>Cảm biến Oxy</h6>
+                          <div class="sensor-value"><span class="value">100</span><span class="unit">mm/pp</span></div>
+                          <div><small><i>15 giờ 40 phút</i></small></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 my-2">
+                      <div class="device-item">
+                        <div class="wrap-device-item">
+                          <h6>Cảm biến PH</h6>
+                          <div class="sensor-value"><span class="value">8</span><span class="unit">%</span></div>
+                          <div><small><i>15 giờ 40 phút</i></small></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br />
+                  <div class="device-item">
+                    <div class="wrap-device-item">
+                      <h6 class="name">Máy bơm Oxy</h6>
+                      <div class="box">
+                        <div class="device-status device-status-offline">
+                          <div class="text">Đã dừng</div>
+                        </div>
+                        <div><small><i>15 giờ 40 phút</i></small></div>
+                        <br>
+                        <Button class="control-device">Tắt</Button>
+                        <Button class="control-device">Mở</Button>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <!--  -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+  <!-- ----- ----- main ----- ------->
+  </div>
+  <!-- ----- ----- body ----- ------->
+
+  <!-- Toast container -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+  <!-- footer -->
+  <!-- <%- include('../partials/cms/footer.ejs') %> -->
+  <!-- footer -->
+</body>
+
+<!-- /*-----*-----*-- lib-javascript --*-----*-----*/ -->
+
+<!-- <script src="https://code.jquery.com/jquery-3.7.0.js"></script> -->
+
+<script src="../assets/bootstrap/js/jquery-3.4.1.min.js"></script>
+<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="../assets/socket-client/index.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+    integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+    crossorigin="anonymous"></script> -->
+
+<!-- /*-----*-----*-- my-script --*-----*-----*/ -->
+<script src="../assets/function.js"></script>
+<script src="../cms/scripts/refactor.js"></script>
+<script src="../cms/scripts/func.js"></script>
+<script src="../cms/scripts/main.js"></script>
+<!-- <script src="/cms/scripts/handle-image.js"></script> -->
+<!-- <script src="component/slider/script.js"></script> -->
+
+</html>

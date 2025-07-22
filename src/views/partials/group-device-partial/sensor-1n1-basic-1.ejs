@@ -1,0 +1,19 @@
+<div class="col-6 my-2 item-<%= device.name %>">
+  <div class="device-item">
+    <div class="wrap-device-item">
+      <a href="#" class="wrap-name">
+        <h6 class="name link-icon"><%= device.name %></h6>
+      </a>
+      <%
+      if(device.deviceModel.fields.length>0){
+        for(const item of device.deviceModel.fields){ %>
+      <div class="sensor-value"><span class="value">100</span><span class="unit"><%=item.unit %></span></div>
+      <%
+        }
+      }
+      %>
+
+      <div><small><i>15 giờ 40 phút</i></small></div>
+    </div>
+  </div>
+</div>

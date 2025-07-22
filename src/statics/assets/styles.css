@@ -7,9 +7,13 @@
   --text-light: #fff;
   --text-dark: #282c2d;
   --primary-color: #0d6efd;
-  --active-color: #42a5f5;
-  --bg-blue-light: #f2f7fb;
+  --active-color: #97E3FD;
+  /* --bg-blue-light: #f2f7fb; */
+  --bg-blue-light: #C9E8F4;
+  --bg-blue-dark: #24536D;
+  --bg-red: #FF0000
 }
+
 h1,
 h2,
 h3,
@@ -18,6 +22,7 @@ h5,
 h6 {
   font-family: Roboto-Bold;
 }
+
 /* ============================================ */
 ::-webkit-scrollbar {
   width: 8px;
@@ -43,60 +48,90 @@ h6 {
   padding: 0;
   height: 50px;
 }
+
 .gap-sm {
   height: 30px;
 }
+
 .gap-xs {
   height: 10px;
 }
+
 .gap-lg {
   height: 100px;
 }
+
 .mg-pd-none {
   padding: 0;
   margin: 0;
 }
+
 .large-size {
   font-size: 30px !important;
 }
+
 .medium-size {
   font-size: 18px !important;
 }
+
 .small-size {
   font-size: 14px !important;
 }
+
 .xsmall-size {
   font-size: 12px !important;
 }
+
 .hidden {
   overflow: hidden !important;
 }
+
 .absolute {
   position: absolute;
 }
+
 .relative {
   position: relative;
 }
+
 .unset {
   position: unset !important;
 }
+
+.overflow-scroll {
+  overflow: scroll !important;
+}
+
+.overflow-x-scroll {
+  overflow-x: scroll !important;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll !important;
+}
+
 @media only screen and (max-width: 991px) {
   .mg-pd-none-mb {
     padding: 0;
     margin: 0;
   }
+
   .xsmall-size {
     font-size: 8px !important;
   }
+
   .small-size {
     font-size: 12px !important;
   }
+
   .medium-size {
     font-size: 14px !important;
   }
+
   .large-size {
     font-size: 20px !important;
   }
+
   .small-size {
     font-size: 10px !important;
   }

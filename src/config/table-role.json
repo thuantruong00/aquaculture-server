@@ -1,12 +1,8 @@
 {
     "block": {
         "root": [],
-        "superadmin": [
-            "a6"
-        ],
-        "admin": [
-            "a1",
-            "a6"
-        ]
+        "admin": [],
+        "user": ["deviceSetting","notificationSetting", "customUi"],
+        "guest": ["deviceSetting","notificationSetting","account" , "customUi"]
     }
 }

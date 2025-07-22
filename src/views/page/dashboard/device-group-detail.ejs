@@ -1,0 +1,128 @@
+<% 
+const formId="change-order-1"
+%>
+<div class="container modal-id ">
+  <div class="gap-sm"></div>
+  <div class="row justify-content-center">
+
+    <div class="col-4">
+      <div class="wrap-title">
+        <div class="title">Thêm thiết bị vào nhóm</div>
+      </div>
+      <div class="my-form #form_id">
+        <div class="wrap-my-form">
+          <form action="/custom-ui/add-device" method="post">
+            <label for="template-device-group">Danh sách thiết bị trong nhóm</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <select name="deviceId" id="template-device-group" class="w-100">
+                <% if(activeDevices.length>0){
+                  for(const device of activeDevices) { %>
+                <option value="<%=device._id %>"><%=device.name %></option>
+                <% } } %>
+              </select>
+            </div>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <input type="text" name="groupId" value="<%=groupId %>">
+            </div>
+            <div class="submit">
+              <button class="submit-btn">Thêm</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="wrap-title">
+        <div class="title">Danh sách thiết bị</div>
+      </div>
+      <div class="base-list update-order-group-list overflow-y-scroll">
+        <div class="wrap-box">
+          <ul class="sticky-header">
+            <li class="d-flex header-row">
+              <span>Vị trí</span>
+              <span class="device-name">Nhóm</span>
+              <span>Model</span>
+              <span>Di chuyển</span>
+              <span class="action">Hành động</span>
+            </li>
+          </ul>
+          <ul class="change-order change-order-1" id="">
+            <% if(devices.length>0){ 
+              for(const index in devices){ %>
+            <li class="d-flex" deviceId="<%=devices[index]._id %>">
+              <span><%=devices[index].order %></span>
+              <span title="<%=devices[index].name %>" class="device-name short-text"><%=devices[index].name %></span>
+              <span title="<%=devices[index].deviceModel.name %>" class="short-text"><%=devices[index].deviceModel.name %></span>
+              <span class="move">
+                <div class="wrap-moving-btn">
+                  <button class="primary-btn moving-btn move-up">Lên<span class="icon icon-arrow-up">&#8679;</span></button>
+                </div>
+                <div class="wrap-moving-btn">
+                  <button class="primary-btn moving-btn move-down">Xuống<span class="icon icon-arrow-down">&#8681;</span></button>
+                </div>
+              </span>
+              <span class="action">
+                <div class="wrap-action-btn">
+                  <form action="/custom-ui/remove-device" method="post">
+                    <input type="text" name="deviceId" value="<%=devices[index]._id %>" class="d-none">
+                    <input type="text" name="groupId" value="<%=groupId %>" class="d-none">
+                    <button value="<%=devices[index]._id %>" class="primary-btn delete-device-btn">Gỡ ra ×</button>
+                  </form>
+                </div>
+              </span>
+            </li>
+            <% } } %>
+
+          </ul>
+        </div>
+
+      </div>
+      <div class="update-order-group-submit text-center">
+        <button value=".item-" class="submit-btn" onclick="submitChangeOrderForm('.change-order-1')">Lưu <span class="icon">&#9166;</span></button>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-start">
+    <div class="col-6">
+      <div class="gap-md"></div>
+      <div class="gap-md"></div>
+      <div class="wrap-title">
+        <div class="title">Chỉnh sửa thông tin</div>
+      </div>
+      <div class="my-form #form_id">
+        <div class="wrap-my-form">
+          <form action="/custom-ui/update/<%=groupId %>" method="post">
+            <div class="wrap-input required">
+              <input type="text" name="groupName" required placeholder="Tên nhóm" class="w-100" value="<%=currentGroup.name %>">
+            </div>
+            <div class="wrap-input required">
+              <input type="number" name="order" step="1" min="0" max="10" placeholder="Vị trí" class="w-100" value="<%=currentGroup.order %>">
+            </div>
+            <div class="wrap-input required">
+              <select name="template" id="template-device-group" class="w-50">
+                <% for(const opt of templateData){ %>
+                <option value="<%=opt.value %>" checked="<%= opt.value==currentGroup.template?true:'false'  %>"><%=opt.label %></option>
+                <% } %>
+              </select>
+              <label for="template-device-group">Template</label>
+            </div>
+            <div class="wrap-input">
+              <input type="text" name="groupDescription" placeholder="Mô tả / Có thể để trống" class="w-100" value="<%=currentGroup.description %>">
+            </div>
+
+            <div class="wrap-input required">
+              <input type="text" name="zoneId" placeholder="Chọn khu vực / Có thể để trống" class="w-100" value="<%=currentGroup.zone._id %>">
+            </div>
+            <div class="submit">
+              <button class="submit-btn">Gửi</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gap-md"></div>
+</div>

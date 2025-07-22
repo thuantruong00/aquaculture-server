@@ -1,0 +1,33 @@
+<div class="container modal-id">
+  <div class="base-list pending-devices-list pt-2">
+    <div class="wrap-box">
+      <ul>
+        <li class="d-flex header-row">
+          <span>Stt</span>
+          <span class="device-name">Tên thiết bị</span>
+          <span>Trạng thái</span>
+          <span>Model</span>
+          <span>Nhóm</span>
+          <span>Khu vực</span>
+          <span class="action">Hành động</span>
+        </li>
+        <% if(listDevice.length>0) { for (const device in listDevice) { %>
+        <li class="item-<%=listDevice[device]._id %> d-flex">
+          <span><%= device %></span>
+          <span class="device-name"><input type="text" name="device-name" id="device-name" value="<%= listDevice[device].name %>"></span>
+          <span class="short-text">Chưa kích hoạt</span>
+          <span title="<%=listDevice[device].deviceModel.name?device.deviceModel.name:'*' %>" class="short-text"><%=listDevice[device].deviceModel.name?device.deviceModel.name:'*' %></span>
+          <span title="<%=listDevice[device].group?device.group:'*' %>" class="short-text"><%=listDevice[device].group?listDevice[device].group:'*' %></span>
+          <span title="<%=listDevice[device].group?device.zone:'*' %>" class="short-text"><%= listDevice[device].zone?listDevice[device].zone:"*" %></span>
+          <span class="action">
+            <button title="<%=device[device._id] %>" value=".item-<%=listDevice[device]._id %>" class="primary-btn active-device-btn">Kích hoạt</button>
+            <button title="Xoá" value=".item-<%=listDevice[device]._id %>" class="primary-btn delete-device-btn">×</button>
+          </span>
+        </li>
+        <% } } else { %>
+        <p>Không có bất kì thiết bị nào.</p>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</div>

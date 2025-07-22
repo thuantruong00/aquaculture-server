@@ -1,0 +1,104 @@
+export const sidebarData = [
+  {
+    page_id: "deviceControl",
+    title: "Bảng điều khiển",
+    href: "/device-control",
+    page_name: "page/dashboard/device-control",
+    child: [
+      {
+        page_id: "deviceControl",
+        title: "Bảng điều khiển",
+        href: "/device-control",
+        page_name: "page/dashboard/device-control",
+        child: [],
+      },
+      {
+        page_id: "deviceControlTimer",
+        title: "Hẹn giờ",
+        href: "/device-control/timer",
+        page_name: "page/dashboard/set-timer",
+        child: [],
+      },
+    ],
+  },
+  {
+    page_id: "customUi",
+    title: "Chỉnh sửa giao diện",
+    href: "/custom-ui",
+    page_name: "page/dashboard/custom-ui",
+    child: [
+      {
+        page_id: "customUi",
+        title: "Chỉnh sửa giao diện",
+        href: "/custom-ui",
+        page_name: "page/dashboard/custom-ui",
+        child: [],
+      },
+      {
+        page_id: "deviceGroup",
+        title: "Tạo nhóm thiết bị",
+        href: "/custom-ui/device-group",
+        page_name: "page/dashboard/device-group",
+        child: [],
+      },
+    ],
+  },
+  {
+    page_id: "deviceSetting",
+    title: "Chỉnh sửa thiết bị",
+    href: "/device-setting",
+    page_name: "page/dashboard/device-setting",
+    child: [
+      {
+        page_id: "deviceSetting",
+        title: "Chỉnh sửa thiết bị",
+        href: "/device-setting",
+        page_name: "page/dashboard/device-setting",
+        child: [],
+      },
+      {
+        page_id: "deviceSettingAdd",
+        title: "Thêm mới",
+        href: "/device-setting/add",
+        page_name: "page/dashboard/add-device",
+        child: [],
+      },
+    ],
+  },
+  {
+    page_id: "notificationSetting",
+    title: "Cài đặt thông báo",
+    href: "/notification-setting",
+    page_name: "page/dashboard/notification-setting",
+    child: [],
+  },
+  {
+    page_id: "history",
+    title: "Lịch sử",
+    href: "/history",
+    page_name: "page/dashboard/history",
+    child: [],
+  },
+  {
+    page_id: "account",
+    title: "Tài khoản",
+    href: "/account",
+    page_name: "page/dashboard/account",
+    child: [
+      {
+        page_id: "account",
+        title: "Danh sách tài khoản",
+        href: "/account",
+        page_name: "page/dashboard/account",
+        child: [],
+      },
+      {
+        page_id: "accountAdd",
+        title: "Thêm mới tài khoản",
+        href: "/account/add",
+        page_name: "page/dashboard/account-add",
+        child: [],
+      },
+    ],
+  },
+];

@@ -4,8 +4,8 @@ const {
   updatePortByPortNumber,
   updateBrightnessByPortNumber,
   insertHistoryEdit,
-} = require("../../models/connectDB");
-const { writeCommand } = require("../serialPort/serviceSerialPort");
+} = require("../../entities/connectDB");
+const { writeCommand } = require("../mqtt/handleMqtt");
 const { sendValue } = require("../socket");
 
 const worker = async () => {
@@ -65,20 +65,20 @@ const worker = async () => {
   }
 };
 
-const job = new CronJob(
-  "*/10 * * * * *", // cronTime
-  function () {
-    console.log("flag");
-    worker();
-  }, // onTick
-  null, // onComplete
-  true, // start
-  "America/Los_Angeles" // timeZone
-);
+// const job = new CronJob(
+//   "*/10 * * * * *", // cronTime
+//   function () {
+//     console.log("flag");
+//     worker();
+//   }, // onTick
+//   null, // onComplete
+//   true, // start
+//   "America/Los_Angeles" // timeZone
+// );
 
-const startJob = () => {
-  job.start();
-};
+// const startJob = () => {
+//   job.start();
+// };
 
 function getRandomNumber() {
   return Math.floor(Math.random() * (100 - 1 + 1)) + 1;

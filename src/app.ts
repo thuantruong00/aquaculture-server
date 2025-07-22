@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
@@ -6,11 +7,8 @@ import morgan from "morgan";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
 import { io, sendValueTemp } from "./services/socket";
-import {
-  getTemperature,
-  insertDataResearch,
-  updateIndexTemp,
-} from "./models/connectDB";
+import { connectMongoDB } from "./config/dataSource";
+
 // const startJob = require('./services/worker/worker.js')
 
 // import { passport } from '~/config';
@@ -50,80 +48,20 @@ app.set("layout", "layouts/default-layout");
 app.use(express.static(path.join(__dirname, "statics")));
 
 /* ===== Router ===== */
-const routes = require("./routes/index.js");
+import { routes } from "./routes";
+import { mqttClient } from "./services/mqtt/handleMqtt";
+import { initialService } from "./services/initial/initial.service";
 routes(app);
 app.get("/", function (req, res) {
-  res.redirect("/control-device");
+  res.redirect("/auth/sign-in");
 });
 
-const mqtt = require("mqtt");
 
-// setInterval(async () => {
-//   const limitTemp = await getTemperature();
+// src/database/mongodb.ts
+connectMongoDB();
+// initialService();
+// mqttClient;
 
-//   const data1 = {
-//     idDevice: "t0",
-//     humidity: random(0, 50),
-//     temperature: random(0, 50),
-//     pH: random(0, 50),
-//     TDS: random(0, 50),
-//     nitro: random(0, 50),
-//     phos: random(0, 50),
-//     pota: random(0, 50),
-//     status: "value",
-//     limitTemp,
-//   };
-//   const data2 = {
-//     idDevice: "t1",
-//     humidity: random(0, 50),
-//     temperature: random(0, 50),
-//     pH: random(0, 50),
-//     TDS: random(0, 50),
-//     nitro: random(0, 50),
-//     phos: random(0, 50),
-//     pota: random(0, 50),
-//     status: "value",
-//     limitTemp,
-//   };
-
-//   const data3 = {
-//     idDevice: "t2",
-//     humidity: random(0, 50),
-//     temperature: random(0, 50),
-//     pH: random(0, 50),
-//     TDS: random(0, 50),
-//     nitro: random(0, 50),
-//     phos: random(0, 50),
-//     pota: random(0, 50),
-//     status: "value",
-//     limitTemp,
-//   };
-//   const data4 = {
-//     idDevice: "t3",
-//     humidity: random(0, 50),
-//     temperature: random(0, 50),
-//     pH: random(0, 50),
-//     TDS: random(0, 50),
-//     nitro: random(0, 50),
-//     phos: random(0, 50),
-//     pota: random(0, 50),
-//     status: "value",
-//     limitTemp,
-//   };
-
-//   sendValueTemp(data1);
-//   sendValueTemp(data2);
-//   sendValueTemp(data3);
-//   sendValueTemp(data4);
-//   // insertDataResearch({ ...data1, timestamp: Date.now() + "" });
-//   // insertDataResearch({ ...data2, timestamp: Date.now() + "" });
-//   // insertDataResearch({ ...data3, timestamp: Date.now() + "" });
-//   // insertDataResearch({ ...data4, timestamp: Date.now() + "" });
-// }, 10000);
-
-function random(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 // error handling
 const { errorHandler } = require("~/middlewares/errors.middleware.js");

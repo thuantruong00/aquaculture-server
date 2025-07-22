@@ -160,7 +160,7 @@ $(".my-dropdown-button").click(function () {
     */
   click_status = false;
   let menu_id = $(this).attr("dropdown-menu-name");
-  $(menu_id).toggleClass("d-none d-flex");
+  $(menu_id).toggleClass("d-none d-block");
   $(this).toggleClass("dropdown-btn-active");
   setTimeout(() => {
     click_status = true;

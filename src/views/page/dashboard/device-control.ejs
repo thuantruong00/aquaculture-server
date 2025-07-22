@@ -1,0 +1,44 @@
+<div class="container modal-id">
+  <div class="control-devices-list pt-2">
+    <div class="wrap-box">
+      <div class="row">
+
+
+        <% if(deviceByGroup.length > 0) { %>
+        <% for(const group of deviceByGroup) { %>
+        <% if(group.template == "group-basic-1"){ %>
+        <%- include('../../partials/group-device-partial/group-basic-1.ejs', {group: group}) %>
+        <% } %>
+        <% } %>
+        <% } %>
+
+        <!--  -->
+      </div>
+      <div class="row without-group-device">
+        <% if(withoutGroupDevice.length>0){ 
+        for(const item of withoutGroupDevice){ 
+          if(item.deviceModel?.template){
+
+          } 
+          else{ 
+            if(item.deviceModel?.type.length==1){
+              if(item.deviceModel.type[0]=="sensor"){
+                %>
+        <%- include('../../partials/group-device-partial/sensor-1n1-basic-1.ejs',{device:item}) %>
+        <%
+              }
+              if(item.deviceModel.type[0]=="actuator"){
+              
+              }
+            }
+            if(item.deviceModel?.type.length==2){
+            }
+            %>
+
+
+
+        <% } } } %>
+      </div>
+    </div>
+  </div>
+</div>
