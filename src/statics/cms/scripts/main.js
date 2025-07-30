@@ -19,6 +19,35 @@ socket.on("temp", function (data) {
   handleTurnOff(data);
 });
 
+// ==============================
+socket.on("iotDataTelemetry", function (data) {
+  console.log(data);
+  const { devices, id, ts } = data
+  const now = new Date(Number(ts))
+  $(`.x-item-${id} .updated-at i`).text(now.toLocaleTimeString('en-GB'))
+  if (devices && devices.length > 0) {
+    for (const item of devices) {
+      $(`.x-item-${id} .x-key-${item.key} span.value`).text(item.value)
+    }
+  }
+});
+
+socket.on("iotDataResponse", function (data) {
+  console.log(data);
+  const { field, id, template, ts } = data
+  const now = new Date(Number(ts))
+  if (template == "actuator-1") {
+    $(`.x-item-${id} .updated-at i`).text(now.toLocaleTimeString('en-GB'))
+    const styleClass = field.value ? "device-status-online" : "device-status-offline";
+    $(`.x-item-${id}  .device-status`).removeClass(`device-status-offline`)
+    $(`.x-item-${id}  .device-status`).removeClass(`device-status-online`)
+    $(`.x-item-${id}  .device-status`).removeClass(`device-status-error`)
+
+    $(`.x-item-${id}  .device-status`).addClass(`${styleClass}`)
+  }
+});
+
+
 function handleTurnOff(data, limitTemp) {
   let average = 0;
   // const temperature = $(`#value-temp-${idDevice}`).text();
@@ -54,7 +83,7 @@ function handleTurnOff(data, limitTemp) {
         url: "/edit/turn-off",
         data: { average },
         type: "POST",
-        success: function (result) {},
+        success: function (result) { },
       });
     },
   });
@@ -92,7 +121,7 @@ function handleRecover() {
       url: "/control/recover",
       data: { data: JSON.stringify(arrayData) },
       type: "POST",
-      success: function (result) {},
+      success: function (result) { },
     });
   }
 }
@@ -461,7 +490,7 @@ function command(idDevice, order) {
     url: "/control-device/custom-led",
     type: "POST",
     data,
-    success: function (result) {},
+    success: function (result) { },
   });
 }
 

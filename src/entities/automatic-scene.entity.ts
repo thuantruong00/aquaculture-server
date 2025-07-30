@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { ComparisonOperator, LogicOperator, SceneStatus } from "~/utils/enum";
 import { NotificationOption } from "./notification-option.entity";
 
+// Condition schema
 const ConditionSchema = new Schema(
   {
     source: {
@@ -10,60 +11,61 @@ const ConditionSchema = new Schema(
       default: "device",
       required: true,
     },
-    key: { type: String, required: true }, // "temp", "time"
+    key: { type: String, required: true },
     operator: {
       type: String,
       enum: Object.values(ComparisonOperator),
       required: true,
     },
-    // Nếu key === "time", thì value là số phút trong ngày (0-1439)
-    value: { type: Number, required: true },
+    value: { type: Number, required: true }, // phút trong ngày hoặc sensor threshold
   },
   { _id: false }
 );
 
-export const ActionSchema = new Schema(
+// AutomationScene schema
+const AutomationSceneSchema = new Schema(
   {
-    deviceId: { type: Schema.Types.ObjectId, ref: "Device", required: true },
-    key: { type: String, required: true },
-    value: { type: Schema.Types.Mixed, required: true },
+    name: { type: String, required: true },
 
-    // Thời gian giữ trạng thái "value", ví dụ: bật bơm 600 giây
-    durationSeconds: {
-      type: Number, // e.g., 600
-      required: false,
-      min: 1,
+    logic: {
+      type: String,
+      enum: Object.values(LogicOperator),
+      default: LogicOperator.AND,
     },
 
-    // Trạng thái của hành động trong scene
+    group: {
+      type: String,
+      required: false,
+      default: "",
+    },
+
     status: {
       type: String,
       enum: Object.values(SceneStatus),
       default: SceneStatus.ACTIVE,
     },
 
-    // Ghi chú loại dừng: "sensor-based" hoặc "timer"
-    stopMethod: {
-      type: String,
-      enum: ["sensor", "timer"], // Có thể mở rộng
-      default: "timer",
-      required: false,
+    conditions: {
+      type: [ConditionSchema],
+      required: true,
     },
-  },
-  { _id: false }
-);
 
-const AutomationSceneSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    logic: {
-      type: String,
-      enum: Object.values(LogicOperator),
-      default: LogicOperator.AND,
+    actions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Action",
+        required: true,
+      },
+    ],
+    retryLimit: {
+      type: Number,
+      default: 3, // giới hạn số lần retry liên tục nếu điều kiện không phù hợp
+      min: 0,
     },
-    conditions: { type: [ConditionSchema], required: true },
-    actions: { type: [ActionSchema], required: true },
-    notifications: { type: NotificationOption, default: {} },
+    notifications: {
+      type: NotificationOption,
+      default: {},
+    },
   },
   {
     timestamps: true,

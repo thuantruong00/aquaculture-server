@@ -1,0 +1,72 @@
+<div class="container modal-id ">
+  <div class="gap-sm"></div>
+  <div class="row justify-content-start">
+    <div class="col-9">
+      <div class="wrap-title">
+        <div class="title">Chỉnh sửa thông tin thiết bị</div>
+      </div>
+      <div class="my-form #form_id">
+        <div class="wrap-my-form">
+          <form action="/device-setting/update/<%= device._id%>" method="post">
+            <label for="">Tên thiết bị</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <input type="text" name="name" required placeholder="Tên thiết bị" class="w-100" value="<%=device.name %>">
+            </div>
+
+            <label for="">Trạng thái</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <select name="status" id="=" class="w-50">
+                <% if(deviceStatus.length > 0){ for( const status of deviceStatus ){ %>
+                <option value="<%=status.value %>" <%= status.value == device.status ? 'selected' : '' %> ><%=status.label %></option>
+                <% } } %>
+              </select>
+            </div>
+
+            <label for="">Vị trí</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <input type="number" name="order" step="1" min="0" max="100" placeholder="Vị trí" class="w-100" value="<%=device.order %>">
+            </div>
+
+            <label for="">Model</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <select name="model" id="" class="w-50">
+                <% if(model.length > 0){ for( const item of model ){ %>
+                <option value="<%=item._id %>" <%= String(item._id) == String(device.deviceModel._id) ? 'selected' : '' %> ><%=item.name %></option>
+                <% } } %>
+              </select>
+            </div>
+
+            <label for="">Nhóm: <%=device.group?device.group.name : "Chưa có" %></label>
+            <div class="gap-xs"></div>
+
+
+            <label for="">Chọn khu vực</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <select name="zone" id="template-device-group" class="w-50">
+                <% if(zone.length > 0){ for( const item of zone ){ %>
+                <option value="<%=item._id %>"><%=item.name %></option>
+                <% } } %>
+              </select>
+            </div>
+
+            <label for="">Mô tả</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input">
+              <input type="text" name="description" placeholder="Mô tả / Có thể để trống" class="w-100" value="<%=device.description %>">
+            </div>
+
+            <div class="submit">
+              <button class="submit-btn">Gửi</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gap-md"></div>
+</div>

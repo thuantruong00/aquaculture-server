@@ -4,6 +4,7 @@ import { Device, IDevice } from "~/entities/device.entity";
 import {
   IActivateDeviceDTO,
   IDeviceConnectDTO,
+  IGetListDeviceQueryDTO,
   IUpdateDeviceDTO,
   IUpdateDeviceGroupDTO,
   IUpdateDeviceOrdersDTO,
@@ -12,6 +13,7 @@ import {
 import { DeviceSecretKey } from "~/utils/const";
 import {
   DeviceFieldType,
+  DeviceGroupStatus,
   DeviceStatus,
   DeviceType,
   DeviceZone,
@@ -21,16 +23,101 @@ import { Types } from "mongoose";
 import { ObjectId } from "typeorm";
 import { Zone } from "~/entities/zone.entity";
 import { DeviceGroup, IDeviceGroup } from "~/entities/device-group.entity";
-
+import { PagiLimit, PagiOffset } from "~/utils/const";
 export class DeviceSettingController extends BaseController {
   constructor() {
     super();
   }
   handleDeviceSettingPage = async (req: Request, res: Response) => {
     try {
-      return this.renderWithSidebar(res);
+      let { offset, limit, status } =
+        req.query as unknown as IGetListDeviceQueryDTO;
+
+      if (!offset || !limit) {
+        offset = offset ?? PagiOffset;
+        limit = limit ?? PagiLimit;
+      }
+      if (!status) {
+        status = status ?? DeviceStatus.ACTIVE;
+      }
+      const findDevice = await Device.find({
+        status: { $ne: DeviceGroupStatus.DELETED },
+      })
+        .populate("zone")
+        .populate("group")
+        .populate("deviceModel")
+        .sort({ order: 1 })
+        .skip(offset)
+        .limit(limit);
+      return this.renderWithSidebar(res, undefined, {
+        devices: findDevice,
+      });
     } catch (error) {
       console.log(error);
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
+  handleDetailDevicePage = async (req: Request, res: Response) => {
+    try {
+      const { deviceId } = req.params as unknown as any;
+      const findDevice = await Device.findOne({
+        _id: { $eq: deviceId },
+      })
+        .populate("zone")
+        .populate("group")
+        .populate("deviceModel");
+      const findZone = await Zone.find({});
+      const findModel = await DeviceModel.find({});
+      if (!findDevice || !findZone || !findModel) {
+        return this.renderWithSidebar(res, "page/error");
+      }
+      return this.renderWithSidebar(res, "page/dashboard/device-detail", {
+        device: findDevice,
+        deviceStatus: [
+          { value: DeviceStatus.ACTIVE, label: "Kích hoạt" },
+          { value: DeviceStatus.BANNED, label: "Khoá" },
+        ],
+        zone: findZone,
+        model: findModel,
+      });
+    } catch (error) {
+      console.log(error);
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
+  handleUpdateDevicePage = async (req: Request, res: Response) => {
+    try {
+      const data = req.body as IUpdateDeviceDTO;
+      const { deviceId } = req.params as unknown as any;
+      const findDevice = await Device.findOne({ _id: deviceId });
+      if (findDevice) {
+        const udpate = await Device.updateOne({ _id: deviceId }, { ...data });
+        return res.redirect(req.get("Referer") || "/fallback");
+      }
+      res.statusCode = 400;
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      console.log(error);
+      res.statusCode = 500;
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
+  handleDeleteDevicePage = async (req: Request, res: Response) => {
+    try {
+      const { deviceId } = req.params as unknown as any;
+      const findDevice = await Device.findOne({ _id: { $eq: deviceId } });
+      if (findDevice) {
+        const update = await Device.updateOne(
+          { _id: deviceId },
+          { status: DeviceStatus.DELETED }
+        );
+        return res.redirect("/device-setting");
+      }
+      res.statusCode = 400;
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      console.log(error);
+      res.statusCode = 500;
       return this.renderWithSidebar(res, "page/error");
     }
   };

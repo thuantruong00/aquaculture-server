@@ -1,4 +1,4 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
-import { io, sendValueTemp } from "./services/socket";
 import { connectMongoDB } from "./config/dataSource";
 
 // const startJob = require('./services/worker/worker.js')
@@ -29,10 +28,15 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+
+/* ===== Router ===== */
+import { routes } from "./routes";
+import { mqttClient } from "./services/mqtt/mqttConnection";
+import { initialService } from "./services/initial/initial.service";
+import { SocketService } from "./services";
 // setup express session
 app.use(session({ secret: "secret", saveUninitialized: true, resave: true }));
 
-io;
 // setup passport
 
 /* ===== View ===== */
@@ -47,20 +51,16 @@ app.set("layout", "layouts/default-layout");
 // setting static content
 app.use(express.static(path.join(__dirname, "statics")));
 
-/* ===== Router ===== */
-import { routes } from "./routes";
-import { mqttClient } from "./services/mqtt/handleMqtt";
-import { initialService } from "./services/initial/initial.service";
+
 routes(app);
 app.get("/", function (req, res) {
   res.redirect("/auth/sign-in");
 });
 
-
 // src/database/mongodb.ts
 connectMongoDB();
 // initialService();
-// mqttClient;
+mqttClient;
 
 
 // error handling

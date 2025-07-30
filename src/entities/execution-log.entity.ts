@@ -1,11 +1,17 @@
 import mongoose, { Schema } from "mongoose";
-import { ExecutionSource, ExecutionStatus } from "~/utils/enum";
+import { DeviceFieldType, ExecutionSource, ExecutionStatus } from "~/utils/enum";
 
 const ExecutedActionSchema = new Schema(
   {
-    deviceId: { type: Schema.Types.ObjectId, ref: "Device", required: true },
     key: { type: String, required: true },
     value: { type: Schema.Types.Mixed, required: true },
+    valueType: {
+      type: String,
+      enum: Object.values(DeviceFieldType),
+      required: false,
+    },
+
+    unit: { type: String }, // optional, ví dụ "°C", "%"
   },
   { _id: false }
 );
@@ -17,24 +23,17 @@ const ExecutionLogSchema = new Schema(
       enum: Object.values(ExecutionSource),
       required: true,
     },
-    sceneId: {
-      type: Schema.Types.ObjectId,
-      ref: "AutomationScene",
-      required: function (this: any) {
-        return this.source === ExecutionSource.SCENE;
-      },
-    },
     executedAt: {
       type: Date,
       default: Date.now,
     },
     status: {
       type: Number,
-      enum: Object.values(ExecutionStatus),
       required: true,
     },
+    deviceId: { type: Schema.Types.ObjectId, ref: "Device", required: true },
     message: { type: String },
-    actions: {
+    values: {
       type: [ExecutedActionSchema],
       required: true,
     },

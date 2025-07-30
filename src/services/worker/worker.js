@@ -5,8 +5,8 @@ const {
   updateBrightnessByPortNumber,
   insertHistoryEdit,
 } = require("../../entities/connectDB");
-const { writeCommand } = require("../mqtt/handleMqtt");
-const { sendValue } = require("../socket");
+const { writeCommand } = require("../mqtt/mqttConnection");
+const { sendValue } = require("../socket/_index");
 
 const worker = async () => {
   const data = new Date().toLocaleTimeString("vi-VI", {

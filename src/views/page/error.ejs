@@ -1,1 +1,17 @@
-<h2>Error page</h2>
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Error</title>
+</head>
+
+<body>
+  <h1><%= message %></h1>
+  <% if (errors) { %>
+  <pre><%= JSON.stringify(errors, null, 2) %></pre>
+  <% } else { %>
+  <p>Không có chi tiết lỗi.</p>
+  <% } %>
+</body>
+
+</html>

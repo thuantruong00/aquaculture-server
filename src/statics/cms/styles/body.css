@@ -999,11 +999,16 @@ label {
   margin: 0 auto;
 }
 
+.device-status .text {
+  display: none;
+}
+
 .device-status-online {
   border: 3px solid #99FF00;
   box-shadow: inset 0px 0px 5px 1px #99FF00;
   background: rgba(153, 255, 22, 0.2);
 }
+
 
 .device-status-offline {
   border: 3px solid rgba(0, 0, 0, 0.2);
@@ -1017,6 +1022,19 @@ label {
   background: #fff;
   color: #ff0000;
 }
+
+.device-status-online>.online {
+  display: block !important;
+}
+
+.device-status-offline>.offline {
+  display: block !important;
+}
+
+.device-status-error>.error {
+  display: block !important;
+}
+
 
 .control-device {
   position: relative;
@@ -1270,4 +1288,34 @@ label {
   text-decoration: underline;
   box-shadow: inset 0 0 3px 1px rgba(0, 0, 0, 0.3);
   background: rgba(0, 0, 0, 0.1);
+}
+
+.device-setting-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  padding: 12px;
+  margin-right: 12px;
+}
+
+.device-setting-bar button {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+  background: none;
+  font-size: 18;
+  font-weight: 600;
+  color: #000;
+  background: #fff;
+  padding: 0px 4px;
+}
+
+.device-setting-bar button:hover {
+  text-decoration: underline;
+}
+
+.device-setting-bar .icon-pin {
+  width: 20px;
+  background: #fff;
+  margin-right: 4px;
 }

@@ -1,1 +1,69 @@
-device setting
+      <div class="container modal-id ">
+        <div class="gap-xs"></div>
+        <div class="row justify-content-center">
+          <div class="col-8">
+            <div class="wrap-title">
+              <div class="title">Chỉnh sửa thiết bị</div>
+            </div>
+          </div>
+          <!-- ======================= -->
+          <div class="col-12">
+            <div class="search-box d-none">
+              <div class="wrap-search-box">
+                <div class="wrap-input">
+                  <div class="input">
+                    <input type="text" name="" id="">
+                  </div>
+                </div>
+                <div class="submit">
+                  <button class="submit-btn">Tìm kiếm</button>
+                </div>
+              </div>
+            </div>
+            <div class="base-list device-groups-list">
+              <div class="wrap-box">
+                <ul class="">
+                  <li class="d-flex">
+                    <span>Stt</span>
+                    <span class="device-name">Tên thiết bị</span>
+                    <span>Trạng thái</span>
+                    <span>Nhóm</span>
+                    <span>Khu vực</span>
+                    <span>Model</span>
+                    <span class="action">Hành động</span>
+                  </li>
+                  <% if(devices.length>0 ) { %>
+                  <% for(const index in devices){ %>
+
+                  <li class="d-flex item-<%= devices[index]._id %>">
+                    <span value="<%= devices[index].order %>" title="order=<%= devices[index].order %>"><%= index %></span>
+                    <span class="device-name short-text" title="_id=<%= devices[index]._id %>"><%= devices[index].name %></span>
+                    <span class="short-text"><%= devices[index].status %></span>
+                    <span title="123123" class="short-text"><%= devices[index].group ? devices[index].group.name : "Trống" %></span>
+                    <span title="123123" class="short-text"><%= devices[index].zone.name %></span>
+                    <span title="123123" class="short-text"><%= devices[index].deviceModel.name %></span>
+                    <span class="action">
+                      <div class="wrap-action-btn">
+                        <a href="/device-setting/detail/<%=devices[index]._id %>">
+                          <button value="<%= devices[index]._id %>" class="primary-btn update-device-group-btn">Sửa<span class="icon"><img class="img-icon" src="../cms/images/index/settings.png" alt=""></span><span class="icon icon-setting"></span></button>
+                        </a>
+                      </div>
+                      <div class="wrap-action-btn">
+
+                        <a href="/device-setting/delete/<%=devices[index]._id %>">
+                          <button value="<%= devices[index]._id %>" class="primary-btn">Xoá ×</button>
+                        </a>
+                      </div>
+                    </span>
+                  </li>
+
+                  <% } } else{ %>
+                  <p>Không có bất kì nhóm nào.</p>
+                  <% } %>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ----- ----- main ----- ------->
+      </div>

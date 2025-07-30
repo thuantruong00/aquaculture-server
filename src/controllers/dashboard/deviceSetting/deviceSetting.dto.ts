@@ -1,143 +1,156 @@
-import { Type } from "class-transformer";
-import {
-  IsEnum,
-  IsString,
-  Length,
-  IsOptional,
-  IsBoolean,
-  IsMongoId,
-  IsNumber,
-  Min,
-  IsArray,
-  ArrayNotEmpty,
-  ValidateNested,
-} from "class-validator";
+import { z } from "zod";
+
 import { DeviceStatus, DeviceType } from "~/utils/enum";
+import { PagiLimit, PagiOffset } from "~/utils/const";
 
-export class DeviceConnectDTO {
-  @IsString()
-  macValue!: string;
+export const GetListDeviceQuerySchema = z.object({
+  offset: z
+    .string()
+    .transform((val) => parseInt(val, 0))
+    .refine((val) => !isNaN(val), { message: "offset must be a number" })
+    .default(PagiOffset)
+    .transform(Number), // chuyển lại thành số sau khi mặc định
 
-  @IsString()
-  deviceModel!: string;
+  limit: z
+    .string()
+    .transform((val) => parseInt(val, 50))
+    .refine((val) => !isNaN(val), { message: "limit must be a number" })
+    .default(PagiLimit)
+    .transform(Number),
 
-  @IsString()
-  @Length(8, 64)
-  secretKey!: string;
-}
-export type IDeviceConnectDTO = InstanceType<typeof DeviceConnectDTO>;
+  status: z.enum(DeviceStatus).optional().default(DeviceStatus.ACTIVE),
+});
 
-export class ActivateDeviceDTO {
-  @IsString()
-  @Length(8, 64)
-  deviceId!: string;
+export type IGetListDeviceQueryDTO = z.infer<typeof GetListDeviceQuerySchema>;
 
-  @IsString()
-  @Length(1, 64)
-  deviceName!: string;
-}
-export type IActivateDeviceDTO = InstanceType<typeof ActivateDeviceDTO>;
+const DeviceOrderItemSchema = z.object({
+  index: z.preprocess(
+    (val) => (val === "" ? undefined : Number(val)),
+    z.number({ message: "index phải là số" }).min(0, "index phải >= 0")
+  ),
+  deviceId: z.string().min(1, "deviceId là bắt buộc"),
+});
 
-export class UpdateDeviceStatusDTO {
-  @IsString()
-  @Length(8, 64)
-  deviceId!: string;
+export const UpdateDeviceOrdersSchema = z.object({
+  order: z
+    .array(DeviceOrderItemSchema)
+    .nonempty("Danh sách thiết bị không được rỗng"),
+});
 
-  @IsEnum(DeviceStatus)
-  status!: string;
-}
-export type IUpdateDeviceStatusDTO = InstanceType<typeof UpdateDeviceStatusDTO>;
+export type IDeviceOrderItemDTO = z.infer<typeof DeviceOrderItemSchema>;
+export type IUpdateDeviceOrdersDTO = z.infer<typeof UpdateDeviceOrdersSchema>;
 
-export class UpdateDeviceDTO {
-  @IsOptional()
-  @IsEnum(DeviceStatus)
-  status?: DeviceStatus;
+export const CreateDeviceModelSchema = z.object({
+  name: z.string().min(1, "name là bắt buộc").max(64, "Tối đa 64 ký tự"),
 
-  @IsOptional()
-  @IsString()
-  @Length(1, 64)
-  name?: string;
+  description: z
+    .union([z.string().min(1).max(64), z.literal("")])
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 
-  @IsOptional()
-  @IsString()
-  @Length(0, 256)
-  description?: string;
+  template: z
+    .union([z.string().min(1).max(64), z.literal("")])
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 
-  @IsOptional()
-  @IsBoolean()
-  isOnline?: boolean;
+  type: z
+    .array(z.enum(DeviceType), {
+      message: "type phải là một mảng các giá trị hợp lệ",
+    })
+    .nonempty("type không được để trống")
+    .optional(),
+});
 
-  @IsOptional()
-  @IsString()
-  @Length(1, 128)
-  manufactoryInfomation?: string;
+export type ICreateDeviceModelDTO = z.infer<typeof CreateDeviceModelSchema>;
 
-  @IsOptional()
-  @IsMongoId()
-  deviceModel?: string;
+export const UpdateDeviceGroupSchema = z.object({
+  deviceId: z
+    .string()
+    .min(8, "deviceId phải có ít nhất 8 ký tự")
+    .max(64, "deviceId tối đa 64 ký tự"),
 
-  @IsOptional()
-  @IsMongoId()
-  group?: string;
+  groupId: z
+    .string()
+    .min(8, "groupId phải có ít nhất 8 ký tự")
+    .max(64, "groupId tối đa 64 ký tự"),
+});
 
-  @IsOptional()
-  @IsMongoId()
-  zone?: string;
+export type IUpdateDeviceGroupDTO = z.infer<typeof UpdateDeviceGroupSchema>;
 
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  order?: number;
-}
-export type IUpdateDeviceDTO = InstanceType<typeof UpdateDeviceDTO>;
+export const UpdateDeviceSchema = z.object({
+  status: z.nativeEnum(DeviceStatus).optional(),
 
-export class UpdateDeviceGroupDTO {
-  @IsString()
-  @Length(8, 64)
-  deviceId!: string;
+  name: z
+    .string()
+    .min(1, "Tên phải có ít nhất 1 ký tự")
+    .max(64, "Tên tối đa 64 ký tự")
+    .optional(),
 
-  @IsString()
-  @Length(8, 64)
-  groupId!: string;
-}
-export type IUpdateDeviceGroupDTO = InstanceType<typeof UpdateDeviceGroupDTO>;
+  description: z.string().max(256, "Mô tả tối đa 256 ký tự").optional(),
 
-export class CreateDeviceModelDTO {
-  @IsString()
-  @Length(1, 64)
-  name!: string;
+  model: z
+    .union([z.string().min(1).max(64), z.literal("")])
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 
-  @IsOptional()
-  @IsString()
-  @Length(1, 64)
-  description?: string;
+  group: z
+    .union([z.string().min(1).max(64), z.literal("")])
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 
-  @IsOptional()
-  @IsString()
-  @Length(1, 64)
-  template?: string;
+  zone: z
+    .union([z.string().min(1).max(64), z.literal("")])
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 
-  @IsArray()
-  @IsEnum(DeviceType, { each: true })
-  @ArrayNotEmpty()
-  type?: DeviceType[];
-}
-export type ICreateDeviceModelDTO = InstanceType<typeof CreateDeviceModelDTO>;
+  order: z
+    .preprocess(
+      (val) => (val === "" ? undefined : Number(val)),
+      z.number().min(0, "Thứ tự phải >= 0")
+    )
+    .optional(),
+});
 
-export class DeviceOrderItemDTO {
-  @Type(() => Number)
-  @IsNumber()
-  @Min(0)
-  index!: number;
+export type IUpdateDeviceDTO = z.infer<typeof UpdateDeviceSchema>;
 
-  @IsString()
-  deviceId!: string;
-}
-export class UpdateDeviceOrdersDTO {
-  @IsArray()
-  @ArrayNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => DeviceOrderItemDTO)
-  order!: DeviceOrderItemDTO[];
-}
-export type IUpdateDeviceOrdersDTO = InstanceType<typeof UpdateDeviceOrdersDTO>;
+export const UpdateDeviceStatusSchema = z.object({
+  deviceId: z
+    .string()
+    .min(8, { message: "deviceId must be at least 8 characters" })
+    .max(64, { message: "deviceId must be at most 64 characters" }),
+
+  status: z.enum(DeviceStatus).optional(),
+});
+
+export type IUpdateDeviceStatusDTO = z.infer<typeof UpdateDeviceStatusSchema>;
+
+export const ActivateDeviceSchema = z.object({
+  deviceId: z
+    .string()
+    .min(8, { message: "deviceId must be at least 8 characters" })
+    .max(64, { message: "deviceId must be at most 64 characters" }),
+
+  deviceName: z
+    .string()
+    .min(1, { message: "deviceName must not be empty" })
+    .max(64, { message: "deviceName must be at most 64 characters" }),
+});
+
+export type IActivateDeviceDTO = z.infer<typeof ActivateDeviceSchema>;
+
+export const DeviceConnectSchema = z.object({
+  macValue: z.string({
+    message: "macValue must be a string",
+  }),
+
+  deviceModel: z.string({
+    message: "deviceModel must be a string",
+  }),
+
+  secretKey: z
+    .string()
+    .min(8, { message: "secretKey must be at least 8 characters" })
+    .max(64, { message: "secretKey must be at most 64 characters" }),
+});
+
+export type IDeviceConnectDTO = z.infer<typeof DeviceConnectSchema>;

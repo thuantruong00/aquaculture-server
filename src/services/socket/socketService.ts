@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { createServer } from "http";
-import express from "express";
+import { createServer, Server as HTTPServer } from "http";
+import express, { Express } from "express";
 
 const socketApp = express();
 const server = createServer(socketApp);
@@ -23,10 +23,15 @@ io.on("connection", (client) => {
   });
 });
 
-export const sendValue = (data) => {
-  io.emit("data", data);
-};
+export class SocketService {
+  public sendIotDataTelemetry(data: any) {
+    io.emit("iotDataTelemetry", data);
+  }
+  public sendIotDataResponse(data: any) {
+    io.emit("iotDataResponse", data);
+  }
 
-export const sendValueTemp = (data) => {
-  io.emit("temp", data);
-};
+  public sendValueTemp(data: any) {
+    io.emit("temp", data);
+  }
+}

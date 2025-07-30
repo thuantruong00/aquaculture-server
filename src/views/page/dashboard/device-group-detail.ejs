@@ -19,9 +19,12 @@ const formId="change-order-1"
                 <% if(activeDevices.length>0){
                   for(const device of activeDevices) { %>
                 <option value="<%=device._id %>"><%=device.name %></option>
-                <% } } %>
+                <% } } else{ %>
+                  <option>Không có thiết bị để chọn .</option>
+                <% } %>
               </select>
             </div>
+            <label for="">Nhóm</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
               <input type="text" name="groupId" value="<%=groupId %>">
@@ -94,24 +97,31 @@ const formId="change-order-1"
       <div class="my-form #form_id">
         <div class="wrap-my-form">
           <form action="/custom-ui/update/<%=groupId %>" method="post">
+            <label for="">Tên nhóm</label>
+            <div class="gap-xs"></div>
             <div class="wrap-input required">
               <input type="text" name="groupName" required placeholder="Tên nhóm" class="w-100" value="<%=currentGroup.name %>">
             </div>
+            <label for="">Vị trí</label>
+            <div class="gap-xs"></div>
             <div class="wrap-input required">
-              <input type="number" name="order" step="1" min="0" max="10" placeholder="Vị trí" class="w-100" value="<%=currentGroup.order %>">
+              <input type="number" name="order" step="1" min="0" max="100" placeholder="Vị trí" class="w-100" value="<%=currentGroup.order %>">
             </div>
             <div class="wrap-input required">
               <select name="template" id="template-device-group" class="w-50">
                 <% for(const opt of templateData){ %>
-                <option value="<%=opt.value %>" checked="<%= opt.value==currentGroup.template?true:'false'  %>"><%=opt.label %></option>
+                <option value="<%=opt.value %>" <%= opt.value==currentGroup.template ? 'selected' : '' %>><%=opt.label %></option>
                 <% } %>
               </select>
               <label for="template-device-group">Template</label>
             </div>
+            <label for="">Mô tả / Có thể để trống</label>
+            <div class="gap-xs"></div>
             <div class="wrap-input">
               <input type="text" name="groupDescription" placeholder="Mô tả / Có thể để trống" class="w-100" value="<%=currentGroup.description %>">
             </div>
-
+            <label for="">Khu vực</label>
+            <div class="gap-xs"></div>
             <div class="wrap-input required">
               <input type="text" name="zoneId" placeholder="Chọn khu vực / Có thể để trống" class="w-100" value="<%=currentGroup.zone._id %>">
             </div>

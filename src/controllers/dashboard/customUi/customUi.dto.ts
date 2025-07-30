@@ -1,100 +1,96 @@
-import {
-  IsEnum,
-  IsNumber,
-  IsNumberString,
-  IsOptional,
-  IsString,
-  Length,
-  Max,
-  Min,
-} from "class-validator";
-import { Transform, Type } from "class-transformer";
 import { PagiLimit, PagiOffset } from "~/utils/const";
 import { DeviceGroupStatus } from "~/utils/enum";
 
-export class CreateDeviceGroupDTO {
-  @IsString()
-  @Length(1, 64)
-  groupName!: string;
 
-  @IsOptional()
-  @Transform(({ value }) => (value === "" ? undefined : value))
-  @IsString()
-  @Length(1, 64)
-  groupDescription?: string;
+import { z } from "zod";
 
-  @IsOptional()
-  @Transform(({ value }) => (value === "" ? undefined : value))
-  @IsString()
-  @Length(1, 64)
-  template?: string;
+export const CreateDeviceGroupSchema = z.object({
+  groupName: z.string().min(1).max(64),
 
-  @IsOptional()
-  @Transform(({ value }) => (value === "" ? undefined : value))
-  @IsString()
-  @Length(1, 64)
-  zone?: string;
-}
-export type ICreateDeviceGroupDTO = InstanceType<typeof CreateDeviceGroupDTO>;
+  groupDescription: z
+    .union([z.string().min(1).max(64), z.literal("")])
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 
-export class UpdateDeviceGroupInfoDTO {
-  @IsString()
-  @Length(1, 64)
-  groupName!: string;
+  template: z
+    .union([z.string().min(1).max(64), z.literal("")])
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 
-  @IsOptional()
-  @Transform(({ value }) => (value === "" ? undefined : value))
-  @IsString()
-  @Length(1, 64)
-  groupDescription?: string;
+  zone: z
+    .union([z.string().min(1).max(64), z.literal("")])
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
+});
 
-  @IsOptional()
-  @Transform(({ value }) => (value === "" ? undefined : value))
-  @IsString()
-  @Length(1, 64)
-  template?: string;
+export type ICreateDeviceGroupDTO = z.infer<typeof CreateDeviceGroupSchema>;
 
-  @IsOptional()
-  @Transform(({ value }) => (value === "" ? undefined : value))
-  @IsString()
-  @Length(1, 64)
-  zoneId?: string;
+export const GetListDeviceGroupQuerySchema = z.object({
+  offset: z
+    .string()
+    .transform((val) => parseInt(val, 0))
+    .refine((val) => !isNaN(val), { message: "offset must be a number" })
+    .default(PagiOffset)
+    .transform(Number), // chuyển lại thành số sau khi mặc định
 
-  @IsOptional()
-  @Type(() => Number) // Chuyển từ chuỗi sang số
-  @IsNumber({}, { message: "Order phải là số" })
-  @Min(0)
-  @Max(30)
-  order?: number;
-}
-export type IUpdateDeviceGroupInfoDTO = InstanceType<
-  typeof UpdateDeviceGroupInfoDTO
+  limit: z
+    .string()
+    .transform((val) => parseInt(val, 50))
+    .refine((val) => !isNaN(val), { message: "limit must be a number" })
+    .default(PagiLimit)
+    .transform(Number),
+
+  status: z
+    .enum(DeviceGroupStatus)
+    .optional()
+    .default(DeviceGroupStatus.ACTIVE),
+});
+
+export type IGetListDeviceGroupQueryDTO = z.infer<
+  typeof GetListDeviceGroupQuerySchema
 >;
 
-export class GetListDeviceGroupQueryDTO {
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber({}, { message: "offset must be a number" })
-  offset: number = PagiOffset;
+// Regex để kiểm tra chuỗi không rỗng (nếu cần trim)
+const nonEmptyTrimmed = z.string().trim().min(1).max(64);
 
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber({}, { message: "limit must be a number" })
-  limit: number = PagiLimit;
+// Zod schema
+export const UpdateDeviceGroupInfoSchema = z.object({
+  groupName: z.string().min(1).max(64), // bắt buộc
 
-  @IsOptional()
-  @IsEnum(DeviceGroupStatus)
-  status: DeviceGroupStatus = DeviceGroupStatus.ACTIVE;
-}
-export type IGetListDeviceGroupQueryDTO = InstanceType<
-  typeof GetListDeviceGroupQueryDTO
->;
+  groupDescription: z
+    .string()
+    .trim()
+    .min(1, { message: "groupDescription quá ngắn" })
+    .max(64)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
 
-export class GetGroupDetailParamsDTO {
-  @IsString()
-  @Length(1, 64)
-  groupId!: string;
-}
-export type IGetGroupDetailParamsDTO = InstanceType<
-  typeof GetGroupDetailParamsDTO
+  template: z
+    .string()
+    .trim()
+    .min(1, { message: "template quá ngắn" })
+    .max(64)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+
+  zoneId: z
+    .string()
+    .trim()
+    .min(1, { message: "zoneId quá ngắn" })
+    .max(64)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+
+  order: z.preprocess(
+    (val) => (val === "" ? undefined : Number(val)),
+    z
+      .number({ message: "Order phải là số" })
+      .min(0, "Order tối thiểu là 0")
+      .max(30, "Order tối đa là 30")
+      .optional()
+  ),
+});
+
+export type IUpdateDeviceGroupInfoDTO = z.infer<
+  typeof UpdateDeviceGroupInfoSchema
 >;

@@ -67,8 +67,10 @@ export enum ExecutionStatus {
 }
 
 export enum SceneStatus {
-  ACTIVE = "active",
   INACTIVE = "inactive",
+  ACTIVE = "active",
+  PENDING = "pending",
+  PAUSED = "paused",
   DELETED = "deleted",
 }
 
@@ -84,8 +86,10 @@ export enum TimerType {
 }
 
 export enum TimerStatus {
-  ACTIVE = "active",
   INACTIVE = "inactive",
+  ACTIVE = "active",
+  PENDING = "pending",
+  PAUSED = "paused",
   DELETED = "deleted",
 }
 export enum TimerPurpose {
@@ -98,4 +102,12 @@ export enum TimerPurpose {
 export enum DeviceGroupTemplate {
   DEFAULT = "group-basic-1",
   BASIC_2 = "group-basic-2",
+}
+
+export enum MqttDeviceFunction {
+  TELEMETRY = "telemetry",
+  COMMAND = "command",
+  RESPONSE = "response",
+  SETTING = "setting",
+  PING = "ping",
 }

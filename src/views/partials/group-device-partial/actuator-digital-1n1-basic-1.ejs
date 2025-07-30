@@ -1,17 +1,20 @@
-<div class="col-12 my-2 item-<%= device.name %>">
+<div class="col-12 my-2 x-item-<%= device._id %>">
   <div class="device-item">
     <div class="wrap-device-item">
+      <%- include('./setting.ejs', {id:device._id,type:"device", setting:setting}) %>
       <a href="#" class="wrap-name">
         <h6 class="name link-icon"><%= device.name %></h6>
       </a>
       <div class="box">
-        <div class="device-status device-status-online">
-          <div class="text">Đang hoạt động</div>
+        <div class="device-status <%= device?.latestRecord && Boolean(device.latestRecord.values[0].value) ? 'device-status-online' : 'device-status-offline' %>  x-key-<%= device.deviceModel.fields[0].key %> ">
+          <div class="text online">Đang hoạt động</div>
+          <div class="text offline">Đã dừng</div>
+          <div class="text error">Bị lỗi</div>
         </div>
-        <div><small><i>15 giờ 40 phút</i></small></div>
+        <div class="updated-at"><small><i><%= device?.latestRecord ? new Date(device.latestRecord.executedAt).toLocaleTimeString('en-GB') :"--/--" %></i></small></div>
         <br>
-        <Button class="control-device">Tắt</Button>
-        <Button class="control-device">Mở</Button>
+        <Button onclick="controlDevice('<%= device._id %>', '<%= device.deviceModel.fields[0].key %>', 0)" class="control-device">Tắt</Button>
+        <Button onclick="controlDevice('<%= device._id %>', '<%= device.deviceModel.fields[0].key %>', 1)" class="control-device">Mở</Button>
       </div>
     </div>
   </div>

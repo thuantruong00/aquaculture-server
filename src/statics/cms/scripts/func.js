@@ -110,3 +110,95 @@ function submitChangeOrderForm(parent) {
     })
 
 }
+
+// ======= Pin local storage ======
+
+(function () {
+    const pathOnly = window.location.pathname;
+    const hasNoQuery = window.location.search === "";
+
+    if (pathOnly.match(/^\/device-control\/?$/) && hasNoQuery) {
+        const favoriteDeviceIds = JSON.parse(localStorage.getItem("favoriteDeviceIds") || "[]");
+        const favoriteGroupIds = JSON.parse(localStorage.getItem("favoriteGroupIds") || "[]");
+
+        // Nếu không có gì thì dừng
+        if (!Array.isArray(favoriteDeviceIds) && !Array.isArray(favoriteGroupIds)) return;
+        if (favoriteDeviceIds.length === 0 && favoriteGroupIds.length === 0) return;
+
+        // Tạo query string
+        const queryParams = new URLSearchParams();
+        if (favoriteDeviceIds.length > 0) {
+            queryParams.set("deviceIds", favoriteDeviceIds.join(","));
+        }
+        if (favoriteGroupIds.length > 0) {
+            queryParams.set("groupIds", favoriteGroupIds.join(","));
+        }
+
+        // Redirect
+        const redirectUrl = `${window.location.origin}${pathOnly}?${queryParams.toString()}`;
+        window.location.href = redirectUrl;
+    }
+})();
+
+function handleAddPinLocalId(id, type) {
+    console.log("1====");
+    console.log(id, type);
+
+    if (type == "device") {
+        const deviceIds = JSON.parse(localStorage.getItem("favoriteDeviceIds") || "[]");
+        if (!deviceIds.includes(id)) {
+            deviceIds.push(id);
+        }
+        localStorage.setItem("favoriteDeviceIds", JSON.stringify(deviceIds));
+    }
+
+    if (type == "group") {
+        const groupIds = JSON.parse(localStorage.getItem("favoriteGroupIds") || "[]");
+        if (!groupIds.includes(id)) {
+            groupIds.push(id);
+        }
+        localStorage.setItem("favoriteGroupIds", JSON.stringify(groupIds));
+    }
+
+    // ✅ Chuyển hướng sau khi thêm xong
+    window.location.href = "/device-control";
+}
+function handleRemovePinLocalId(id, type) {
+    console.log("Removing:", id, type);
+
+    if (type === "device") {
+        let deviceIds = JSON.parse(localStorage.getItem("favoriteDeviceIds") || "[]");
+        deviceIds = deviceIds.filter(item => item !== id);
+        localStorage.setItem("favoriteDeviceIds", JSON.stringify(deviceIds));
+    }
+
+    if (type === "group") {
+        let groupIds = JSON.parse(localStorage.getItem("favoriteGroupIds") || "[]");
+        groupIds = groupIds.filter(item => item !== id);
+        localStorage.setItem("favoriteGroupIds", JSON.stringify(groupIds));
+    }
+
+    // ✅ Chuyển hướng sau khi gỡ ghim
+    window.location.href = "/device-control";
+}
+
+
+// =========== device control =============
+function controlDevice(deviceId, key, value) {
+    const data = { key: key, value: value }
+    console.log("id", deviceId)
+    console.log(data)
+    const submit = $.ajax({
+        type: "post",
+        url: `${path}/api/device-control/${deviceId}`,
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        dataType: "json",
+        success: function (response) {
+            showToast('Thành công.', 'success')
+        },
+        error: function (xhr, status, error) {
+            showToast('Thất bại.', 'failure')
+        }
+    })
+}

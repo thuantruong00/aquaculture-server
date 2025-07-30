@@ -10,7 +10,6 @@ import {
 import { DeviceGroup } from "~/entities/device-group.entity";
 import {
   ICreateDeviceGroupDTO,
-  IGetGroupDetailParamsDTO,
   IGetListDeviceGroupQueryDTO,
   IUpdateDeviceGroupInfoDTO,
 } from "./customUi.dto";
@@ -43,7 +42,7 @@ export class CustomUiController extends BaseController {
   };
   handleDetailDeviceGroupPage = async (req: Request, res: Response) => {
     try {
-      const { groupId } = req.params as unknown as IGetGroupDetailParamsDTO;
+      const { groupId } = req.params as unknown as any;
       const findGroup = await DeviceGroup.findOne({
         _id: { $eq: groupId },
       }).populate("zone");
@@ -83,7 +82,7 @@ export class CustomUiController extends BaseController {
   };
   handleDeleteDeviceGroupPage = async (req: Request, res: Response) => {
     try {
-      const { groupId } = req.params as unknown as IGetGroupDetailParamsDTO;
+      const { groupId } = req.params as unknown as any;
       const findGroup = await DeviceGroup.findOne({ _id: { $eq: groupId } });
 
       if (findGroup) {
@@ -150,7 +149,7 @@ export class CustomUiController extends BaseController {
   };
   handleUpdateGroupInfoPage = async (req: Request, res: Response) => {
     try {
-      const { groupId } = req.params as unknown as IGetGroupDetailParamsDTO;
+      const { groupId } = req.params as unknown as any;
 
       const { groupName, groupDescription, template, zoneId, order } =
         req.body as IUpdateDeviceGroupInfoDTO;

@@ -16,7 +16,7 @@ const DataItemSchema = new Schema(
     valueType: {
       type: String,
       enum: Object.values(DeviceFieldType),
-      required: true,
+      required: false,
     },
 
     unit: { type: String }, // optional, ví dụ "°C", "%"
@@ -25,7 +25,7 @@ const DataItemSchema = new Schema(
 );
 
 // Record đo tại 1 thời điểm
-const IotRecordSchema = new Schema(
+const DeviceRecordSchema = new Schema(
   {
     deviceId: {
       type: Schema.Types.ObjectId,
@@ -42,12 +42,6 @@ const IotRecordSchema = new Schema(
       type: [DataItemSchema],
       required: true,
     },
-
-    deviceType: {
-      type: String,
-      enum: [DeviceType.SENSOR, DeviceType.ACTUATOR], // chỉ 2 loại hợp lệ
-      required: true,
-    },
   },
   {
     timestamps: true,
@@ -55,4 +49,4 @@ const IotRecordSchema = new Schema(
 );
 
 // Xuất model
-export const DeviceRecord = mongoose.model("DeviceRecord", IotRecordSchema);
+export const DeviceRecord = mongoose.model("DeviceRecord", DeviceRecordSchema);

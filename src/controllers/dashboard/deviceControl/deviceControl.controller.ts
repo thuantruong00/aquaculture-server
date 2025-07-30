@@ -1,12 +1,128 @@
 import { Request, Response } from "express";
 import { BaseController } from "../dashboard.base-controller";
 import { Device } from "~/entities/device.entity";
-import { DeviceStatus } from "~/utils/enum";
+import { DeviceStatus, ExecutionSource, ExecutionStatus } from "~/utils/enum";
 import { DeviceGroup, IDeviceGroup } from "~/entities/device-group.entity";
+import {
+  IApiDeviceControlBodyDTO,
+  IApiDeviceControlParamsDTO,
+  IDeviceControlQueryDTO,
+} from "./deviceControl.dto";
+import { DeviceRecord } from "~/entities/device-record.entity";
+import { ExecutionLog } from "~/entities/execution-log.entity";
+import { MqttService } from "~/services";
 DeviceGroup;
 
 export class DeviceControlController extends BaseController {
+  private mqttService: MqttService;
+  constructor() {
+    super();
+    this.mqttService = new MqttService();
+  }
   handleDeviceControlPage = async (req: Request, res: Response) => {
+    try {
+      const { deviceIds, groupIds } =
+        req.query as unknown as IDeviceControlQueryDTO;
+
+      const getGroup = await DeviceGroup.find({
+        ...(deviceIds || groupIds ? { _id: { $in: groupIds ?? [] } } : {}),
+        status: { $ne: DeviceStatus.DELETED },
+      }).sort({ order: 1 });
+      const newGroupMap = getGroup.map((item) => item._id);
+
+      const getListOfActiveDevice = await Device.find({
+        status: { $eq: DeviceStatus.ACTIVE },
+        ...(deviceIds || groupIds ? { group: { $in: newGroupMap ?? [] } } : {}),
+      })
+        .sort({ order: 1 })
+        .populate("deviceModel")
+        .populate("zone")
+        .populate("group");
+
+      const getFromDeviceIds = await Device.find({
+        ...(deviceIds || groupIds ? { _id: { $in: deviceIds } } : {}),
+        status: { $eq: DeviceStatus.ACTIVE },
+        ...(!deviceIds || groupIds ? { group: null } : {}),
+      })
+        .sort({ order: 1 })
+        .populate("deviceModel")
+        .populate("zone")
+        .populate("group");
+      // ===============
+      const deviceIdList = getListOfActiveDevice.map((item) => item._id);
+      const latestRecords = await DeviceRecord.aggregate([
+        {
+          $match: {
+            deviceId: { $in: deviceIdList },
+          },
+        },
+        {
+          $sort: { timestamp: -1 }, // Mới nhất trước
+        },
+        {
+          $group: {
+            _id: "$deviceId",
+            latestRecord: { $first: "$$ROOT" },
+          },
+        },
+      ]);
+      const recordMap = new Map(latestRecords.map((r) => [String(r._id), r]));
+
+      const latestExecutionLog = await ExecutionLog.aggregate([
+        {
+          $match: {
+            deviceId: { $in: deviceIdList },
+          },
+        },
+        {
+          $sort: { executedAt: -1 }, // Mới nhất trước
+        },
+        {
+          $group: {
+            _id: "$deviceId",
+            latestRecord: { $first: "$$ROOT" },
+          },
+        },
+      ]);
+      const executionLogMap = new Map(
+        latestExecutionLog.map((r) => [String(r._id), r])
+      );
+
+      const deviceValues = getListOfActiveDevice.map((item) => {
+        let getRecord = recordMap.get(String(item._id));
+
+        if (!getRecord) {
+          getRecord = executionLogMap.get(String(item._id));
+        }
+        return {
+          ...item.toObject?.(), // nếu item là document Mongoose thì nên gọi .toObject()
+          latestRecord: getRecord ? getRecord.latestRecord : undefined,
+        };
+      });
+      const deviceByGroup = [];
+      for (const group of getGroup) {
+        const devices = deviceValues.filter((item) => {
+          const groupObj = item.group as IDeviceGroup;
+          if (groupObj && String(groupObj._id) === String(group._id)) {
+            return item;
+          }
+        });
+        deviceByGroup.push({
+          info: { _id: group._id, groupName: group.name },
+          template: group.template,
+          devices: devices,
+        });
+      }
+      return this.renderWithSidebar(res, undefined, {
+        withoutGroupDevice: getFromDeviceIds,
+        deviceByGroup: deviceByGroup,
+      });
+    } catch (error) {
+      console.log(error);
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
+  handleDeviceControlManagementPage = async (req: Request, res: Response) => {
     try {
       const getListOfActiveDevice = await Device.find({
         status: { $eq: DeviceStatus.ACTIVE },
@@ -15,6 +131,24 @@ export class DeviceControlController extends BaseController {
         .populate("deviceModel")
         .populate("zone")
         .populate("group");
+      // const deviceMap = getListOfActiveDevice.map((item) => item._id);
+      // const latestRecords = await DeviceRecord.aggregate([
+      //   {
+      //     $match: {
+      //       deviceId: { $in: deviceMap }, // deviceMap là mảng ObjectId
+      //     },
+      //   },
+      //   {
+      //     $sort: { deviceId: 1, timestamp: -1 },
+      //   },
+      //   {
+      //     $group: {
+      //       _id: "$deviceId",
+      //       latestRecord: { $first: "$$ROOT" }, // toàn bộ document mới nhất
+      //     },
+      //   },
+      // ]);
+
       const withoutGroupDevice = getListOfActiveDevice.filter(
         (item) => !item.group
       );
@@ -30,7 +164,7 @@ export class DeviceControlController extends BaseController {
           }
         });
         deviceByGroup.push({
-          groupName: group.name,
+          info: { _id: group._id, groupName: group.name },
           template: group.template,
           devices: devices,
         });
@@ -45,7 +179,38 @@ export class DeviceControlController extends BaseController {
     }
   };
 
-  handleDeviceTimer = async (req: Request, res: Response) => {
+  handleDeviceTimerPage = async (req: Request, res: Response) => {
     this.renderWithSidebar(res);
+  };
+  handleAutomaticScenePage = async (req: Request, res: Response) => {
+    this.renderWithSidebar(res);
+  };
+
+  handleApiControlDevice = async (req: Request, res: Response) => {
+    try {
+      const { deviceId } = req.params as unknown as IApiDeviceControlParamsDTO;
+      const { key, value } = req.body as IApiDeviceControlBodyDTO;
+      const findDevice = await Device.findOne({ _id: deviceId });
+      console.log(deviceId);
+      if (findDevice) {
+        const insert = await ExecutionLog.create({
+          source: ExecutionSource.MANUAL,
+          status: ExecutionStatus.SENT,
+          deviceId: deviceId,
+          values: [
+            {
+              key: key,
+              value: value,
+            },
+          ],
+        });
+        console.log("send command");
+        // mqttService.sendCommand
+      }
+      return this.handleApiResponse(res, { payload: true }, undefined, 200);
+    } catch (error) {
+      console.log(error);
+      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+    }
   };
 }

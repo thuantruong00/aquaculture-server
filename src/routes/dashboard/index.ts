@@ -1,24 +1,27 @@
-import { Router } from "express";
+import { query, Router } from "express";
 
 import {
   AccountController,
-  ActivateDeviceDTO,
+  ActivateDeviceSchema,
+  ApiDeviceControlBodySchema,
+  ApiDeviceControlParamsSchema,
   AuthController,
-  CreateDeviceGroupDTO,
+  CreateDeviceGroupSchema,
   CustomUiController,
-  DeviceConnectDTO,
+  DeviceConnectSchema,
   DeviceControlController,
+  DeviceControlQuerySchema,
   DeviceSettingController,
-  GetListDeviceGroupQueryDTO,
+  GetListDeviceGroupQuerySchema,
   HistoryController,
   NotificationSettingController,
-  UpdateDeviceDTO,
-  UpdateDeviceGroupDTO,
-  UpdateDeviceGroupInfoDTO,
-  UpdateDeviceOrdersDTO,
-  UpdateDeviceStatusDTO,
+  UpdateDeviceGroupInfoSchema,
+  UpdateDeviceGroupSchema,
+  UpdateDeviceOrdersSchema,
+  UpdateDeviceSchema,
+  UpdateDeviceStatusSchema,
 } from "~/controllers";
-import { Middleware } from "~/middlewares";
+import { Middleware, zodMultiValidator } from "~/middlewares";
 
 export const dashboardRouter = Router();
 
@@ -34,22 +37,32 @@ const customUiController = new CustomUiController();
 dashboardRouter.get(
   "/device-control",
   middleware.webPageMiddleware("deviceControl"),
+  zodMultiValidator({ query: DeviceControlQuerySchema }),
   deviceController.handleDeviceControlPage
+);
+dashboardRouter.get(
+  "/device-control/management",
+  middleware.webPageMiddleware("deviceControlManagement"),
+  deviceController.handleDeviceControlManagementPage
 );
 
 dashboardRouter.get(
   "/device-control/timer",
   middleware.webPageMiddleware("deviceControlTimer"),
-  deviceController.handleDeviceTimer
+  deviceController.handleDeviceTimerPage
+);
+dashboardRouter.get(
+  "/device-control/automatic-scene",
+  middleware.webPageMiddleware("deviceControlAutomaticScene"),
+  deviceController.handleAutomaticScenePage
 );
 
 // ─── Custom UI ────────────────────────────────────────────────
 
 dashboardRouter.get(
   "/custom-ui",
-  middleware.webPageMiddleware("customUi", {
-    query: GetListDeviceGroupQueryDTO,
-  }),
+  zodMultiValidator({ query: GetListDeviceGroupQuerySchema }),
+  middleware.webPageMiddleware("customUi"),
   customUiController.handleCustomUiPage
 );
 dashboardRouter.get(
@@ -69,27 +82,27 @@ dashboardRouter.get(
 );
 dashboardRouter.post(
   "/custom-ui/update/:groupId",
-  middleware.webPageMiddleware("customUi", { body: UpdateDeviceGroupInfoDTO }),
+  zodMultiValidator({ body: UpdateDeviceGroupInfoSchema }),
+  middleware.webPageMiddleware("customUi"),
   customUiController.handleUpdateGroupInfoPage
 );
 dashboardRouter.post(
   "/custom-ui/create-group",
-  middleware.APImiddleware("deviceGroup", { body: CreateDeviceGroupDTO }),
+  zodMultiValidator({ body: CreateDeviceGroupSchema }),
+  middleware.APImiddleware("deviceGroup"),
   customUiController.handleCreateGroupPage
 );
 
 dashboardRouter.post(
   "/custom-ui/add-device",
-  middleware.APImiddleware("deviceSettingActivate", {
-    body: UpdateDeviceGroupDTO,
-  }),
+  zodMultiValidator({ body: UpdateDeviceGroupSchema }),
+  middleware.APImiddleware("deviceSettingActivate"),
   customUiController.handleUpdateGroupPage
 );
 dashboardRouter.post(
   "/custom-ui/remove-device",
-  middleware.APImiddleware("deviceSettingActivate", {
-    body: UpdateDeviceGroupDTO,
-  }),
+  zodMultiValidator({ body: UpdateDeviceGroupSchema }),
+  middleware.APImiddleware("deviceSettingActivate"),
   customUiController.handleRemoveDevicePage
 );
 
@@ -104,7 +117,22 @@ dashboardRouter.get(
   middleware.webPageMiddleware("deviceSettingAdd"),
   deviceSettingController.handleAddDeviceSettingPage
 );
-
+dashboardRouter.get(
+  "/device-setting/detail/:deviceId",
+  middleware.webPageMiddleware("deviceSetting"),
+  deviceSettingController.handleDetailDevicePage
+);
+dashboardRouter.post(
+  "/device-setting/update/:deviceId",
+  zodMultiValidator({ body: UpdateDeviceSchema }),
+  middleware.webPageMiddleware("deviceSetting"),
+  deviceSettingController.handleUpdateDevicePage
+);
+dashboardRouter.get(
+  "/device-setting/delete/:deviceId",
+  middleware.webPageMiddleware("deviceSetting"),
+  deviceSettingController.handleDeleteDevicePage
+);
 // ─── Notification Setting ──────────────────────────────────────────
 dashboardRouter.get(
   "/notification-setting",
@@ -139,49 +167,38 @@ dashboardRouter.get("/auth/sign-out", authController.handleSignOutPage);
 //###############################################
 // ___API___
 //###############################################
+// chua test dto
 dashboardRouter.post(
   "/device-setting/connect",
-  middleware.APImiddleware("deviceSettingAdd", {
-    body: DeviceConnectDTO,
-  }),
+  zodMultiValidator({ body: DeviceConnectSchema }),
+  middleware.APImiddleware("deviceSettingAdd"),
   deviceSettingController.handleApiDeviceConnect
 );
+// chua test dto
 dashboardRouter.post(
   "/device-setting/activate",
-  middleware.APImiddleware("deviceSettingActivate", {
-    body: ActivateDeviceDTO,
-  }),
+  zodMultiValidator({ body: ActivateDeviceSchema }),
+  middleware.APImiddleware("deviceSettingActivate"),
   deviceSettingController.handleApiActivateDevice
 );
 
 dashboardRouter.post(
   "/device-setting/update-status",
-  middleware.APImiddleware("deviceSettingActivate", {
-    body: UpdateDeviceStatusDTO,
-  }),
+  zodMultiValidator({ body: UpdateDeviceStatusSchema }),
+  middleware.APImiddleware("deviceSettingActivate"),
   deviceSettingController.handleApiUpdateDeviceStatus
 );
 
 dashboardRouter.post(
-  "/device-setting/update/:deviceId",
-  middleware.APImiddleware("deviceSettingActivate", {
-    body: UpdateDeviceDTO,
-    // params: UpdateDeviceParamsDTO,
-  }),
-  deviceSettingController.handleApiUpdateDevice
-);
-dashboardRouter.post(
   "/device-setting/update-device-orders",
-  middleware.APImiddleware("deviceSettingActivate", {
-    body: UpdateDeviceOrdersDTO,
-  }),
+  zodMultiValidator({ body: UpdateDeviceOrdersSchema }),
+  middleware.APImiddleware("deviceSettingActivate"),
   deviceSettingController.handleApiUpdateDeviceOrders
 );
 dashboardRouter.post(
-  "/device-setting/update-group",
-  middleware.APImiddleware("deviceSettingActivate", {
-    body: UpdateDeviceGroupDTO,
-  }),
+  "/api/device-setting/update-group",
+  zodMultiValidator({ body: UpdateDeviceGroupSchema }),
+  middleware.APImiddleware("deviceSettingActivate"),
   deviceSettingController.handleApiUpdateGroup
 );
 
@@ -192,15 +209,30 @@ dashboardRouter.post(
   deviceSettingController.handleApiCreateDeviceModel
 );
 
+// dashboardRouter.post(
+//   "/custom-ui/create-group",
+//   zodMultiValidator({ query: CreateDeviceGroupSchema }),
+//   middleware.APImiddleware("deviceGroup"),
+//   customUiController.handleApiCreateGroup
+// );
+
+// dashboardRouter.get(
+//   "/api/custom-ui/device-groups",
+//   middleware.APImiddleware("deviceGroup", {
+//     query: GetListDeviceGroupQueryDTO,
+//   }),
+//   customUiController.handleApiGetListDeviceGroups
+// );
+
+// ======================== ======================== ========================
+// ++                                                                      ++
+// ======================== ======================== ========================
 dashboardRouter.post(
-  "/custom-ui/create-group",
-  middleware.APImiddleware("deviceGroup", { body: CreateDeviceGroupDTO }),
-  customUiController.handleApiCreateGroup
-);
-dashboardRouter.get(
-  "/api/custom-ui/device-groups",
-  middleware.APImiddleware("deviceGroup", {
-    query: GetListDeviceGroupQueryDTO,
+  "/api/device-control/:deviceId",
+  middleware.webPageMiddleware("deviceControl"),
+  zodMultiValidator({
+    body: ApiDeviceControlBodySchema,
+    params: ApiDeviceControlParamsSchema,
   }),
-  customUiController.handleApiGetListDeviceGroups
+  deviceController.handleApiControlDevice
 );

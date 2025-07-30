@@ -38,7 +38,6 @@ export class Middleware {
           const dtoClass = dtoConfig?.[part];
           if (dtoClass) {
             const instance = plainToInstance(dtoClass, req[part]);
-            console.log(instance);
             const errors = await validate(instance, { whitelist: true });
             if (errors.length > 0) {
               const messages = errors.flatMap((e) =>

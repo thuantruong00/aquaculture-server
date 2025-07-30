@@ -3,6 +3,8 @@ import "express-session";
 import { UserRole } from "~/utils/enum";
 
 import { BaseController } from "../dashboard.base-controller";
+import { ZoneRepository } from "~/repositories";
+import { generateZoneKey } from "~/utils/mqtt";
 
 export class AuthController extends BaseController {
   constructor() {
@@ -10,7 +12,8 @@ export class AuthController extends BaseController {
   }
 
   handleSignInPage = async (req: Request, res: Response) => {
-    console.log(req.session);
+    // const update = await ZoneRepository.updateZonesWithMqttKey();
+    // console.log(update)
     // dev
     req.session.user = {
       user_id: "u1",

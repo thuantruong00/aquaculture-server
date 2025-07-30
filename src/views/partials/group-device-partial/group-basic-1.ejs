@@ -1,7 +1,8 @@
 <div class="col-md-4 col-sm-12 device-group item-<%=group._id %>">
   <div class="wrap-device-group">
+    <%- include('./setting.ejs',{id:group.info._id,type:"group", setting:setting}) %>
     <a href="#">
-      <h4 class="group-name"><%=group.groupName %></h4>
+      <h4 class="group-name"><%=group.info.groupName %></h4>
     </a>
     <br>
     <div class="row">
@@ -9,16 +10,16 @@
 if(group.devices && group.devices.length > 0) {
 	for(const device of group.devices) { 
 		if(device && device.deviceModel) { %>
-				<% if(device.deviceModel.type.length == 1) {
+      <% if(device.deviceModel.type.length == 1) {
 				if(device.deviceModel.type[0] == "sensor") { %>
-				<%- include('../../partials/group-device-partial/sensor-1n1-basic-1.ejs', {device: device}) %>
-				<% }
+      <%- include('../../partials/group-device-partial/sensor-1n1-basic-1.ejs', {device: device, setting:false}) %>
+      <% }
 				
 				if(device.deviceModel.type[0] == "actuator") { %>
-				<%- include('../../partials/group-device-partial/actuator-digital-1n1-basic-1.ejs', {device: device}) %>
-				<% }
+      <%- include('../../partials/group-device-partial/actuator-digital-1n1-basic-1.ejs', {device: device, setting:false}) %>
+      <% }
 		} %>
-		<% } 
+      <% } 
 	}
 } %>
     </div>

@@ -1,0 +1,10 @@
+<% if (setting) { %>
+<div class="device-setting-bar">
+  <div class="wrap-setting">
+    <button onclick="handleAddPinLocalId('<%= id %>', '<%= type %>')">
+      <img class="icon-pin" src="/cms/images/index/thumbtacks.png" /> Ghim
+    </button>
+    <button onclick="handleRemovePinLocalId('<%= id %>', '<%= type %>')">Gỡ ghim ×</button>
+  </div>
+</div>
+<% } %>
