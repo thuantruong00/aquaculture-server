@@ -6,12 +6,8 @@
 
         <% if(deviceByGroup.length > 0) { %>
         <% for(const group of deviceByGroup) { %>
-        <% if(group.template == "group-basic-1"){ %>
-        <%- include('../../partials/group-device-partial/group-basic-1.ejs', {group: group, setting:true}) %>
-        <% } %>
-        <% if(group.template == "group-basic-2"){ %>
-        <%- include('../../partials/group-device-partial/group-basic-2.ejs', {group: group, setting:true}) %>
-        <% } %>
+        <%- include(`../../partials/group-templates/${group.template}.ejs`, {group: group, setting:true}) %>
+
         <% } %>
         <% } %>
 
@@ -19,28 +15,9 @@
       </div>
       <div class="row without-group-device">
         <% if(withoutGroupDevice.length>0){ 
-        for(const item of withoutGroupDevice){ 
-          if(item.deviceModel?.template){
-
-          } 
-          else{ 
-            if(item.deviceModel?.type.length==1){
-              if(item.deviceModel.type[0]=="sensor"){
-                %>
-        <%- include('../../partials/group-device-partial/sensor-1n1-basic-1.ejs',{device:item, setting:true}) %>
-        <%
-              }
-              if(item.deviceModel.type[0]=="actuator"){
-              
-              }
-            }
-            if(item.deviceModel?.type.length==2){
-            }
-            %>
-
-
-
-        <% } } } %>
+        for(const item of withoutGroupDevice){ %>
+        <%- include(`../../partials/device-templates/${item.deviceModel.template}.ejs`,{device:item, setting:true}) %>
+        <% } } %>
       </div>
     </div>
   </div>

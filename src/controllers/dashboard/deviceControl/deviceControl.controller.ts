@@ -131,24 +131,7 @@ export class DeviceControlController extends BaseController {
         .populate("deviceModel")
         .populate("zone")
         .populate("group");
-      // const deviceMap = getListOfActiveDevice.map((item) => item._id);
-      // const latestRecords = await DeviceRecord.aggregate([
-      //   {
-      //     $match: {
-      //       deviceId: { $in: deviceMap }, // deviceMap là mảng ObjectId
-      //     },
-      //   },
-      //   {
-      //     $sort: { deviceId: 1, timestamp: -1 },
-      //   },
-      //   {
-      //     $group: {
-      //       _id: "$deviceId",
-      //       latestRecord: { $first: "$$ROOT" }, // toàn bộ document mới nhất
-      //     },
-      //   },
-      // ]);
-
+      console.log(getListOfActiveDevice)
       const withoutGroupDevice = getListOfActiveDevice.filter(
         (item) => !item.group
       );

@@ -53,9 +53,21 @@ export enum ComparisonOperator {
   EQ = "eq",
   NEQ = "neq",
 }
+export enum ComparisonOperatorSymbol {
+  LT = "< bé hơn",
+  LTE = "bé hơn hoặc bằng",
+  GT = "> lớn hơn",
+  GTE = "lớn hơn hoặc bằng",
+  EQ = "= bằng",
+  NEQ = "!= khác",
+}
 export enum LogicOperator {
   AND = "and",
   OR = "or",
+}
+export enum LogicOperatorLabel {
+  AND = "Và",
+  OR = "Hoặc",
 }
 
 export enum ExecutionStatus {
@@ -99,15 +111,14 @@ export enum TimerPurpose {
   SENSOR_CHECK = "sensor_check",
 }
 
-export enum DeviceGroupTemplate {
-  DEFAULT = "group-basic-1",
-  BASIC_2 = "group-basic-2",
-}
-
 export enum MqttDeviceFunction {
   TELEMETRY = "telemetry",
   COMMAND = "command",
   RESPONSE = "response",
   SETTING = "setting",
   PING = "ping",
+}
+
+export enum OtpTarget {
+  PAIRING = "pairing",
 }

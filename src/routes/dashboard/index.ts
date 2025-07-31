@@ -21,7 +21,10 @@ import {
   UpdateDeviceSchema,
   UpdateDeviceStatusSchema,
 } from "~/controllers";
+import { AutomaticController } from "~/controllers/dashboard/automatic";
 import { Middleware, zodMultiValidator } from "~/middlewares";
+import { IsUserGroup } from "~/utils/const";
+import { UserRole } from "~/utils/enum";
 
 export const dashboardRouter = Router();
 
@@ -34,6 +37,7 @@ const deviceSettingController = new DeviceSettingController();
 const historyController = new HistoryController();
 const notificationSettingController = new NotificationSettingController();
 const customUiController = new CustomUiController();
+const automaticController = new AutomaticController();
 dashboardRouter.get(
   "/device-control",
   middleware.webPageMiddleware("deviceControl"),
@@ -46,15 +50,27 @@ dashboardRouter.get(
   deviceController.handleDeviceControlManagementPage
 );
 
+// ─── Automatic ────────────────────────────────────────────────
 dashboardRouter.get(
-  "/device-control/timer",
-  middleware.webPageMiddleware("deviceControlTimer"),
-  deviceController.handleDeviceTimerPage
+  "/automatic/",
+  middleware.webPageMiddleware("automatic"),
+  automaticController.handleAutomaticPage
 );
 dashboardRouter.get(
-  "/device-control/automatic-scene",
-  middleware.webPageMiddleware("deviceControlAutomaticScene"),
-  deviceController.handleAutomaticScenePage
+  "/automatic/scene-create",
+  middleware.webPageMiddleware("automaticSceneCreate"),
+  automaticController.handleAutomaticSceneCreatePage
+);
+dashboardRouter.post(
+  "/automatic/scene-save",
+  middleware.webPageMiddleware("automaticSceneCreate"),
+  automaticController.handleAutomaticSceneSavePage
+);
+
+dashboardRouter.get(
+  "/automatic/timer",
+  middleware.webPageMiddleware("automaticTimer"),
+  automaticController.handleAutomaticPage
 );
 
 // ─── Custom UI ────────────────────────────────────────────────
@@ -174,6 +190,14 @@ dashboardRouter.post(
   middleware.APImiddleware("deviceSettingAdd"),
   deviceSettingController.handleApiDeviceConnect
 );
+dashboardRouter.post(
+  "/device-setting/create-otp",
+  middleware.webPageMiddleware("deviceSettingAdd", {
+    allowedRole: IsUserGroup,
+  }),
+  deviceSettingController.handleCreatePairingOtpPage
+);
+
 // chua test dto
 dashboardRouter.post(
   "/device-setting/activate",
@@ -205,7 +229,7 @@ dashboardRouter.post(
 // cheat
 dashboardRouter.post(
   "/device-setting/create-device-model",
-  middleware.APImiddleware("deviceSettingActivate", {}),
+  middleware.APImiddleware("deviceSettingActivate"),
   deviceSettingController.handleApiCreateDeviceModel
 );
 

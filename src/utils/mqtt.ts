@@ -2,9 +2,23 @@ import crypto from "crypto";
 import { env } from "./env";
 import { regexSecret } from "./const";
 
-function randomString(length: number): string {
-  const chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+export function randomString(
+  length: number,
+  opts?: { number?: boolean; upper?: boolean; lower?: boolean }
+): string {
+  const options = {
+    number: opts?.number !== false, // default: true
+    upper: opts?.upper !== false, // default: true
+    lower: opts?.lower !== false, // default: true
+  };
+
+  let chars = "";
+  if (options.number) chars += "0123456789";
+  if (options.upper) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  if (options.lower) chars += "abcdefghijklmnopqrstuvwxyz";
+
+  if (!chars) throw new Error("No character types selected.");
+
   return Array.from(
     { length },
     () => chars[Math.floor(Math.random() * chars.length)]

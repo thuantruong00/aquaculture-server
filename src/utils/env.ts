@@ -12,4 +12,6 @@ export const env = {
   SOCKET_PORT: process.env.SOCKET_PORT || 3000,
   MQTT_PREFIX_TOPIC: process.env.MQTT_PREFIX_TOPIC,
   ZONE_SECRET: process.env.ZONE_SECRET,
+  BASIC_AUTH_USERNAME: process.env.BASIC_AUTH_USERNAME,
+  BASIC_AUTH_PASSWORD: process.env.BASIC_AUTH_PASSWORD,
 };

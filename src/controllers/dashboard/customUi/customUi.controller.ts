@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
+import fs from "fs";
+import path from "path";
 import { BaseController } from "../dashboard.base-controller";
 import { Device, IDevice } from "~/entities/device.entity";
 import {
   DeviceGroupStatus,
-  DeviceGroupTemplate,
   DeviceStatus,
   DeviceZone,
 } from "~/utils/enum";
@@ -41,6 +42,10 @@ export class CustomUiController extends BaseController {
     }
   };
   handleDetailDeviceGroupPage = async (req: Request, res: Response) => {
+    const templatesDir = path.resolve(
+      process.cwd(),
+      "src/views/partials/group-templates"
+    );
     try {
       const { groupId } = req.params as unknown as any;
       const findGroup = await DeviceGroup.findOne({
@@ -61,19 +66,16 @@ export class CustomUiController extends BaseController {
         .populate("deviceModel")
         .populate("zone")
         .populate("group");
-      const templateDataFromEntries = Object.entries(DeviceGroupTemplate);
-      const templateData = [];
-      for (const item of templateDataFromEntries) {
-        if (item) {
-          templateData.push({ label: item[0], value: item[1] });
-        }
-      }
+      const files = fs.readdirSync(templatesDir);
+      const templates = files
+        .filter((file) => file.endsWith(".ejs"))
+        .map((file) => path.basename(file, ".ejs"));
       return this.renderWithSidebar(res, "page/dashboard/device-group-detail", {
         devices: getDevices,
         activeDevices: getListOfActiveDevice,
         groupId: groupId,
-        templateData: templateData,
         currentGroup: findGroup,
+        templates: templates,
       });
     } catch (error) {
       console.log(error);
@@ -107,16 +109,18 @@ export class CustomUiController extends BaseController {
     }
   };
   handleDeviceGroupPage = async (req: Request, res: Response) => {
+    const templatesDir = path.resolve(
+      process.cwd(),
+      "src/views/partials/group-templates"
+    );
     try {
-      const templateDataFromEntries = Object.entries(DeviceGroupTemplate);
-      const templateData = [];
-      for (const item of templateDataFromEntries) {
-        if (item) {
-          templateData.push({ label: item[0], value: item[1] });
-        }
-      }
+
+      const files = fs.readdirSync(templatesDir);
+      const templates = files
+        .filter((file) => file.endsWith(".ejs"))
+        .map((file) => path.basename(file, ".ejs"));
       return this.renderWithSidebar(res, undefined, {
-        templateData: templateData,
+        templates: templates,
       });
     } catch (error) {
       console.log(error);

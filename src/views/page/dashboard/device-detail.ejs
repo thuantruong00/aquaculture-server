@@ -19,7 +19,7 @@
             <div class="wrap-input required">
               <select name="status" id="=" class="w-50">
                 <% if(deviceStatus.length > 0){ for( const status of deviceStatus ){ %>
-                <option value="<%=status.value %>" <%= status.value == device.status ? 'selected' : '' %> ><%=status.label %></option>
+                <option value="<%=status.value %>" <%= status.value == device.status ? 'selected' : '' %>><%=status.label %></option>
                 <% } } %>
               </select>
             </div>
@@ -35,7 +35,7 @@
             <div class="wrap-input required">
               <select name="model" id="" class="w-50">
                 <% if(model.length > 0){ for( const item of model ){ %>
-                <option value="<%=item._id %>" <%= String(item._id) == String(device.deviceModel._id) ? 'selected' : '' %> ><%=item.name %></option>
+                <option value="<%=item._id %>" <%= String(item._id) == String(device.deviceModel._id) ? 'selected' : '' %>><%=item.name %></option>
                 <% } } %>
               </select>
             </div>

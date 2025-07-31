@@ -28,14 +28,24 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-
 /* ===== Router ===== */
 import { routes } from "./routes";
 import { mqttClient } from "./services/mqtt/mqttConnection";
 import { initialService } from "./services/initial/initial.service";
 import { SocketService } from "./services";
 // setup express session
-app.use(session({ secret: "secret", saveUninitialized: true, resave: true }));
+app.use(
+  session({
+    secret: "secret",
+    // saveUninitialized: true,
+    resave: true,
+    rolling: true,
+    cookie: {
+      maxAge: 12 * 30 * 24 * 60 * 60 * 1000, // 30 ngày
+      httpOnly: true, // ngăn JS access
+    },
+  })
+);
 
 // setup passport
 
@@ -51,7 +61,6 @@ app.set("layout", "layouts/default-layout");
 // setting static content
 app.use(express.static(path.join(__dirname, "statics")));
 
-
 routes(app);
 app.get("/", function (req, res) {
   res.redirect("/auth/sign-in");
@@ -61,7 +70,6 @@ app.get("/", function (req, res) {
 connectMongoDB();
 // initialService();
 mqttClient;
-
 
 // error handling
 const { errorHandler } = require("~/middlewares/errors.middleware.js");

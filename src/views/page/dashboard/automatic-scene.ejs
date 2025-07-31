@@ -1,1 +1,48 @@
-automatic scene
+<div class="container modal-id ">
+  <div class="gap-xs"></div>
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <div class="wrap-title">
+        <div class="title">Danh sách nhóm</div>
+      </div>
+    </div>
+    <!-- ======================= -->
+    <div class="col-12">
+      <div class="base-list device-groups-list">
+        <div class="wrap-box">
+          <ul class="">
+            <li class="d-flex">
+              <span>Stt</span>
+              <span class="device-name">Tên</span>
+              <span>Trạng thái</span>
+              <span>Logic</span>
+              <span>Group</span>
+              <span class="action">Hành động</span>
+            </li>
+
+            <% if(scenes.length>0){ %>
+            <% for(index in scenes){ %>
+            <li class="d-flex">
+              <span><%=index %></span>
+              <span class="device-name short-text"><%=scenes[index].name %></span>
+              <span class="short-text"><%=scenes[index].status %></span>
+              <span title="<%=scenes[index].logic %>" class="short-text"><%=scenes[index].logic %></span>
+              <span title="<%=scenes[index].group %>" class="short-text"><%=scenes[index].group %></span>
+              <span class="action">
+                <div class="wrap-action-btn">
+                  <button title="id=<%=scenes[index]._id %>" value=".item-<%=scenes[index]._id %>" class="primary-btn active-device-btn">Sửa<span class="icon"><img class="img-icon" src="../cms/images/index/settings.png" alt=""></span></button>
+                </div>
+                <div class="wrap-action-btn">
+                  <button title="id=<%=scenes[index]._id %>" value=".item-<%=scenes[index]._id %>" class="primary-btn delete-device-btn">Xoá ×</button>
+                </div>
+              </span>
+            </li>
+            <% } } %>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ----- ----- main ----- ------->
+</div>

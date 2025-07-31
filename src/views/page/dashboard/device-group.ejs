@@ -11,12 +11,12 @@
             <input name="groupName" type="text" required placeholder="Tên nhóm" class="w-100">
           </div>
           <div class="wrap-input">
-            <select name="template" id="template-device-group" class="w-50">
-              <% for(const opt of templateData){ %>
-              <option value="<%=opt.value %>"><%=opt.label %></option>
+            <select name="template" id="template-device-group" class="w-50" required>
+              <% for(const opt of templates){ %>
+              <option value="<%=opt %>"><%=opt %></option>
               <% } %>
             </select>
-            <label for="template-device-group">Template / Có thể để trống</label>
+            <label for="template-device-group">Template</label>
           </div>
           <div class="wrap-input">
             <input name="groupDescription" type="text" placeholder="Mô tả / Có thể để trống" class="w-100">

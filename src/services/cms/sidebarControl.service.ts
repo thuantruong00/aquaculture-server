@@ -1,5 +1,4 @@
-// let sidebar_content = require('~/config/cms-sidebar');
-const block_table_json = require("~/config/table-role.json").block;
+import { RoleAccess } from "~/config";
 import { sidebarData } from "~/config/dashboardSidebar";
 
 export const getSidebarContentService = async (
@@ -9,10 +8,9 @@ export const getSidebarContentService = async (
   // (<page_id_now>,<user_type>)
   const is_user = user_type ? user_type : "guest";
   let sidebar_content = sidebarData;
-  // console.log(">>>>", sidebar_content)
   let active_page = undefined;
   let page_parent_active;
-  let block_table = block_table_json[is_user];
+  let block_table = RoleAccess.block[is_user];
   // console.log(block_table)
 
   let error_page = {

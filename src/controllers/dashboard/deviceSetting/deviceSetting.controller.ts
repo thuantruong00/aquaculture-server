@@ -10,20 +10,22 @@ import {
   IUpdateDeviceOrdersDTO,
   IUpdateDeviceStatusDTO,
 } from "./deviceSetting.dto";
-import { DeviceSecretKey } from "~/utils/const";
 import {
   DeviceFieldType,
   DeviceGroupStatus,
   DeviceStatus,
   DeviceType,
   DeviceZone,
+  OtpTarget,
 } from "~/utils/enum";
 import { DeviceModel, IDeviceModel } from "~/entities/device-model.entity";
 import { Types } from "mongoose";
 import { ObjectId } from "typeorm";
 import { Zone } from "~/entities/zone.entity";
 import { DeviceGroup, IDeviceGroup } from "~/entities/device-group.entity";
-import { PagiLimit, PagiOffset } from "~/utils/const";
+import { OtpExpireTimeInMs, PagiLimit, PagiOffset } from "~/utils/const";
+import { Otp } from "~/entities/otp.entity";
+import { randomString } from "~/utils/mqtt";
 export class DeviceSettingController extends BaseController {
   constructor() {
     super();
@@ -71,6 +73,7 @@ export class DeviceSettingController extends BaseController {
       if (!findDevice || !findZone || !findModel) {
         return this.renderWithSidebar(res, "page/error");
       }
+
       return this.renderWithSidebar(res, "page/dashboard/device-detail", {
         device: findDevice,
         deviceStatus: [
@@ -142,12 +145,32 @@ export class DeviceSettingController extends BaseController {
       return this.renderWithSidebar(res, "page/error");
     }
   };
+  handleCreatePairingOtpPage = async (req: Request, res: Response) => {
+    try {
+      const otpCode = randomString(8, { upper: false, lower: false });
+      const create = await Otp.create({
+        otpCode: otpCode,
+        expiresAt: new Date(Date.now() + OtpExpireTimeInMs),
+        target: OtpTarget.PAIRING,
+      });
+      if (create) {
+        return this.renderWithSidebar(res, "page/dashboard/create-otp-code", {
+          otpCode: otpCode,
+        });
+      }
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      console.log(error);
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
 
   handleApiDeviceConnect = async (req: Request, res: Response) => {
     try {
       const { macValue, secretKey, deviceModel } =
         req.body as IDeviceConnectDTO;
-      if (DeviceSecretKey == secretKey) {
+      const getOtp = await Otp.findOne({ otpCode: secretKey });
+      if (getOtp) {
         const isExistedMacId = await Device.find({
           macValue: macValue,
         });
@@ -201,6 +224,7 @@ export class DeviceSettingController extends BaseController {
       return this.handleApiResponse(res, {}, undefined, 500);
     }
   };
+
   handleApiActivateDevice = async (req: Request, res: Response) => {
     try {
       const { deviceId, deviceName } = req.body as IActivateDeviceDTO;

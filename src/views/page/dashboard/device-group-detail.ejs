@@ -109,8 +109,8 @@ const formId="change-order-1"
             </div>
             <div class="wrap-input required">
               <select name="template" id="template-device-group" class="w-50">
-                <% for(const opt of templateData){ %>
-                <option value="<%=opt.value %>" <%= opt.value==currentGroup.template ? 'selected' : '' %>><%=opt.label %></option>
+                <% for(const opt of templates){ %>
+                <option value="<%=opt %>" <%= opt==currentGroup.template ? 'selected' : '' %>><%=opt %></option>
                 <% } %>
               </select>
               <label for="template-device-group">Template</label>

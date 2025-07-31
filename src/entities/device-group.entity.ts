@@ -1,11 +1,6 @@
 // models/deviceGroup.model.ts
 import { Schema, model, Document, Types } from "mongoose";
-import {
-  CssClass,
-  DeviceGroupStatus,
-  DeviceGroupTemplate,
-  DeviceType,
-} from "~/utils/enum";
+import { CssClass, DeviceGroupStatus, DeviceType } from "~/utils/enum";
 
 export interface IDeviceGroup extends Document {
   name: string; // Tên nhóm, ví dụ: "Khu bể lọc", "Sensor nhiệt độ"
@@ -28,7 +23,7 @@ const deviceGroupSchema = new Schema<IDeviceGroup>(
     description: { type: String },
     order: { type: Number, default: 0 },
     cssClass: { type: String, default: CssClass.DEFAULT },
-    template: { type: String, default: DeviceGroupTemplate.DEFAULT },
+    template: { type: String },
     parent: {
       type: Schema.Types.ObjectId,
       ref: "DeviceGroup",

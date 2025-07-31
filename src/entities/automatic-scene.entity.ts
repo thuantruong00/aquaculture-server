@@ -1,6 +1,5 @@
 import mongoose, { Schema } from "mongoose";
 import { ComparisonOperator, LogicOperator, SceneStatus } from "~/utils/enum";
-import { NotificationOption } from "./notification-option.entity";
 
 // Condition schema
 const ConditionSchema = new Schema(
@@ -18,6 +17,11 @@ const ConditionSchema = new Schema(
       required: true,
     },
     value: { type: Number, required: true }, // phút trong ngày hoặc sensor threshold
+    device: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Device",
+      required: true,
+    },
   },
   { _id: false }
 );
@@ -62,10 +66,7 @@ const AutomationSceneSchema = new Schema(
       default: 3, // giới hạn số lần retry liên tục nếu điều kiện không phù hợp
       min: 0,
     },
-    notifications: {
-      type: NotificationOption,
-      default: {},
-    },
+    notifications: [{ type: Schema.Types.ObjectId, ref: "NotificationOption" }],
   },
   {
     timestamps: true,

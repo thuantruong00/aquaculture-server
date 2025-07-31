@@ -3,6 +3,8 @@ import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 import { UserRole } from "~/utils/enum";
 import { getSidebarContentService } from "~/services/cms/sidebarControl.service";
+import { RoleAccess } from "~/config";
+import { env } from "~/utils";
 
 type DTOConfig = {
   body?: new () => any;
@@ -17,80 +19,86 @@ export class Middleware {
     this.userRole = userRole;
   }
 
-  webPageMiddleware(pageCode: string, dtoConfig?: DTOConfig) {
+  webPageMiddleware(
+    pageCode: string,
+    opts?: { allowedRole?: UserRole[]; bypass?: boolean }
+  ) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const sessionUser = req.session.user;
-        const userRole = sessionUser?.role as UserRole;
-        console.log(sessionUser);
-        if (
-          sessionUser?.user_id &&
-          Object.values(UserRole).includes(userRole)
-        ) {
-          this.userRole = sessionUser.role;
+        const role = sessionUser?.role as UserRole;
+
+        if (sessionUser?.user_id && Object.values(UserRole).includes(role)) {
+          this.userRole = role;
         }
 
-        const sidebar = await getSidebarContentService(pageCode, this.userRole);
+        const currentRole: UserRole =
+          (this.userRole as UserRole) || UserRole.GUEST;
+
+        if (!opts?.bypass) {
+          const access = checkAccess({
+            role: currentRole,
+            pageCode,
+            allowedRole: opts?.allowedRole,
+          });
+
+          if (!access.allowed) {
+            if (access.reason === "unauthenticated") {
+              return res.redirect(
+                `/auth/sign-in?redirect=${encodeURIComponent(req.originalUrl)}`
+              );
+            }
+
+            return res.status(403).render("errors/403", {
+              message: "Bạn không có quyền truy cập trang này.",
+            });
+          }
+        }
+
+        const sidebar = await getSidebarContentService(pageCode, currentRole);
         res.locals.sidebar = sidebar;
 
-        // Validate từng phần nếu có định nghĩa DTO
-        for (const part of ["body", "query", "params"] as const) {
-          const dtoClass = dtoConfig?.[part];
-          if (dtoClass) {
-            const instance = plainToInstance(dtoClass, req[part]);
-            const errors = await validate(instance, { whitelist: true });
-            if (errors.length > 0) {
-              const messages = errors.flatMap((e) =>
-                Object.values(e.constraints || {})
-              );
-              return res.status(422).json({ message: messages });
-            }
-
-            // Gán lại instance đã validate
-            req[part] = instance;
-          }
-        }
-        console.log("next");
         next();
       } catch (error) {
         next(error);
       }
     };
   }
-  APImiddleware(pageCode: string, dtoConfig?: DTOConfig) {
+
+  APImiddleware(
+    pageCode: string,
+    opts?: {
+      allowedRole?: UserRole[];
+      bypass?: boolean;
+      authMethods?: AuthMethod[]; // 👈 mặc định ["session"]
+    }
+  ) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
-        const sessionUser = req.session.user;
-        console.log(sessionUser);
-        console.log(req.body);
-        const userRole = sessionUser?.role as UserRole;
-        if (
-          sessionUser?.user_id &&
-          Object.values(UserRole).includes(userRole)
-        ) {
-          this.userRole = sessionUser.role;
-        }
+        if (opts?.bypass) return next();
 
-        // const sidebar = await getSidebarContentService(pageCode, this.userRole);
-        // res.locals.sidebar = sidebar;
+        const auth = await resolveApiAuth(
+          req,
+          opts?.authMethods ?? ["session"]
+        );
+        const currentRole = auth.success ? auth.role : UserRole.GUEST;
+        const currentUser = auth.success ? auth.user : null;
 
-        // Validate từng phần nếu có định nghĩa DTO
-        for (const part of ["body", "query", "params"] as const) {
-          const dtoClass = dtoConfig?.[part];
-          if (dtoClass) {
-            const instance = plainToInstance(dtoClass, req[part]);
-            const errors = await validate(instance, { whitelist: true });
-            console.log(JSON.stringify(errors, null, 2));
-            if (errors.length > 0) {
-              const messages = errors.flatMap((e) =>
-                Object.values(e.constraints || {})
-              );
-              return res.status(422).json({ message: messages });
-            }
-
-            // Gán lại instance đã validate
-            req[part] = instance;
+        const access = checkAccess({
+          role: currentRole,
+          pageCode,
+          allowedRole: opts?.allowedRole,
+        });
+        console.log(access);
+        if (!access.allowed) {
+          if (!auth.success) {
+            return res.status(401).json({ message: "Unauthenticated." });
           }
+          return res.status(403).json({ message: "Access denied." });
+        }
+        // Attach user nếu có
+        if (auth.success) {
+          req.user = auth.user;
         }
 
         next();
@@ -99,4 +107,123 @@ export class Middleware {
       }
     };
   }
+}
+
+export function checkAccess(options: {
+  role: UserRole;
+  pageCode: string;
+  allowedRole?: UserRole[];
+}): { allowed: boolean; reason?: "unauthenticated" | "unauthorized" } {
+  const { role, pageCode, allowedRole } = options;
+  // Nếu có cấu hình allowedRole tại route, ưu tiên sử dụng
+  if (allowedRole && allowedRole.length > 0) {
+    const isAllowed = allowedRole.includes(role);
+    if (!isAllowed) {
+      return {
+        allowed: false,
+        reason: role === UserRole.GUEST ? "unauthenticated" : "unauthorized",
+      };
+    }
+    return { allowed: true };
+  }
+  // Nếu không truyền allowedRole, fallback dùng RoleAccess.block
+  const isBlocked = RoleAccess.block[role]?.includes(pageCode) ?? false;
+
+  if (isBlocked) {
+    return {
+      allowed: false,
+      reason: role === UserRole.GUEST ? "unauthenticated" : "unauthorized",
+    };
+  }
+
+  return { allowed: true };
+}
+
+type AuthResult =
+  | { success: true; method: string; role: UserRole; user: any }
+  | { success: false; reason: "unauthenticated" };
+
+type AuthMethod = "session" | "basic" | "apiKey" | "bearer";
+
+export async function resolveApiAuth(
+  req: Request,
+  methods: AuthMethod[] = ["session"]
+): Promise<AuthResult> {
+  for (const method of methods) {
+    switch (method) {
+      case "session": {
+        const sessionUser = req.session.user;
+        if (sessionUser?.user_id) {
+          return {
+            success: true,
+            method: "session",
+            role: sessionUser.role as UserRole,
+            user: sessionUser,
+          };
+        }
+        break;
+      }
+
+      case "basic": {
+        const auth = req.headers.authorization;
+        if (auth?.startsWith("Basic ")) {
+          const base64 = auth.split(" ")[1];
+          const decoded = Buffer.from(base64, "base64").toString("utf8");
+          const [username, password] = decoded.split(":");
+
+          if (
+            username === env.BASIC_AUTH_USERNAME &&
+            password === env.BASIC_AUTH_PASSWORD
+          ) {
+            return {
+              success: true,
+              method: "basic",
+              role: UserRole.ROOT,
+              user: { username, role: UserRole.ROOT },
+            };
+          }
+        }
+        break;
+      }
+
+      // case "apiKey": {
+      //   const key =
+      //     req.headers["x-api-key"]?.toString() || req.query.api_key?.toString();
+      //   if (key && key === INTERNAL_API_KEY) {
+      //     return {
+      //       success: true,
+      //       method: "apiKey",
+      //       role: UserRole.ROOT,
+      //       user: { apiKey: key, role: UserRole.ROOT },
+      //     };
+      //   }
+      //   break;
+      // }
+
+      // case "bearer": {
+      //   const auth = req.headers.authorization;
+      //   if (auth?.startsWith("Bearer ")) {
+      //     const token = auth.split(" ")[1];
+      //     try {
+      //       const payload = await jwtVerifyToken(token); // bạn cần định nghĩa
+      //       return {
+      //         success: true,
+      //         method: "bearer",
+      //         role: payload.role,
+      //         user: payload,
+      //       };
+      //     } catch (e) {
+      //       // continue thử các method khác
+      //     }
+      //   }
+      //   break;
+      // }
+    }
+  }
+
+  // ✅ Return mặc định nếu không xác thực được
+  return {
+    success: false,
+    reason: "unauthenticated",
+  };
 }

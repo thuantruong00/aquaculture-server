@@ -78,7 +78,7 @@ export const UpdateDeviceGroupSchema = z.object({
 export type IUpdateDeviceGroupDTO = z.infer<typeof UpdateDeviceGroupSchema>;
 
 export const UpdateDeviceSchema = z.object({
-  status: z.nativeEnum(DeviceStatus).optional(),
+  status: z.enum(DeviceStatus).optional(),
 
   name: z
     .string()
@@ -147,10 +147,7 @@ export const DeviceConnectSchema = z.object({
     message: "deviceModel must be a string",
   }),
 
-  secretKey: z
-    .string()
-    .min(8, { message: "secretKey must be at least 8 characters" })
-    .max(64, { message: "secretKey must be at most 64 characters" }),
+  secretKey: z.string().length(8),
 });
 
 export type IDeviceConnectDTO = z.infer<typeof DeviceConnectSchema>;

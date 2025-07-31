@@ -202,3 +202,21 @@ function controlDevice(deviceId, key, value) {
         }
     })
 }
+
+
+// ============= condition ==============
+function addCondition(conditionClsName) {
+    const model = $(`${conditionClsName} .condition-row .row`)[0]
+    console.log(model)
+    if (model) {
+        const clone = model.cloneNode(true);
+        $(`${conditionClsName} .condition-row`).append(clone);
+    }
+}
+$(document).on('click', '.btn-delete-condition', function (e) {
+    const target = $(this).attr('data-condition');
+    const length = $(`${target} .condition-row .row`).length;
+    if (length > 1) {
+        $(this).closest('.row').remove();
+    }
+});

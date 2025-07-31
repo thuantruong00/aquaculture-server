@@ -34,7 +34,7 @@ const deviceSchema = new Schema<IDevice>(
       default: DeviceStatus.ACTIVE,
     },
     isOnline: { type: Boolean, default: true },
-    createdBy: { type: Number },
+    createdBy: { type: String },
     updatedBy: { type: String },
     deviceModel: {
       type: Schema.Types.ObjectId,
