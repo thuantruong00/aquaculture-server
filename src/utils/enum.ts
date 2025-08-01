@@ -85,6 +85,13 @@ export enum SceneStatus {
   PAUSED = "paused",
   DELETED = "deleted",
 }
+export enum ActionStatus {
+  INACTIVE = "inactive",
+  ACTIVE = "active",
+  PENDING = "pending",
+  PAUSED = "paused",
+  DELETED = "deleted",
+}
 
 export enum ExecutionSource {
   SCENE = "scene",
@@ -94,7 +101,7 @@ export enum ExecutionSource {
 
 export enum TimerType {
   ONCE = "once",
-  RECURRING = "recurring",
+  REPEAT = "repeat",
 }
 
 export enum TimerStatus {

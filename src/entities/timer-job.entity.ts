@@ -12,7 +12,7 @@ const TimerJobSchema = new Schema(
     type: {
       type: String,
       enum: Object.values(TimerType),
-      default: TimerType.RECURRING,
+      default: TimerType.REPEAT,
     },
 
     cron: { type: String },

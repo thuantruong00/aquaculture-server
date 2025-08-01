@@ -22,6 +22,11 @@ import {
   UpdateDeviceStatusSchema,
 } from "~/controllers";
 import { AutomaticController } from "~/controllers/dashboard/automatic";
+import {
+  ActionUpdateBodySchema,
+  AutomaticSceneSaveBodySchema,
+  AutomaticSceneUpdateBodySchema,
+} from "~/controllers/dashboard/automatic/automatic.dto";
 import { Middleware, zodMultiValidator } from "~/middlewares";
 import { IsUserGroup } from "~/utils/const";
 import { UserRole } from "~/utils/enum";
@@ -61,16 +66,52 @@ dashboardRouter.get(
   middleware.webPageMiddleware("automaticSceneCreate"),
   automaticController.handleAutomaticSceneCreatePage
 );
+dashboardRouter.get(
+  "/automatic/scene-detail/:sceneId",
+  middleware.webPageMiddleware("automatic"),
+  automaticController.handleAutomaticSceneDetailPage
+);
+dashboardRouter.get(
+  "/automatic/action-detail/:actionId",
+  middleware.webPageMiddleware("automaticAction"),
+  automaticController.handleAutomaticActionDetailPage
+);
+
+dashboardRouter.post(
+  "/automatic/action-detail/:actionId",
+  middleware.webPageMiddleware("automaticAction"),
+  zodMultiValidator({ body: ActionUpdateBodySchema }),
+  automaticController.handleAutomaticActionUpdatePage
+);
+
 dashboardRouter.post(
   "/automatic/scene-save",
+  zodMultiValidator({ body: AutomaticSceneSaveBodySchema }),
   middleware.webPageMiddleware("automaticSceneCreate"),
   automaticController.handleAutomaticSceneSavePage
+);
+dashboardRouter.post(
+  "/automatic/scene-detail/:sceneId",
+  zodMultiValidator({ body: AutomaticSceneUpdateBodySchema }),
+  middleware.webPageMiddleware("automaticSceneCreate"),
+  automaticController.handleAutomaticSceneUpdatePage
+);
+
+dashboardRouter.get(
+  "/automatic/scene-delete/:sceneId",
+  middleware.webPageMiddleware("automaticSceneCreate"),
+  automaticController.handleAutomaticSceneDeletePage
 );
 
 dashboardRouter.get(
   "/automatic/timer",
   middleware.webPageMiddleware("automaticTimer"),
   automaticController.handleAutomaticPage
+);
+dashboardRouter.get(
+  "/automatic/actions",
+  middleware.webPageMiddleware("automaticAction"),
+  automaticController.handleAutomaticActionPage
 );
 
 // ─── Custom UI ────────────────────────────────────────────────

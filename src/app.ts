@@ -6,11 +6,13 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
-import { connectMongoDB } from "./config/dataSource";
 
-// const startJob = require('./services/worker/worker.js')
 
-// import { passport } from '~/config';
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
@@ -30,9 +32,9 @@ app.use(express.urlencoded({ extended: false }));
 
 /* ===== Router ===== */
 import { routes } from "./routes";
-import { mqttClient } from "./services/mqtt/mqttConnection";
 import { initialService } from "./services/initial/initial.service";
-import { SocketService } from "./services";
+import { errorHandler } from "./middlewares/errors.middleware";
+
 // setup express session
 app.use(
   session({
@@ -66,13 +68,10 @@ app.get("/", function (req, res) {
   res.redirect("/auth/sign-in");
 });
 
-// src/database/mongodb.ts
-connectMongoDB();
 // initialService();
-mqttClient;
 
 // error handling
-const { errorHandler } = require("~/middlewares/errors.middleware.js");
+
 app.use(errorHandler);
 
 export default app;

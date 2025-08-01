@@ -1,51 +1,51 @@
-// var socket = io("localhost:3000");
-// // Listen for 'chat message' event
-// socket.on("data", function (msg) {
-//   const { data, topic } = msg;
-//   setPortOfDevice(topic, data);
-// });
+var socket = io("localhost:3000");
+// Listen for 'chat message' event
+socket.on("data", function (msg) {
+  const { data, topic } = msg;
+  setPortOfDevice(topic, data);
+});
 
-// socket.on("temp", function (data) {
-//   console.log(data);
-//   const { temperature, humidity, ph, tds, nitro, phos, pota } = data;
-//   $(`#value-temp-${data.idDevice}`).text(temperature);
-//   $(`#value-humidity-${data.idDevice}`).text(humidity);
-//   $(`#value-ph-${data.idDevice}`).text(ph);
-//   $(`#value-tds-${data.idDevice}`).text(tds);
-//   $(`#value-nitro-${data.idDevice}`).text(nitro);
-//   $(`#value-phos-${data.idDevice}`).text(phos);
-//   $(`#value-pota-${data.idDevice}`).text(pota);
+socket.on("temp", function (data) {
+  console.log(data);
+  const { temperature, humidity, ph, tds, nitro, phos, pota } = data;
+  $(`#value-temp-${data.idDevice}`).text(temperature);
+  $(`#value-humidity-${data.idDevice}`).text(humidity);
+  $(`#value-ph-${data.idDevice}`).text(ph);
+  $(`#value-tds-${data.idDevice}`).text(tds);
+  $(`#value-nitro-${data.idDevice}`).text(nitro);
+  $(`#value-phos-${data.idDevice}`).text(phos);
+  $(`#value-pota-${data.idDevice}`).text(pota);
 
-//   handleTurnOff(data);
-// });
+  handleTurnOff(data);
+});
 
-// // ==============================
-// socket.on("iotDataTelemetry", function (data) {
-//   console.log(data);
-//   const { devices, id, ts } = data
-//   const now = new Date(Number(ts))
-//   $(`.x-item-${id} .updated-at i`).text(now.toLocaleTimeString('en-GB'))
-//   if (devices && devices.length > 0) {
-//     for (const item of devices) {
-//       $(`.x-item-${id} .x-key-${item.key} span.value`).text(item.value)
-//     }
-//   }
-// });
+// ==============================
+socket.on("iotDataTelemetry", function (data) {
+  console.log(data);
+  const { devices, id, ts } = data
+  const now = new Date(Number(ts))
+  $(`.x-item-${id} .updated-at i`).text(now.toLocaleTimeString('en-GB'))
+  if (devices && devices.length > 0) {
+    for (const item of devices) {
+      $(`.x-item-${id} .x-key-${item.key} span.value`).text(item.value)
+    }
+  }
+});
 
-// socket.on("iotDataResponse", function (data) {
-//   console.log(data);
-//   const { field, id, template, ts } = data
-//   const now = new Date(Number(ts))
-//   if (template == "actuator-1") {
-//     $(`.x-item-${id} .updated-at i`).text(now.toLocaleTimeString('en-GB'))
-//     const styleClass = field.value ? "device-status-online" : "device-status-offline";
-//     $(`.x-item-${id}  .device-status`).removeClass(`device-status-offline`)
-//     $(`.x-item-${id}  .device-status`).removeClass(`device-status-online`)
-//     $(`.x-item-${id}  .device-status`).removeClass(`device-status-error`)
+socket.on("iotDataResponse", function (data) {
+  console.log(data);
+  const { field, id, template, ts } = data
+  const now = new Date(Number(ts))
+  if (template == "a-1y-size-12-12-onoff") {
+    $(`.x-item-${id} .updated-at i`).text(now.toLocaleTimeString('en-GB'))
+    const styleClass = field.value ? "device-status-online" : "device-status-offline";
+    $(`.x-item-${id}  .device-status`).removeClass(`device-status-offline`)
+    $(`.x-item-${id}  .device-status`).removeClass(`device-status-online`)
+    $(`.x-item-${id}  .device-status`).removeClass(`device-status-error`)
 
-//     $(`.x-item-${id}  .device-status`).addClass(`${styleClass}`)
-//   }
-// });
+    $(`.x-item-${id}  .device-status`).addClass(`${styleClass}`)
+  }
+});
 
 
 function handleTurnOff(data, limitTemp) {

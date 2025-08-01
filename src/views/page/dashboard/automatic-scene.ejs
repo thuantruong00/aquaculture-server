@@ -3,7 +3,7 @@
   <div class="row justify-content-center">
     <div class="col-8">
       <div class="wrap-title">
-        <div class="title">Danh sách nhóm</div>
+        <div class="title">Danh sách kịch bản</div>
       </div>
     </div>
     <!-- ======================= -->
@@ -30,10 +30,14 @@
               <span title="<%=scenes[index].group %>" class="short-text"><%=scenes[index].group %></span>
               <span class="action">
                 <div class="wrap-action-btn">
-                  <button title="id=<%=scenes[index]._id %>" value=".item-<%=scenes[index]._id %>" class="primary-btn active-device-btn">Sửa<span class="icon"><img class="img-icon" src="../cms/images/index/settings.png" alt=""></span></button>
+                  <a href="/automatic/scene-detail/<%=scenes[index]._id %>">
+                    <button title="id=<%=scenes[index]._id %>" value=".item-<%=scenes[index]._id %>" class="primary-btn">Sửa<span class="icon"><img class="img-icon" src="../cms/images/index/settings.png" alt=""></span></button>
+                  </a>
                 </div>
                 <div class="wrap-action-btn">
-                  <button title="id=<%=scenes[index]._id %>" value=".item-<%=scenes[index]._id %>" class="primary-btn delete-device-btn">Xoá ×</button>
+                  <a href="/automatic/scene-delete/<%=scenes[index]._id %>">
+                    <button title="id=<%=scenes[index]._id %>" value=".item-<%=scenes[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</button>
+                  </a>
                 </div>
               </span>
             </li>

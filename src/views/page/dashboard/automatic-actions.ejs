@@ -1,0 +1,52 @@
+<div class="container modal-id ">
+  <div class="gap-xs"></div>
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <div class="wrap-title">
+        <div class="title">Danh sách hành động</div>
+      </div>
+    </div>
+    <!-- ======================= -->
+    <div class="col-12">
+      <div class="base-list device-groups-list">
+        <div class="wrap-box">
+          <ul class="">
+            <li class="d-flex">
+              <span>Stt</span>
+              <span class="device-name">Tên</span>
+              <span>Trạng thái</span>
+              <span>Số hành động</span>
+              <span>Mô tả</span>
+              <span class="action">Hành động</span>
+            </li>
+
+            <% if(actions.length>0){ %>
+            <% for(index in actions){ %>
+            <li class="d-flex">
+              <span><%=index %></span>
+              <span class="device-name short-text"><%=actions[index].name %></span>
+              <span class="short-text"><%=actions[index].status %></span>
+              <span class="short-text"><%=actions[index].steps.length??"--/--" %></span>
+              <span class="short-text"><%=actions[index].description %></span>
+              <span class="action">
+                <div class="wrap-action-btn">
+                  <a href="/automatic/action-detail/<%=actions[index]._id %>">
+                    <button title="id=<%=actions[index]._id %>" value=".item-<%=actions[index]._id %>" class="primary-btn">Sửa<span class="icon"><img class="img-icon" src="../cms/images/index/settings.png" alt=""></span></button>
+                  </a>
+                </div>
+                <div class="wrap-action-btn">
+                  <a href="/automatic/delete-action/<%=actions[index]._id %>">
+                    <button title="id=<%=actions[index]._id %>" value=".item-<%=actions[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</button>
+                  </a>
+                </div>
+              </span>
+            </li>
+            <% } } %>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ----- ----- main ----- ------->
+</div>

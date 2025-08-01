@@ -26,6 +26,7 @@ import { DeviceGroup, IDeviceGroup } from "~/entities/device-group.entity";
 import { OtpExpireTimeInMs, PagiLimit, PagiOffset } from "~/utils/const";
 import { Otp } from "~/entities/otp.entity";
 import { randomString } from "~/utils/mqtt";
+import { logger } from "~/utils/logger";
 export class DeviceSettingController extends BaseController {
   constructor() {
     super();
@@ -55,7 +56,7 @@ export class DeviceSettingController extends BaseController {
         devices: findDevice,
       });
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleDeviceSettingPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -84,7 +85,7 @@ export class DeviceSettingController extends BaseController {
         model: findModel,
       });
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleDetailDevicePage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -100,7 +101,7 @@ export class DeviceSettingController extends BaseController {
       res.statusCode = 400;
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleUpdateDevicePage", error);
       res.statusCode = 500;
       return this.renderWithSidebar(res, "page/error");
     }
@@ -119,7 +120,7 @@ export class DeviceSettingController extends BaseController {
       res.statusCode = 400;
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleDeleteDevicePage", error);
       res.statusCode = 500;
       return this.renderWithSidebar(res, "page/error");
     }
@@ -141,7 +142,7 @@ export class DeviceSettingController extends BaseController {
         listDevice: getListOfInactiveDevice,
       });
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleAddDeviceSettingPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -160,7 +161,7 @@ export class DeviceSettingController extends BaseController {
       }
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleCreatePairingOtpPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -220,7 +221,7 @@ export class DeviceSettingController extends BaseController {
       }
       return this.handleApiResponse(res, {}, undefined, 400);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiDeviceConnect", error);
       return this.handleApiResponse(res, {}, undefined, 500);
     }
   };
@@ -248,7 +249,7 @@ export class DeviceSettingController extends BaseController {
       }
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiActivateDevice", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };
@@ -271,7 +272,7 @@ export class DeviceSettingController extends BaseController {
       }
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiUpdateDeviceStatus", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };
@@ -288,7 +289,7 @@ export class DeviceSettingController extends BaseController {
 
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiUpdateDevice", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };
@@ -313,7 +314,7 @@ export class DeviceSettingController extends BaseController {
       }
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiUpdateDeviceOrders", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };
@@ -332,7 +333,7 @@ export class DeviceSettingController extends BaseController {
 
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiUpdateGroup", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };
@@ -359,7 +360,7 @@ export class DeviceSettingController extends BaseController {
 
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiCreateDeviceModel", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };

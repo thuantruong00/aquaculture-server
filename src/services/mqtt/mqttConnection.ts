@@ -117,3 +117,14 @@ mqttClient.on("message", async (topic: string, message: Buffer) => {
 //     return false;
 //   }
 // };
+
+export const handleWriteCommand = async (
+  deviceId: string,
+  key: string,
+  value: string | number | boolean
+) => {
+  const topic = env.MQTT_PREFIX_TOPIC + "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" + deviceId + "/command";
+  const data = key + "|" + value;
+  mqttClient.publish(topic, data);
+  return;
+};

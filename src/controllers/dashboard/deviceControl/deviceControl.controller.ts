@@ -11,6 +11,7 @@ import {
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { ExecutionLog } from "~/entities/execution-log.entity";
 import { MqttService } from "~/services";
+import { logger } from "~/utils/logger";
 DeviceGroup;
 
 export class DeviceControlController extends BaseController {
@@ -118,7 +119,7 @@ export class DeviceControlController extends BaseController {
         deviceByGroup: deviceByGroup,
       });
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleDeviceControlPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -131,7 +132,6 @@ export class DeviceControlController extends BaseController {
         .populate("deviceModel")
         .populate("zone")
         .populate("group");
-      console.log(getListOfActiveDevice)
       const withoutGroupDevice = getListOfActiveDevice.filter(
         (item) => !item.group
       );
@@ -157,7 +157,7 @@ export class DeviceControlController extends BaseController {
         deviceByGroup: deviceByGroup,
       });
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleDeviceControlManagementPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -192,7 +192,7 @@ export class DeviceControlController extends BaseController {
       }
       return this.handleApiResponse(res, { payload: true }, undefined, 200);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiControlDevice", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };

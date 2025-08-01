@@ -2,6 +2,7 @@
   "name": "cms",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "npx nodemon",
     "build": "node esbuild.js",
@@ -25,7 +26,7 @@
     "debug": "~2.6.9",
     "dotenv": "^16.6.1",
     "ejs": "^3.1.9",
-    "express": "^4.18.2",
+    "express": "^4.21.2",
     "express-ejs-layouts": "^2.5.1",
     "express-fileupload": "^1.4.3",
     "express-session": "^1.17.3",
@@ -35,10 +36,12 @@
     "jade": "^0.29.0",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
+    "lowdb": "^7.0.1",
     "mongoose": "^8.16.3",
     "morgan": "~1.9.1",
     "mqtt": "^5.9.1",
     "multer": "^1.4.5-lts.1",
+    "node-cron": "^4.2.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pg": "^8.16.3",
@@ -47,6 +50,8 @@
     "socket.io": "^4.7.5",
     "typeorm": "^0.3.25",
     "uuid": "^11.1.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "zod": "^4.0.13"
   },
   "devDependencies": {
@@ -77,6 +82,12 @@
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3"
-  }
+  },
+  "description": "cms-project\r ├── bin                     //=====================\r ├── config\r |   ├── config.json         //\r ├── core\r |   ├── controllers\r |   ├── hook\r |   ├── migration\r │   ├── models\r │   │   └── User.js\r │   ├── response\r │   ├── services       \r │   ├── data-source.js      // data source and all connection configuration\r ├── docs\r ├── node_modules            //=====================\r ├── public\r |   ├── assets              // font,...\r |   ├── images\r |   ├── script\r |   ├── style\r ├── routes\r |   ├── cms\r |   |   ├── index.js\r |   ├── website\r |   |   ├── index.js\r |   ├── index.js\r ├── views\r |   ├── cms\r |   ├── website\r ├── .dockerignore\r ├── .env\r ├── .gitignore\r ├── app.js                  // main\r ├── Dockerfile\r ├── package-lock.json       //=====================\r ├── package.json            // node module dependencies\r ├── README.md               // simple readme file\r └── *",
+  "main": "esbuild.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

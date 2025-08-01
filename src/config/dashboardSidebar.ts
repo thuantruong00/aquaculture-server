@@ -29,7 +29,7 @@ export const sidebarData = [
     child: [
       {
         page_id: "automatic",
-        title: "Kịch bản tự động",
+        title: "Danh sách kịch bản tự động",
         href: "/automatic/",
         page_name: "page/dashboard/automatic-scene",
         child: [],
@@ -46,6 +46,13 @@ export const sidebarData = [
         title: "Hẹn giờ",
         href: "/automatic/timer",
         page_name: "page/dashboard/timer",
+        child: [],
+      },
+      {
+        page_id: "automaticAction",
+        title: "Danh sách hành động",
+        href: "/automatic/actions",
+        page_name: "page/dashboard/automatic-actions",
         child: [],
       },
     ],

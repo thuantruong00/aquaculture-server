@@ -3,11 +3,7 @@ import fs from "fs";
 import path from "path";
 import { BaseController } from "../dashboard.base-controller";
 import { Device, IDevice } from "~/entities/device.entity";
-import {
-  DeviceGroupStatus,
-  DeviceStatus,
-  DeviceZone,
-} from "~/utils/enum";
+import { DeviceGroupStatus, DeviceStatus, DeviceZone } from "~/utils/enum";
 import { DeviceGroup } from "~/entities/device-group.entity";
 import {
   ICreateDeviceGroupDTO,
@@ -17,6 +13,7 @@ import {
 import { Zone } from "~/entities/zone.entity";
 import { Types } from "mongoose";
 import { IUpdateDeviceGroupDTO } from "../deviceSetting";
+import { logger } from "~/utils/logger";
 DeviceGroup;
 
 export class CustomUiController extends BaseController {
@@ -37,7 +34,7 @@ export class CustomUiController extends BaseController {
         deviceGroups: findDeviceGroups,
       });
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleCustomUiPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -78,7 +75,7 @@ export class CustomUiController extends BaseController {
         templates: templates,
       });
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleDetailDeviceGroupPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -103,7 +100,7 @@ export class CustomUiController extends BaseController {
       res.statusCode = 400;
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleDeleteDeviceGroupPage", error);
       res.statusCode = 500;
       return this.renderWithSidebar(res, "page/error");
     }
@@ -114,7 +111,6 @@ export class CustomUiController extends BaseController {
       "src/views/partials/group-templates"
     );
     try {
-
       const files = fs.readdirSync(templatesDir);
       const templates = files
         .filter((file) => file.endsWith(".ejs"))
@@ -123,7 +119,7 @@ export class CustomUiController extends BaseController {
         templates: templates,
       });
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleDeviceGroupPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -147,7 +143,7 @@ export class CustomUiController extends BaseController {
       }
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleCreateGroupPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -176,7 +172,7 @@ export class CustomUiController extends BaseController {
       }
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleUpdateGroupInfoPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };
@@ -185,7 +181,6 @@ export class CustomUiController extends BaseController {
       const { deviceId, groupId } = req.body as IUpdateDeviceGroupDTO;
       const findDevice = await Device.findOne({ _id: deviceId });
       const findGroup = await DeviceGroup.findOne({ _id: groupId });
-      console.log("deviceId", deviceId, "findGroup", findGroup);
       if (findDevice && findGroup) {
         const udpate = await Device.updateOne(
           { _id: deviceId },
@@ -196,7 +191,7 @@ export class CustomUiController extends BaseController {
       res.statusCode = 400;
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleUpdateGroupPage", error);
       res.statusCode = 500;
       return this.renderWithSidebar(res, "page/error");
     }
@@ -206,7 +201,6 @@ export class CustomUiController extends BaseController {
       const { deviceId, groupId } = req.body as IUpdateDeviceGroupDTO;
       const findDevice = await Device.findOne({ _id: deviceId });
       const findGroup = await DeviceGroup.findOne({ _id: groupId });
-      console.log("deviceId", deviceId, "findGroup", findGroup);
       if (findDevice && findGroup) {
         if (String(findDevice.group?._id) === String(findGroup._id)) {
           await Device.updateOne({ _id: deviceId }, { $set: { group: null } });
@@ -216,7 +210,7 @@ export class CustomUiController extends BaseController {
       res.statusCode = 400;
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleRemoveDevicePage", error);
       res.statusCode = 500;
       return this.renderWithSidebar(res, "page/error");
     }
@@ -247,7 +241,7 @@ export class CustomUiController extends BaseController {
       }
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiCreateGroup", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };
@@ -268,7 +262,7 @@ export class CustomUiController extends BaseController {
         200
       );
     } catch (error) {
-      console.log(error);
+      logger.error("Err handleApiGetListDeviceGroups", error);
       return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
     }
   };

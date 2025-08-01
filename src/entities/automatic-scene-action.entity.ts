@@ -1,6 +1,23 @@
-import mongoose, { Schema } from "mongoose";
-import { SceneStatus } from "~/utils/enum";
+import mongoose, { Schema, Types } from "mongoose";
+import { ActionStatus } from "~/utils/enum";
 
+export interface IActionStep {
+  deviceId: Types.ObjectId;
+  key: string;
+  value: string | number | boolean | object; // Mixed
+  durationSeconds?: number;
+  stopMethod?: "sensor" | "timer";
+}
+
+export interface IAction {
+  _id?: Types.ObjectId;
+  name: string;
+  description?: string;
+  steps: IActionStep[];
+  status: ActionStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 // Step đơn lẻ trong action
 const ActionStepSchema = new Schema(
   {
@@ -24,7 +41,6 @@ const ActionStepSchema = new Schema(
     stopMethod: {
       type: String,
       enum: ["sensor", "timer"],
-      default: "timer",
     },
   },
   { _id: false }
@@ -39,13 +55,13 @@ export const ActionSchema = new Schema(
     steps: {
       type: [ActionStepSchema],
       required: true,
-      validate: [(v: any[]) => v.length > 0, "At least one step is required"],
+      default: [],
     },
 
     status: {
       type: String,
-      enum: Object.values(SceneStatus),
-      default: SceneStatus.ACTIVE,
+      enum: Object.values(ActionStatus),
+      default: ActionStatus.ACTIVE,
     },
   },
   {
