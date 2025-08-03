@@ -55,10 +55,10 @@ export enum ComparisonOperator {
 }
 export enum ComparisonOperatorSymbol {
   LT = "< bé hơn",
-  LTE = "bé hơn hoặc bằng",
+  LTE = "<= bé hơn hoặc bằng",
   GT = "> lớn hơn",
-  GTE = "lớn hơn hoặc bằng",
-  EQ = "= bằng",
+  GTE = ">= lớn hơn hoặc bằng",
+  EQ = "== bằng",
   NEQ = "!= khác",
 }
 export enum LogicOperator {
@@ -99,9 +99,16 @@ export enum ExecutionSource {
   SCHEDULE = "schedule", // từ cron server
 }
 
-export enum TimerType {
-  ONCE = "once",
-  REPEAT = "repeat",
+
+export enum RepeatUnit {
+  DAY = "day",
+  HOUR = "hour",
+  MINUTE = "minute",
+}
+export enum RepeatUnitLabel {
+  DAY = "Ngày",
+  HOUR = "Giờ",
+  MINUTES = "Phút",
 }
 
 export enum TimerStatus {
@@ -112,6 +119,7 @@ export enum TimerStatus {
   DELETED = "deleted",
 }
 export enum TimerPurpose {
+  COMMON = "common",
   COMMAND = "command",
   ERROR_HANDLER = "error_handler",
   MONITOR = "monitor", // optional: future use

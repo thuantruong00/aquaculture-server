@@ -8,17 +8,23 @@ import {
   DeviceStatus,
   LogicOperator,
   LogicOperatorLabel,
+  RepeatUnit,
   SceneStatus,
 } from "~/utils/enum";
 import {
   IActionUpdateBodySchema,
   IAutomaticSceneSaveBodySchema,
   IAutomaticSceneUpdateBodySchema,
+  ITimerCreateBodySchema,
 } from "./automatic.dto";
 import { AutomationScene } from "~/entities/automatic-scene.entity";
 import { logger } from "~/utils/logger";
 import { Action } from "~/entities/automatic-scene-action.entity";
 import { ObjectId } from "typeorm";
+import { TimerJob } from "~/entities/timer-job.entity";
+import is from "zod/v4/locales/is.cjs";
+import { addJob, listJobs, removeJob } from "~/services";
+import { IDeviceModel } from "~/entities/device-model.entity";
 
 export class AutomaticController extends BaseController {
   handleAutomaticPage = async (req: Request, res: Response) => {
@@ -158,18 +164,18 @@ export class AutomaticController extends BaseController {
     try {
       const { name, status, group, logic, action, device, operator, value } =
         req.body as IAutomaticSceneSaveBodySchema;
-      let actionId;
-      if (!action) {
-        const create = await Action.create({
-          name: name,
+      let actionId: any;
+      if (action === "createAction") {
+        actionId = await Action.create({
+          name,
           description: "Action. " + name,
         });
-        if (create) {
-          actionId = create._id;
-        }
       } else {
-        actionId = action;
+        actionId = await Action.findOne({ _id: action });
       }
+
+      if (!actionId) return this.renderWithSidebar(res, "page/error");
+
       const condition = [];
       if (device.length > 0) {
         for (const item in device) {
@@ -187,12 +193,12 @@ export class AutomaticController extends BaseController {
         name,
         status,
         group,
-        actions: actionId ? [actionId] : [],
+        actions: actionId ? [actionId._id] : [],
         logic,
         conditions: condition,
       });
-      if (create && !action && actionId) {
-        return res.redirect(`/automatic/action-detail/${actionId}`);
+      if (create && action == "createAction" && actionId) {
+        return res.redirect(`/automatic/action-detail/${actionId._id}`);
       }
       if (create) {
         return res.redirect("/automatic/scene-create");
@@ -328,7 +334,9 @@ export class AutomaticController extends BaseController {
             LogicOperatorLabel[key as keyof typeof LogicOperatorLabel] ?? value,
         })
       );
-      const findScene = await AutomationScene.findOne({ _id: sceneId });
+      const findScene = await AutomationScene.findOne({
+        _id: sceneId,
+      }).populate("actions");
       if (findScene) {
         return this.renderWithSidebar(
           res,
@@ -417,15 +425,27 @@ export class AutomaticController extends BaseController {
       const { name, status, description, device, value } =
         req.body as IActionUpdateBodySchema;
       const findAction = await Action.findOne({ _id: actionId });
+
       const steps = [];
       if (device.length > 0) {
         for (const item in device) {
           const deviceArr = device[item].split("|");
-          steps.push({
-            deviceId: deviceArr[0],
-            key: deviceArr[1],
-            value: Number(value[item]),
-          });
+          const findDevice = await Device.findOne({
+            _id: deviceArr[0],
+          }).populate("deviceModel");
+
+          if (findDevice && findDevice.deviceModel) {
+            const deviceModel =
+              findDevice.deviceModel as unknown as IDeviceModel;
+            steps.push({
+              deviceId: deviceArr[0],
+              key: deviceArr[1],
+              value: Number(value[item]),
+              deviceType: deviceModel.fields.find(
+                (item) => item.key == deviceArr[1]
+              )?.deviceType,
+            });
+          }
         }
       }
       console.log(steps);
@@ -455,4 +475,232 @@ export class AutomaticController extends BaseController {
       });
     }
   };
+  handleAutomaticActionDeletePage = async (req: Request, res: Response) => {
+    try {
+      const { actionId } = req.params as unknown as any;
+
+      const findAction = await Action.findOne({ _id: actionId });
+
+      if (findAction) {
+        const findActionInScene = await AutomationScene.find({
+          status: { $ne: SceneStatus.DELETED },
+          actions: { $in: [actionId] },
+        });
+        if (findActionInScene.length < 1) {
+          const deleteAction = await Action.updateOne(
+            { _id: actionId },
+            { status: ActionStatus.DELETED }
+          );
+          if (deleteAction) {
+            return res.redirect("/automatic/actions");
+          }
+        }
+      }
+
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      logger.error("Err handleAutomaticSceneSavePage", error);
+      return this.renderWithSidebar(res, "page/error", {
+        layout: "/layouts/default-layout.ejs",
+      });
+    }
+  };
+  handleAutomaticTimerPage = async (req: Request, res: Response) => {
+    try {
+      const findAction = await Action.find({
+        status: { $eq: ActionStatus.ACTIVE },
+      });
+      const findTimerJobs = await TimerJob.find({
+        status: { $ne: ActionStatus.DELETED },
+      });
+      const getJob = listJobs().map((item) => item.id);
+      console.log(getJob);
+      this.renderWithSidebar(res, undefined, {
+        actions: findAction,
+        timerJobs: findTimerJobs || [],
+        listJobs: getJob,
+      });
+    } catch (error) {
+      logger.error("Err handleAutomaticPage", error);
+      return this.renderWithSidebar(res, "page/error", {
+        layout: "/layouts/default-layout.ejs",
+      });
+    }
+  };
+  handleAutomaticTimerCreatePage = async (req: Request, res: Response) => {
+    try {
+      const {
+        name,
+        action,
+        runHour,
+        runMinute,
+        repeatInterval,
+        isRepeating,
+        repeatUnit,
+      } = req.body as unknown as ITimerCreateBodySchema;
+
+      const schedule = toCronExpression(
+        isRepeating,
+        runHour,
+        runMinute,
+        repeatInterval,
+        repeatUnit
+      );
+      let actionId: any;
+      if (action === "createAction") {
+        actionId = await Action.create({
+          name,
+          description: "Action. " + name,
+        });
+      } else {
+        actionId = await Action.findOne({ _id: action });
+      }
+      if (!actionId) return this.renderWithSidebar(res, "page/error");
+      if (schedule) {
+        const createTimer = await TimerJob.create({
+          name,
+          action: actionId._id,
+          runHour,
+          runMinute,
+          repeatInterval,
+          isRepeating,
+          repeatUnit,
+          schedule,
+        });
+        if (createTimer) {
+          addJob({
+            id: String(createTimer._id),
+            schedule: schedule,
+            isRepeating: isRepeating,
+            refTable: "action",
+            refId: String(actionId._id),
+          });
+        }
+        console.log(createTimer);
+        if (createTimer && action === "createAction" && actionId) {
+          return res.redirect(`/automatic/action-detail/${actionId._id}`);
+        }
+        return res.redirect("/automatic/timer");
+      }
+
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      logger.error("Err handleAutomaticSceneSavePage", error);
+      return this.renderWithSidebar(res, "page/error", {
+        layout: "/layouts/default-layout.ejs",
+      });
+    }
+  };
+  handleAutomaticTimerStart = async (req: Request, res: Response) => {
+    try {
+      const { timerJobId } = req.params as unknown as any;
+      const findJob = await TimerJob.findOne({ _id: timerJobId }).populate(
+        "action"
+      );
+
+      if (findJob) {
+        const action = findJob.action;
+        if (action) {
+          addJob({
+            id: String(findJob._id),
+            schedule: findJob.schedule,
+            isRepeating: findJob.isRepeating,
+            refTable: "action",
+            refId: String(action._id),
+          });
+          return res.redirect("/automatic/timer");
+        }
+      }
+
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      logger.error("Err handleAutomaticSceneSavePage", error);
+      return this.renderWithSidebar(res, "page/error", {
+        layout: "/layouts/default-layout.ejs",
+      });
+    }
+  };
+  handleAutomaticTimerStop = async (req: Request, res: Response) => {
+    try {
+      const { timerJobId } = req.params as unknown as any;
+      const findJob = await TimerJob.findOne({ _id: timerJobId }).populate(
+        "action"
+      );
+
+      if (findJob) {
+        const action = findJob.action;
+        if (action) {
+          removeJob(String(findJob._id));
+          return res.redirect("/automatic/timer");
+        }
+      }
+
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      logger.error("Err handleAutomaticSceneSavePage", error);
+      return this.renderWithSidebar(res, "page/error", {
+        layout: "/layouts/default-layout.ejs",
+      });
+    }
+  };
+  handleAutomaticTimerDeletePage = async (req: Request, res: Response) => {
+    try {
+      const { timerId } = req.params as unknown as any;
+      const getList = listJobs().map((item) => item.id);
+      if (getList.indexOf(timerId) < 0) {
+        const update = await TimerJob.updateOne(
+          { _id: timerId },
+          {
+            status: SceneStatus.DELETED,
+          }
+        );
+
+        if (update) {
+          return res.redirect("/automatic/timer");
+        }
+      }
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      logger.error("Err handleAutomaticSceneSavePage", error);
+      return this.renderWithSidebar(res, "page/error", {
+        layout: "/layouts/default-layout.ejs",
+      });
+    }
+  };
+}
+
+export function toCronExpression(
+  isRepeating: boolean,
+  runHour: number,
+  runMinute: number,
+  repeatInterval: number,
+  repeatUnit: RepeatUnit
+): string | null {
+  console.log(isRepeating, repeatUnit, repeatUnit == RepeatUnit.DAY);
+  if (isRepeating && repeatUnit == RepeatUnit.DAY) {
+    const expression = `${runMinute} ${runHour} */${repeatInterval} * *`;
+    return expression;
+  }
+  if (isRepeating && repeatUnit == RepeatUnit.HOUR) {
+    const hours = [];
+    for (let h = runHour; h < 24; h += 2) {
+      hours.push(h);
+    }
+    const hourField = hours.join(",");
+    return `${runMinute} ${hourField} * * *`;
+  }
+  if (isRepeating && repeatUnit == RepeatUnit.MINUTE) {
+    const expressionArr: number[] = [];
+    for (let i = 0; i < 60; i += repeatInterval) {
+      expressionArr.push(i + runMinute);
+    }
+    const minuteField = expressionArr.join(",");
+    const expression = `${minuteField} * * * *`;
+    return expression;
+  }
+  if (!isRepeating) {
+    const expression = `${runMinute} ${runHour} * * *`;
+    return expression;
+  }
+  return null;
 }

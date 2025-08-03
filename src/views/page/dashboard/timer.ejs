@@ -1,1 +1,129 @@
-set timer
+  <div class="main">
+    <div class="container modal-id ">
+      <div class="gap-sm"></div>
+      <div class="row justify-content-center">
+
+        <div class="col-4">
+          <div class="wrap-title">
+            <div class="title">Hẹn giờ</div>
+          </div>
+          <div class="my-form #form_id">
+            <div class="wrap-my-form">
+              <form action="/automatic/timer-create" method="post">
+                <label for="template-device-group">Tên</label>
+                <div class="gap-xs"></div>
+                <div class="wrap-input required">
+                  <input type="text" name="name" placeholder="Tên" class="w-100" value="">
+                </div>
+
+                <label for="template-device-group">Danh sách hành động</label>
+                <div class="gap-xs"></div>
+                <div class="wrap-input required">
+                  <select name="action" id="template-device-group" class="w-100">
+                    <option value="createAction">Tạo hành động mới.</option>
+                    <% if(actions && actions.length>0){ %>
+                    <% for(const item of actions){ %>
+                    <option value="<%=item._id %>"><%=item.name %></option>
+                    <% } %>
+                    <%} %>
+                  </select>
+                </div>
+
+                <label for="template-device-group">Giờ</label>
+                <div class="gap-xs"></div>
+                <div class="wrap-input required">
+                  <input type="number" name="runHour" step="1" min="0" max="100" placeholder="Giờ" class="w-100" value="">
+                </div>
+
+                <label for="template-device-group">Phút</label>
+                <div class="gap-xs"></div>
+                <div class="wrap-input required">
+                  <input type="number" name="runMinute" step="1" min="0" max="100" placeholder="Phút" class="w-100" value="">
+                </div>
+
+
+                <div class="gap-xs"></div>
+                <div class="wrap-input">
+                  <input type="checkbox" name="isRepeating" id="isRepeating" checked value="1">
+                  <label for="isRepeating">Lặp lại</label>
+                </div>
+
+                <label for="template-device-group">Thời gian lặp lại</label>
+                <div class="gap-xs"></div>
+                <div class="wrap-input">
+                  <input type="number" name="repeatInterval" step="1" min="0" max="100" placeholder="Thời gian lặp lại" class="w-100" value="">
+                </div>
+
+
+                <label for="template-device-group">Đơn vị thời gian lặp lại</label>
+                <div class="gap-xs"></div>
+                <div class="wrap-input required">
+                  <select name="repeatUnit" id="template-device-group" class="w-100">
+                    <option value="day" selected>ngày</option>
+                    <option value="hour">giờ</option>
+                    <option value="minute">phút</option>
+                  </select>
+                </div>
+
+
+                <div class="submit">
+                  <button class="submit-btn">Thêm</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-8">
+          <div class="wrap-title">
+            <div class="title">Danh sách hẹn giờ</div>
+          </div>
+          <div class="base-list timer-table overflow-y-scroll">
+            <div class="wrap-box">
+              <ul class="sticky-header">
+                <li class="d-flex header-row">
+                  <span>Stt</span>
+                  <span class="device-name">Tên</span>
+                  <span>Thời gian</span>
+                  <span>Lặp lại</span>
+                  <span class="action">Hành động</span>
+                </li>
+              </ul>
+              <ul class="" id="">
+                <% if(timerJobs && timerJobs.length > 0){ %>
+                <% for(const index in timerJobs){ %>
+
+                <li class="d-flex" deviceId="dev1">
+                  <span><%= index %></span>
+                  <span class="device-name short-text"><%= timerJobs[index].name %></span>
+                  <span class="short-text"><%= timerJobs[index].runHour%> : <%= timerJobs[index].runMinute %></span>
+                  <span class="short-text"><%= timerJobs[index].repeatInterval%> <%= timerJobs[index].repeatUnit=="day"?"ngày":""%><%= timerJobs[index].repeatUnit=="hour"?"giờ":""%><%= timerJobs[index].repeatUnit=="minute"?"phút":""%></span>
+                  <span class="action">
+                    <div class="wrap-action-btn">
+                      <a href="/automatic/timer-control/<%=listJobs.indexOf(String(timerJobs[index]._id)) > -1 ?'stop':'start' %>/<%=timerJobs[index]._id %>" class="primary-btn"><%= listJobs.indexOf(String(timerJobs[index]._id)) > -1 ? "Dừng" : "Chạy" %></a>
+                    </div>
+                    <div class="wrap-action-btn">
+                      <a href="/automatic/timer-delete/<%=timerJobs[index]._id %>" value=".item-<%= timerJobs[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</a>
+                    </div>
+                  </span>
+                </li>
+                <% } %>
+                <% } else{ %>
+                <p>Không có bất kì hẹn giờ nào.</p>
+                <% } %>
+
+              </ul>
+            </div>
+
+          </div>
+          <div class="update-order-group-submit text-center">
+            <button value=".item-" class="submit-btn" onclick="submitChangeOrderForm('.change-order-1')">Lưu <span class="icon">&#9166;</span></button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="gap-md"></div>
+
+
+    </div>
+  </div>

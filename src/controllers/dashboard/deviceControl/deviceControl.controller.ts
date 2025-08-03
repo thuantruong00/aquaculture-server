@@ -10,7 +10,7 @@ import {
 } from "./deviceControl.dto";
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { ExecutionLog } from "~/entities/execution-log.entity";
-import { MqttService } from "~/services";
+import { handleWriteCommandSet, MqttService } from "~/services";
 import { logger } from "~/utils/logger";
 DeviceGroup;
 
@@ -188,6 +188,9 @@ export class DeviceControlController extends BaseController {
           ],
         });
         console.log("send command");
+        await handleWriteCommandSet(String(deviceId), key, Number(value), {
+          commandId: String(insert._id),
+        });
         // mqttService.sendCommand
       }
       return this.handleApiResponse(res, { payload: true }, undefined, 200);

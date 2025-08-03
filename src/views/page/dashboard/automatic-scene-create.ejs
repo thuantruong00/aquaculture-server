@@ -98,13 +98,11 @@
             <div class="gap-md"></div>
             <div class="wrap-input">
               <select name="action" id="action" class="w-50">
-                <option selected value="">Chọn hành động</option>
+                <option value="createAction">Tạo hành động mới.</option>
                 <% if(actions.length>0){ %>
                 <% for(item of actions){ %>
                 <option value="<%=item._id %>"><%=item.name %></option>
-                <% } } else { %>
-                <option value="">Trống - chưa có hành động nào được tạo</option>
-                <% } %>
+                <% } } %>
 
               </select>
               <label for="action">Chọn hành động</label>

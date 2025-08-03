@@ -18,7 +18,7 @@
               <select name="status" required id="status" class="w-50">
                 <% if(status.length>0){ %>
                 <% for(item of status){ %>
-                <option value="<%=item %>" <%=action.status==item?"checked":"" %>><%=item %></option>
+                <option value="<%=item %>" <%=action.status==item?"selected":"" %>><%=item %></option>
                 <% } } %>
               </select>
               <label for="status">Trạng thái</label>
@@ -46,13 +46,13 @@
                         <select name="device" required class="w-100">
                           <% if(devices.length>0){ %>
                           <% for(item of devices){ %>
-                          <option value="<%=item.deviceId+'|'+item.key %>" <%= step.deviceId == item.deviceId && step.key == item.key ? "checked":"" %>><%=item.label %></option>
+                          <option value="<%=item.deviceId+'|'+item.key %>" <%= String(step.deviceId) == String(item.deviceId) && step.key == item.key ? "selected":"" %> ><%=item.label %></option>
                           <% } } %>
                         </select>
                       </div>
                     </div>
                     <div class="col-5">
-                      <label>Giá trị</label>
+                      <label>Giá trị1</label>
                       <div class="gap-xs"></div>
                       <div class="wrap-input required">
                         <input name="value" type="number" step="0.1" min="0" max="100" value="<%= step.value %>" required placeholder="Giá trị" class="w-100">

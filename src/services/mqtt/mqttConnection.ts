@@ -118,13 +118,34 @@ mqttClient.on("message", async (topic: string, message: Buffer) => {
 //   }
 // };
 
-export const handleWriteCommand = async (
+export const handleWriteCommandSet = async (
   deviceId: string,
   key: string,
-  value: string | number | boolean
+  value: string | number | boolean,
+  opts: { commandId: string }
 ) => {
-  const topic = env.MQTT_PREFIX_TOPIC + "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" + deviceId + "/command";
-  const data = key + "|" + value;
+  const topic =
+    env.MQTT_PREFIX_TOPIC +
+    "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
+    deviceId +
+    "/command/set/" +
+    (opts.commandId ?? "undefined");
+  const data = key + ":" + value;
+  mqttClient.publish(topic, data);
+  return;
+};
+export const handleWriteCommandGet = async (
+  deviceId: string,
+  key: string,
+  value: string | number | boolean,
+  opts?: { commandId?: string }
+) => {
+  const topic =
+    env.MQTT_PREFIX_TOPIC +
+    "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
+    deviceId +
+    "/command/get/";
+  const data = key + ":" + value;
   mqttClient.publish(topic, data);
   return;
 };

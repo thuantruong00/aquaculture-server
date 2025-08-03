@@ -26,6 +26,7 @@ import {
   ActionUpdateBodySchema,
   AutomaticSceneSaveBodySchema,
   AutomaticSceneUpdateBodySchema,
+  TimerCreateBodySchema,
 } from "~/controllers/dashboard/automatic/automatic.dto";
 import { Middleware, zodMultiValidator } from "~/middlewares";
 import { IsUserGroup } from "~/utils/const";
@@ -83,6 +84,11 @@ dashboardRouter.post(
   zodMultiValidator({ body: ActionUpdateBodySchema }),
   automaticController.handleAutomaticActionUpdatePage
 );
+dashboardRouter.get(
+  "/automatic/action-delete/:actionId",
+  middleware.webPageMiddleware("automaticAction"),
+  automaticController.handleAutomaticActionDeletePage
+);
 
 dashboardRouter.post(
   "/automatic/scene-save",
@@ -106,12 +112,36 @@ dashboardRouter.get(
 dashboardRouter.get(
   "/automatic/timer",
   middleware.webPageMiddleware("automaticTimer"),
-  automaticController.handleAutomaticPage
+  automaticController.handleAutomaticTimerPage
 );
+dashboardRouter.post(
+  "/automatic/timer-create",
+  zodMultiValidator({ body: TimerCreateBodySchema }),
+  middleware.webPageMiddleware("automaticTimer"),
+  automaticController.handleAutomaticTimerCreatePage
+);
+
+dashboardRouter.get(
+  "/automatic/timer-control/start/:timerJobId",
+  middleware.webPageMiddleware("automaticTimer"),
+  automaticController.handleAutomaticTimerStart
+);
+dashboardRouter.get(
+  "/automatic/timer-control/stop/:timerJobId",
+  middleware.webPageMiddleware("automaticTimer"),
+  automaticController.handleAutomaticTimerStop
+);
+
 dashboardRouter.get(
   "/automatic/actions",
   middleware.webPageMiddleware("automaticAction"),
   automaticController.handleAutomaticActionPage
+);
+
+dashboardRouter.get(
+  "/automatic/timer-delete/:timerId",
+  middleware.webPageMiddleware("automaticSceneCreate"),
+  automaticController.handleAutomaticTimerDeletePage
 );
 
 // ─── Custom UI ────────────────────────────────────────────────

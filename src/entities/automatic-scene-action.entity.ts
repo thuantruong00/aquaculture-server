@@ -1,10 +1,11 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { ActionStatus } from "~/utils/enum";
+import { ActionStatus, DeviceType } from "~/utils/enum";
 
 export interface IActionStep {
   deviceId: Types.ObjectId;
   key: string;
   value: string | number | boolean | object; // Mixed
+  deviceType: DeviceType;
   durationSeconds?: number;
   stopMethod?: "sensor" | "timer";
 }
@@ -12,7 +13,7 @@ export interface IActionStep {
 export interface IAction {
   _id?: Types.ObjectId;
   name: string;
-  description?: string;
+  description?: string | null;
   steps: IActionStep[];
   status: ActionStatus;
   createdAt?: Date;
@@ -41,6 +42,10 @@ const ActionStepSchema = new Schema(
     stopMethod: {
       type: String,
       enum: ["sensor", "timer"],
+    },
+    deviceType: {
+      type: String,
+      enum: DeviceType,
     },
   },
   { _id: false }

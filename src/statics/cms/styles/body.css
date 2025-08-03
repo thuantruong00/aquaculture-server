@@ -1296,6 +1296,20 @@ label {
   background: rgba(0, 0, 0, 0.1);
 }
 
+.timer-table ul>li>span:first-child {
+  /* width: 10%!important; */
+}
+.timer-table ul>li>span:nth-child(2) {
+  width: 35%!important;
+}
+.timer-table ul>li>span {
+  width: 15%;
+}
+
+.timer-table ul>li>span.action {
+  width: 30%!important;
+}
+
 .device-setting-bar {
   position: absolute;
   top: 0;

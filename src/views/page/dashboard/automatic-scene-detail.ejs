@@ -18,7 +18,7 @@
               <select name="status" required id="status" class="w-50">
                 <% if(status.length>0){ %>
                 <% for(item of status){ %>
-                <option value="<%=item %>" <%=scene.status==item?"checked":"" %>><%=item %></option>
+                <option value="<%=item %>" <%=scene.status==item?"selected":"" %>><%=item %></option>
                 <% } } %>
               </select>
               <label for="status">Trạng thái</label>
@@ -35,7 +35,7 @@
               <select name="logic" required id="logic" class="w-50">
                 <% if(logicOperator.length>0){ %>
                 <% for(item of logicOperator){ %>
-                <option value="<%=item.value %>"><%=item.label %></option>
+                <option value="<%=item.value %>" <%= item.value == scene.logic ? "selected":"" %> ><%=item.label %></option>
                 <% } } %>
               </select>
               <label for="logic">Loại Logic</label>
@@ -55,7 +55,7 @@
                         <select name="device" required class="w-100">
                           <% if(devices.length>0){ %>
                           <% for(item of devices){ %>
-                          <option value="<%=item.deviceId+'|'+item.key %>" <%= condition.device == item.deviceId && condition.key == item.key ? "checked":"" %>><%=item.label %></option>
+                          <option value="<%=item.deviceId+'|'+item.key %>" <%= String(condition.device) == String(item.deviceId) && condition.key == item.key ? "selected":"" %>><%=item.label %></option>
                           <% } } %>
                         </select>
                       </div>
@@ -68,7 +68,7 @@
                         <select name="operator" required class="w-100">
                           <% if(comparisonOperators.length>0){ %>
                           <% for(item of comparisonOperators){ %>
-                          <option value="<%=item.value %>" <%=condition.operator==item.value?"checked":"" %>><%=item.label %></option>
+                          <option value="<%=item.value %>" <%=condition.operator==item.value?"selected":"" %>><%=item.label %></option>
                           <% } } %>
                         </select>
                       </div>
@@ -105,7 +105,7 @@
               <select name="action" id="action" class="w-50">
                 <% if(actions && actions.length > 0){ %>
                 <% for(item of actions){ %>
-                <option value="<%=item._id %>" <%=condition.actions && condition.actions.length>0 && condition.actions[0].value == item._id ? "checked":"" %>><%=item.name %></option>
+                <option value="<%=item._id %>" <%=scene.actions && scene.actions.length > 0 && String(scene.actions[0]._id) == String(item._id) ? "selected":"" %>><%=item.name %></option>
                 <% } } else { %>
                 <option value="">Trống - chưa có hành động nào được tạo</option>
                 <% } %>

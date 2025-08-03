@@ -1,14 +1,19 @@
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { Device } from "~/entities/device.entity";
 import { SocketService } from "../socket";
-import { DeviceFieldType, SceneStatus } from "~/utils/enum";
+import {
+  ActionStatus,
+  DeviceFieldType,
+  DeviceType,
+  SceneStatus,
+} from "~/utils/enum";
 import { float32, int32 } from "zod";
 import { Int32 } from "typeorm";
-import { IDeviceModel } from "~/entities/device-model.entity";
+import { DeviceModel, IDeviceModel } from "~/entities/device-model.entity";
 import { ConditionService } from "../condition";
 import { Action, IAction } from "~/entities/automatic-scene-action.entity";
 import { AutomationScene } from "~/entities/automatic-scene.entity";
-import { handleWriteCommand } from "./mqttConnection";
+import { handleWriteCommandGet, handleWriteCommandSet } from "./mqttConnection";
 export interface SensorDataConditionProcesss {
   key: string;
   value: string | number | boolean;
@@ -30,7 +35,7 @@ export class MqttService {
       .populate("zone")
       .populate("group")
       .populate("deviceModel");
-    if (findDevice) {
+    if (findDevice && findDevice.deviceModel) {
       const arrStringValue = value.split("|");
       if (arrStringValue.length > 0) {
         const valueInsert = [];
@@ -135,18 +140,31 @@ export class MqttService {
 
     return false;
   };
+  processByActionId = async (actionId: string) => {
+    const action = await Action.findOne({ _id: actionId }).lean<IAction>();
+    if (!action) throw new Error("Action not found");
+    await this.handleAction([action]);
+  };
 
   handleAction = async (actions: IAction[] | undefined | null) => {
-    console.log("10000", actions);
     if (actions && actions.length > 0) {
-      console.log("111111");
       for (const action of actions) {
         for (const step of action.steps) {
-          await handleWriteCommand(
-            String(step.deviceId),
-            step.key,
-            Number(step.value)
-          );
+          if (step.deviceType == DeviceType.ACTUATOR) {
+            await handleWriteCommandSet(
+              String(step.deviceId),
+              step.key,
+              Number(step.value),
+              { commandId: "xxxId" }
+            );
+          }
+          if (step.deviceType == DeviceType.SENSOR) {
+            await handleWriteCommandGet(
+              String(step.deviceId),
+              step.key,
+              Number(step.value)
+            );
+          }
         }
       }
     }
