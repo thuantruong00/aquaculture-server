@@ -1,4 +1,4 @@
-var socket = io("localhost:3000");
+var socket = io(`${window.location.hostname}:3000`);
 // Listen for 'chat message' event
 socket.on("data", function (msg) {
   const { data, topic } = msg;

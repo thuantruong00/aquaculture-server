@@ -1,1 +1,55 @@
-account page
+  <div class="main">
+    <div class="container modal-id ">
+      <div class="gap-sm"></div>
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <div class="wrap-title">
+            <div class="title">Danh sách tài khoản</div>
+          </div>
+          <div class="base-list  user-table overflow-y-scroll">
+            <div class="wrap-box">
+              <ul class="sticky-header">
+                <li class="d-flex header-row">
+                  <span>Stt</span>
+                  <span class="device-name">Tên đăng nhập</span>
+                  <span>Họ và tên</span>
+                  <span>Role</span>
+                  <span class="action">Hành động</span>
+                </li>
+              </ul>
+              <ul class="" id="">
+                <% if(users){ %>
+                <% if(users.length>0){ %>
+                <% for(const index in users){ %>
+
+                <li class="d-flex" deviceId="dev1">
+                  <span><%= index %></span>
+                  <span class="device-name short-text"><%= users[index].username %></span>
+                  <span class="short-text"><%= users[index].nickname ?? "-" %></span>
+                  <span class="short-text"><%= users[index].role%></span>
+                  <span class="action">
+                    <!-- <div class="wrap-action-btn">
+                      <a href="/automatic/timer-control/<%= true ?'stop':'start' %>/<%=users[index]._id %>" class="primary-btn"><%= true ? "Mở khoá" : "Khoá" %></a>
+                    </div> -->
+                    <div class="wrap-action-btn">
+                      <a href="/account/delete/<%=users[index]._id %>" value=".item-<%= users[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</a>
+                    </div>
+                  </span>
+                </li>
+                <% } %>
+                <% } } else{ %>
+                <p>Không có bất kì tài khoản nào.</p>
+                <% } %>
+
+              </ul>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="gap-md"></div>
+
+    </div>
+  </div>

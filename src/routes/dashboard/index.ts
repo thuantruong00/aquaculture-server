@@ -21,6 +21,8 @@ import {
   UpdateDeviceSchema,
   UpdateDeviceStatusSchema,
 } from "~/controllers";
+import { ActionCreateAccountBodySchema } from "~/controllers/dashboard/account/account.dto";
+import { ActionSignInBodySchema } from "~/controllers/dashboard/auth/auth.dto";
 import { AutomaticController } from "~/controllers/dashboard/automatic";
 import {
   ActionUpdateBodySchema,
@@ -29,7 +31,7 @@ import {
   TimerCreateBodySchema,
 } from "~/controllers/dashboard/automatic/automatic.dto";
 import { Middleware, zodMultiValidator } from "~/middlewares";
-import { IsUserGroup } from "~/utils/const";
+import { AllRoles, IsUserGroup } from "~/utils/const";
 import { UserRole } from "~/utils/enum";
 
 export const dashboardRouter = Router();
@@ -46,35 +48,39 @@ const customUiController = new CustomUiController();
 const automaticController = new AutomaticController();
 dashboardRouter.get(
   "/device-control",
-  middleware.webPageMiddleware("deviceControl"),
+  middleware.webPageMiddleware("deviceControl", { allowedRole: AllRoles }),
   zodMultiValidator({ query: DeviceControlQuerySchema }),
   deviceController.handleDeviceControlPage
 );
 dashboardRouter.get(
   "/device-control/management",
-  middleware.webPageMiddleware("deviceControlManagement"),
+  middleware.webPageMiddleware("deviceControlManagement", {
+    allowedRole: AllRoles,
+  }),
   deviceController.handleDeviceControlManagementPage
 );
 
 // ─── Automatic ────────────────────────────────────────────────
 dashboardRouter.get(
   "/automatic/",
-  middleware.webPageMiddleware("automatic"),
+  middleware.webPageMiddleware("automatic", { allowedRole: AllRoles }),
   automaticController.handleAutomaticPage
 );
 dashboardRouter.get(
   "/automatic/scene-create",
-  middleware.webPageMiddleware("automaticSceneCreate"),
+  middleware.webPageMiddleware("automaticSceneCreate", {
+    allowedRole: AllRoles,
+  }),
   automaticController.handleAutomaticSceneCreatePage
 );
 dashboardRouter.get(
   "/automatic/scene-detail/:sceneId",
-  middleware.webPageMiddleware("automatic"),
+  middleware.webPageMiddleware("automatic", { allowedRole: AllRoles }),
   automaticController.handleAutomaticSceneDetailPage
 );
 dashboardRouter.get(
   "/automatic/action-detail/:actionId",
-  middleware.webPageMiddleware("automaticAction"),
+  middleware.webPageMiddleware("automaticAction", { allowedRole: AllRoles }),
   automaticController.handleAutomaticActionDetailPage
 );
 
@@ -111,7 +117,7 @@ dashboardRouter.get(
 
 dashboardRouter.get(
   "/automatic/timer",
-  middleware.webPageMiddleware("automaticTimer"),
+  middleware.webPageMiddleware("automaticTimer", { allowedRole: AllRoles }),
   automaticController.handleAutomaticTimerPage
 );
 dashboardRouter.post(
@@ -123,7 +129,7 @@ dashboardRouter.post(
 
 dashboardRouter.get(
   "/automatic/timer-control/start/:timerJobId",
-  middleware.webPageMiddleware("automaticTimer"),
+  middleware.webPageMiddleware("automaticTimer", { allowedRole: AllRoles }),
   automaticController.handleAutomaticTimerStart
 );
 dashboardRouter.get(
@@ -134,7 +140,7 @@ dashboardRouter.get(
 
 dashboardRouter.get(
   "/automatic/actions",
-  middleware.webPageMiddleware("automaticAction"),
+  middleware.webPageMiddleware("automaticAction", { allowedRole: AllRoles }),
   automaticController.handleAutomaticActionPage
 );
 
@@ -230,7 +236,7 @@ dashboardRouter.get(
 // ─── History ───────────────────────────────────────────────────────
 dashboardRouter.get(
   "/history",
-  middleware.webPageMiddleware("history"),
+  middleware.webPageMiddleware("history", { allowedRole: AllRoles }),
   historyController.handleHistoryPage
 );
 
@@ -238,16 +244,33 @@ dashboardRouter.get(
 dashboardRouter.get(
   "/account",
   middleware.webPageMiddleware("account"),
-  accountController.handleAccountAddPage
+  accountController.handleAccountPage
 );
 dashboardRouter.get(
-  "/account/add",
+  "/account/create",
   middleware.webPageMiddleware("accountAdd"),
-  accountController.handleAccountAddPage
+  accountController.handleAccountCreatePage
+);
+dashboardRouter.post(
+  "/account/create",
+  zodMultiValidator({ body: ActionCreateAccountBodySchema }),
+  middleware.webPageMiddleware("accountAdd"),
+  accountController.handleAccountCreateFormPage
+);
+
+dashboardRouter.get(
+  "/account/delete/:userId",
+  middleware.webPageMiddleware("accountAdd"),
+  accountController.handleAccountDeleteFormPage
 );
 
 // ─── Auth ───────────────────────────────────────────────────────
 dashboardRouter.get("/auth/sign-in", authController.handleSignInPage);
+dashboardRouter.post(
+  "/auth/sign-in",
+  zodMultiValidator({ body: ActionSignInBodySchema }),
+  authController.handleSignInFormPage
+);
 dashboardRouter.get("/auth/sign-out", authController.handleSignOutPage);
 // dashboardRouter.post("/auth/login", accountController.handleAccountAddPage);
 

@@ -131,7 +131,7 @@ export const sidebarData = [
       {
         page_id: "accountAdd",
         title: "Thêm mới tài khoản",
-        href: "/account/add",
+        href: "/account/create",
         page_name: "page/dashboard/account-add",
         child: [],
       },

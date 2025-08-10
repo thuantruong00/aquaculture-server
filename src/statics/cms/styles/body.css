@@ -1296,18 +1296,24 @@ label {
   background: rgba(0, 0, 0, 0.1);
 }
 
-.timer-table ul>li>span:first-child {
+.timer-table ul>li>span:first-child,
+.user-table ul>li>span:first-child {
   /* width: 10%!important; */
 }
-.timer-table ul>li>span:nth-child(2) {
-  width: 35%!important;
+
+.timer-table ul>li>span:nth-child(2),
+.user-table ul>li>span:nth-child(2) {
+  width: 35% !important;
 }
-.timer-table ul>li>span {
+
+.timer-table ul>li>span,
+.user-table ul>li>span {
   width: 15%;
 }
 
-.timer-table ul>li>span.action {
-  width: 30%!important;
+.timer-table ul>li>span.action,
+.user-table ul>li>span.action {
+  width: 30% !important;
 }
 
 .device-setting-bar {
@@ -1377,4 +1383,18 @@ label {
 .row-div {
   border-bottom: 2px solid rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
+}
+
+/* ============= */
+.non-matching {
+  color: red;
+}
+
+.matching {
+  color: #99FF00;
+}
+
+.center-background {
+  background: rgba(211, 243, 253, 1);
+  min-height: 100vh;
 }

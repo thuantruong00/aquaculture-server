@@ -1,4 +1,34 @@
-<h2>login</h2>
-<input type="text">
-<input type="password" name="" id="">
-<button>submit</button>
+<div class="container modal-id ">
+  <div class="gap-sm"></div>
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <div class="wrap-title">
+        <div class="title">Đăng nhập</div>
+      </div>
+      <div class="my-form #form_id">
+        <div class="wrap-my-form">
+          <form action="/auth/sign-in" method="post">
+            <label for="name">Tên đăng nhập</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <input type="text" required minlength="4" maxlength="64" name="userName" class="w-100">
+            </div>
+            <label for="name">Mật khẩu</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required" >
+              <input type="password" required minlength="6" maxlength="32" name="password" id="" class="w-100">
+            </div>
+
+        </div>
+      </div>
+
+      <!-- ====================== -->
+      <div class="submit">
+        <button class="submit-btn w-100">Lưu</button>
+      </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+<div class="gap-md"></div>

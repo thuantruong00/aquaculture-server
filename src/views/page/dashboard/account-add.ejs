@@ -1,1 +1,56 @@
-account add
+<div class="gap-sm"></div>
+<div class="row justify-content-center">
+  <div class="col-8">
+    <div class="wrap-title">
+      <div class="title">Tạo tài khoản mới</div>
+    </div>
+    <div class="my-form create-account" id="create-device-group">
+      <div class="wrap-my-form">
+        <form action="/account/create" method="post">
+          <label>Tên tài khoản</label>
+          <div class="gap-xs"></div>
+          <div class="wrap-input required">
+            <input name="userName" minlength="4" maxlength="64" type="text" required placeholder="Tên tài khoản viết liền không dấu" class="w-100">
+          </div>
+          <label>Họ và tên</label>
+          <div class="gap-xs"></div>
+          <div class="wrap-input">
+            <input name="nickName" minlength="1" maxlength="32" type="text" placeholder="Họ và tên" class="w-100">
+          </div>
+          <div class="wrap-input">
+            <select name="role" id="role" class="w-50" required>
+              <% for(const item of roles){ %>
+              <option value="<%=item %>"><%=item %></option>
+              <% } %>
+            </select>
+            <label for="role">Role</label>
+          </div>
+          <div class="wrap-input">
+            <select name="status" id="status" class="w-50" required>
+              <% for(const item of status){ %>
+              <option value="<%=item %>"><%=item %></option>
+              <% } %>
+            </select>
+            <label for="status">Trạng thái</label>
+          </div>
+          <label>Mật khẩu</label>
+          <div class="gap-xs"></div>
+          <div class="wrap-input required">
+            <input name="password" type="password" minlength="6" maxlength="32" required placeholder="Mật khẩu" class="w-100 password">
+          </div>
+          <label>Nhập lại mật khẩu</label>
+          <div class="gap-xs"></div>
+          <div class="wrap-input required">
+            <input name="rePassword" type="password" minlength="6" maxlength="32" required placeholder="Nhập lại mật khẩu" class="w-100 re-password">
+          </div>
+          <p class="non-matching">Mật khẩu chưa trùng khớp</p>
+          <p class="d-none matching">Mật khẩu trùng khớp</p>
+          <div class="submit">
+            <button class="submit-btn">Submit</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

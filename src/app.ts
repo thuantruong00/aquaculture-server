@@ -65,7 +65,7 @@ app.use(express.static(path.join(__dirname, "statics")));
 
 routes(app);
 app.get("/", function (req, res) {
-  res.redirect("/auth/sign-in");
+  res.redirect("/device-control");
 });
 
 // initialService();

@@ -220,3 +220,19 @@ $(document).on('click', '.btn-delete-condition', function (e) {
         $(this).closest('.row').remove();
     }
 });
+
+// ============= create account / check re-password
+$('.create-account .re-password').on('input', function () {
+    const rePassword = $(this).val();
+    const password = $('.create-account .password').val();
+
+    if (rePassword !== password) {
+        $(".create-account .non-matching").removeClass("d-none");
+        $(".create-account .matching").addClass("d-none");
+        console.log("failed");
+    } else {
+        $(".create-account .non-matching").addClass("d-none");
+        $(".create-account .matching").removeClass("d-none");
+        console.log("succeed");
+    }
+});

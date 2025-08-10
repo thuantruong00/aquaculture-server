@@ -1,10 +1,13 @@
 import { Request, Response } from "express";
 import "express-session";
-import { UserRole } from "~/utils/enum";
+import { UserRole, UserStatus } from "~/utils/enum";
 
 import { BaseController } from "../dashboard.base-controller";
 import { ZoneRepository } from "~/repositories";
 import { generateZoneKey } from "~/utils/mqtt";
+import { logger } from "~/utils/logger";
+import { IActionSignInBodySchema } from "./auth.dto";
+import { User } from "~/entities/user.entity";
 
 export class AuthController extends BaseController {
   constructor() {
@@ -12,37 +15,34 @@ export class AuthController extends BaseController {
   }
 
   handleSignInPage = async (req: Request, res: Response) => {
-    // const update = await ZoneRepository.updateZonesWithMqttKey();
-    // console.log(update)
-    // dev
-    req.session.user = {
-      user_id: "u1",
-      username: "name",
-      role: UserRole.ROOT,
-      nickname: "nikc",
-      email: "email",
-    };
-    return res.render("page/dashboard/login", {
-      active_page: {
-        title: "Đăng nhập",
-        page_name: "Login",
-        page_parent_active: "Login",
-        page_id: "login",
-      },
-      layout: "./layouts/center-layout.ejs",
-    });
+    // req.session.user = {
+    //   user_id: "u1",
+    //   username: "name",
+    //   role: UserRole.ROOT,
+    //   nickname: "nikc",
+    //   email: "email",
+    // };
+    // return res.render("page/dashboard/login", {
+    //   active_page: {
+    //     title: "Đăng nhập",
+    //     page_name: "Login",
+    //     page_parent_active: "Login",
+    //     page_id: "login",
+    //   },
+    //   layout: "./layouts/center-layout.ejs",
+    // });
     // dev
 
     if (req.session.user) {
       return res.redirect("/device-control");
     } else {
-      req.session.user = {
-        user_id: "u1",
-        username: "name",
-        role: UserRole.ROOT,
-        nickname: "nikc",
-        email: "email",
-      };
+      // req.session.user = {
+      //   user_id: "u1",
+      //   username: "name",
+      //   role: UserRole.ROOT,
+      //   nickname: "nikc",
+      //   email: "email",
+      // };
       return res.render("page/dashboard/login", {
         active_page: {
           title: "Login",
@@ -51,6 +51,34 @@ export class AuthController extends BaseController {
           page_id: "login",
         },
         layout: "./layouts/center-layout.ejs",
+      });
+    }
+  };
+  handleSignInFormPage = async (req: Request, res: Response) => {
+    try {
+      const { userName, password } = req.body as IActionSignInBodySchema;
+      const user = await User.findOne({
+        username: userName,
+        status: UserStatus.ACTIVE,
+      });
+      if (user) {
+        const verify = await user.comparePassword(password);
+        if (verify) {
+          req.session.user = {
+            user_id: String(user._id),
+            username: user.username,
+            role: user.role,
+            nickname: user.nickname,
+            email: user.email,
+          };
+          return res.redirect("/device-control");
+        }
+      }
+      return res.redirect(req.get("Referer") || "/fallback");
+    } catch (error) {
+      logger.error("Err handleAutomaticSceneSavePage", error);
+      return this.renderWithSidebar(res, "page/error", {
+        layout: "/layouts/default-layout.ejs",
       });
     }
   };

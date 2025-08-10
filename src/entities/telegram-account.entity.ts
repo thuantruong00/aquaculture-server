@@ -14,15 +14,7 @@ const TelegramAccountSchema = new Schema(
       unique: true, // mỗi tài khoản Telegram có chatId duy nhất
     },
 
-    username: {
-      type: String, // @username (optional)
-    },
-
-    firstName: {
-      type: String,
-    },
-
-    lastName: {
+    description: {
       type: String,
     },
 

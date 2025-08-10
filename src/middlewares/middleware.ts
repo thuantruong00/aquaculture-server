@@ -19,10 +19,8 @@ export class Middleware {
     this.userRole = userRole;
   }
 
-  webPageMiddleware(
-    pageCode: string,
-    opts?: { allowedRole?: UserRole[]; bypass?: boolean }
-  ) {
+  webPageMiddleware(pageCode: string, opts?: { allowedRole?: UserRole[] }) {
+    const bypass = false;
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const sessionUser = req.session.user;
@@ -35,11 +33,15 @@ export class Middleware {
         const currentRole: UserRole =
           (this.userRole as UserRole) || UserRole.GUEST;
 
-        if (!opts?.bypass) {
+        if (!bypass) {
           const access = checkAccess({
             role: currentRole,
             pageCode,
-            allowedRole: opts?.allowedRole,
+            allowedRole: opts?.allowedRole ?? [
+              UserRole.USER,
+              UserRole.ADMIN,
+              UserRole.ROOT,
+            ],
           });
 
           if (!access.allowed) {
@@ -115,9 +117,13 @@ export function checkAccess(options: {
   allowedRole?: UserRole[];
 }): { allowed: boolean; reason?: "unauthenticated" | "unauthorized" } {
   const { role, pageCode, allowedRole } = options;
+  console.log("currentRole", role);
+  console.log("pageCode", pageCode);
+  console.log("allowedRole", allowedRole);
   // Nếu có cấu hình allowedRole tại route, ưu tiên sử dụng
   if (allowedRole && allowedRole.length > 0) {
     const isAllowed = allowedRole.includes(role);
+    console.log(isAllowed);
     if (!isAllowed) {
       return {
         allowed: false,
