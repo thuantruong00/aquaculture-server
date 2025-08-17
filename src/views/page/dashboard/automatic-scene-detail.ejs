@@ -35,7 +35,7 @@
               <select name="logic" required id="logic" class="w-50">
                 <% if(logicOperator.length>0){ %>
                 <% for(item of logicOperator){ %>
-                <option value="<%=item.value %>" <%= item.value == scene.logic ? "selected":"" %> ><%=item.label %></option>
+                <option value="<%=item.value %>" <%= item.value == scene.logic ? "selected":"" %>><%=item.label %></option>
                 <% } } %>
               </select>
               <label for="logic">Loại Logic</label>
@@ -114,6 +114,18 @@
               <label for="action">Chọn hành động</label>
               <div class="gap-sm"></div>
               <a href="#" class="px-3">Tạo hành động (nếu chưa có)</a>
+            </div>
+
+            <div class="gap-sm"></div>
+            <div class="wrap-input required">
+              <select name="notiGroup" required id="notiGroup" class="w-50">
+                <option value="none">Không nhận thông báo</option>
+                <% if(notiGroup.length>0){ %>
+                <% for(item of notiGroup){ %>
+                <option value="<%=item._id %>" <%= String(item._id) == String(scene.notifications) ? "selected":"" %>><%=item.name %></option>
+                <% } } %>
+              </select>
+              <label for="logic">Chọn nhóm nhận thông báo</label>
             </div>
 
             <!-- ====================== -->

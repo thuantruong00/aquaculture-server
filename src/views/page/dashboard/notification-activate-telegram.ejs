@@ -1,0 +1,40 @@
+<div class="container modal-id">
+  <div class="gap-sm"></div>
+  <div class="wrap-title">
+    <div class="title">Danh sách tài khoản chờ kích hoạt</div>
+  </div>
+  <div class="base-list pending-devices-list pt-2">
+    <div class="wrap-box">
+      <ul>
+        <li class="d-flex header-row">
+          <span>Stt</span>
+          <span class="device-name">Tên</span>
+          <span>Trạng thái</span>
+          <span>ID</span>
+          <span>Mô tả</span>
+          <span class="action">Hành động</span>
+        </li>
+        <% if(notiList.length>0) { for (const index in notiList) { %>
+        <li class="item-<%=notiList[index]._id %> d-flex">
+          <span><%= index %></span>
+          <span class="device-name"><%= notiList[index].name %></span>
+          <span class="short-text"><%= notiList[index].status %></span>
+          <span class="short-text"><%=notiList[index].telegramId %></span>
+          <span class="short-text"><%= notiList[index].description %></span>
+          <span class="action wrap-action-btn">
+            <a href="/notification-setting/activate-telegram/<%=notiList[index]._id %>">
+              <button class="primary-btn">Kích hoạt</button>
+            </a>
+
+            <a href="/notification-setting/delete-telegram/<%=notiList[index]._id %>">
+              <button title="Xoá" value=".item-<%=notiList[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</button>
+            </a>
+          </span>
+        </li>
+        <% } } else { %>
+        <p>Không có bất kì tài khoản nào.</p>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</div>

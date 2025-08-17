@@ -102,11 +102,33 @@ export const sidebarData = [
     ],
   },
   {
-    page_id: "notificationSetting",
+    page_id: "notificationGroup",
     title: "Cài đặt thông báo",
-    href: "/notification-setting",
-    page_name: "page/dashboard/notification-setting",
-    child: [],
+    href: "/notification-setting/group",
+    page_name: "page/dashboard/notification-group",
+    child: [
+      {
+        page_id: "notificationGroup",
+        title: "Danh sách nhóm",
+        href: "/notification-setting/group",
+        page_name: "page/dashboard/notification-group",
+        child: [],
+      },
+      {
+        page_id: "notificationSetting",
+        title: "Danh sách tài khoản",
+        href: "/notification-setting",
+        page_name: "page/dashboard/notification-setting",
+        child: [],
+      },
+      {
+        page_id: "notificationSettingActivateTelegram",
+        title: "Kích hoạt tài khoản Telegram",
+        href: "/notification-setting/inactive-telegram",
+        page_name: "page/dashboard/notification-activate-telegram",
+        child: [],
+      },
+    ],
   },
   {
     page_id: "history",

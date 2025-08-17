@@ -66,7 +66,7 @@ const AutomationSceneSchema = new Schema(
       default: 3, // giới hạn số lần retry liên tục nếu điều kiện không phù hợp
       min: 0,
     },
-    notifications: [{ type: Schema.Types.ObjectId, ref: "NotificationOption" }],
+    notifications: { type: Schema.Types.ObjectId, ref: "NotificationOption" },
   },
   {
     timestamps: true,

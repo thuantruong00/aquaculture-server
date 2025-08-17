@@ -25,6 +25,7 @@ import { TimerJob } from "~/entities/timer-job.entity";
 import is from "zod/v4/locales/is.cjs";
 import { addJob, listJobs, removeJob } from "~/services";
 import { IDeviceModel } from "~/entities/device-model.entity";
+import { NotificationOption } from "~/entities/notification-option.entity";
 
 export class AutomaticController extends BaseController {
   handleAutomaticPage = async (req: Request, res: Response) => {
@@ -89,6 +90,7 @@ export class AutomaticController extends BaseController {
   };
   handleAutomaticSceneCreatePage = async (req: Request, res: Response) => {
     try {
+      const findNotiGroup = await NotificationOption.find({});
       const result = await Device.aggregate([
         {
           $match: {
@@ -152,6 +154,7 @@ export class AutomaticController extends BaseController {
         devices: result,
         status: [SceneStatus.ACTIVE, SceneStatus.INACTIVE],
         actions: findAction,
+        notiGroup: findNotiGroup,
       });
     } catch (error) {
       logger.error("Err handleAutomaticSceneCreatePage", error);
@@ -215,8 +218,18 @@ export class AutomaticController extends BaseController {
   handleAutomaticSceneUpdatePage = async (req: Request, res: Response) => {
     try {
       const { sceneId } = req.params as unknown as any;
-      const { name, status, group, logic, action, device, operator, value } =
-        req.body as IAutomaticSceneUpdateBodySchema;
+      const {
+        name,
+        status,
+        group,
+        logic,
+        action,
+        device,
+        operator,
+        value,
+        notiGroup,
+      } = req.body as IAutomaticSceneUpdateBodySchema;
+      let notiGroupValue = notiGroup == "none" ? null : notiGroup;
       const condition = [];
       if (device.length > 0) {
         for (const item in device) {
@@ -239,6 +252,7 @@ export class AutomaticController extends BaseController {
           actions: action ? [action] : [],
           logic,
           conditions: condition,
+          notifications: notiGroup,
         }
       );
 
@@ -314,6 +328,7 @@ export class AutomaticController extends BaseController {
           },
         },
       ]);
+      const findNotiGroup = await NotificationOption.find({});
       const findAction = await Action.find({
         status: { $eq: ActionStatus.ACTIVE },
       });
@@ -348,6 +363,7 @@ export class AutomaticController extends BaseController {
             status: [SceneStatus.ACTIVE, SceneStatus.INACTIVE],
             scene: findScene,
             actions: findAction,
+            notiGroup: findNotiGroup,
           }
         );
       }

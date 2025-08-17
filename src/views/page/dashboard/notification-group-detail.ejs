@@ -1,0 +1,103 @@
+<div class="container modal-id ">
+  <div class="gap-sm"></div>
+  <div class="row justify-content-start">
+    <div class="col-4">
+      <div class="wrap-title">
+        <div class="title">Thêm tài khoản Telegram</div>
+      </div>
+      <div class="my-form #form_id">
+        <div class="wrap-my-form">
+          <form action="/notification-setting/add-telegram-account-group" method="post">
+            <label for="template-device-group">Danh sách tài khoản</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <select name="accountId" id="template-device-group" class="w-100">
+                <% if(accountList.length>0){
+                  for(const account of accountList) { %>
+                <option value="<%=account._id %>"><%=account.name %></option>
+                <% } } else{ %>
+                <option>Không có tài khoản để chọn .</option>
+                <% } %>
+              </select>
+            </div>
+            <label for="">Nhóm</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <input type="text" name="groupId" value="<%=group._id %>">
+            </div>
+            <div class="submit">
+              <button class="submit-btn">Thêm</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="wrap-title">
+        <div class="title">Chỉnh sửa nhóm nhận thông báo</div>
+      </div>
+      <div class="my-form #form_id">
+        <div class="wrap-my-form">
+          <form action="/notification-setting/update-group/<%= group._id%>" method="post">
+            <label for="">Tên nhóm</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input required">
+              <input type="text" name="name" required placeholder="Tên nhóm" class="w-100" value="<%=group.name %>">
+            </div>
+
+            <div class="gap-xs"></div>
+            <label for="">Tin nhắn</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input">
+              <input type="text" name="message" placeholder="Tin nhắn / Có thể để trống" class="w-100" value="<%=group.message %>">
+            </div>
+
+            <div class="base-list update-order-group-list overflow-y-scroll">
+              <div class="wrap-box">
+                <ul class="sticky-header">
+                  <li class="d-flex header-row">
+                    <span>STT</span>
+                    <span class="device-name">Tên TK</span>
+                    <span>Mô tả</span>
+                    <span class="action">Hành động</span>
+                  </li>
+                </ul>
+                <ul class="" id="">
+                  <% const telegramAcc = group.channels.telegram %>
+                  <% if(telegramAcc.length>0){ 
+              for(const index in telegramAcc){ %>
+                  <li class="d-flex">
+                    <span><%=index %></span>
+                    <span class="device-name short-text"><%=telegramAcc[index].name %></span>
+                    <span class="short-text"><%=telegramAcc[index].description %></span>
+                    <span class="action">
+                      <div class="wrap-action-btn">
+
+                        <a href="/notification-setting/remove-account-group?accountId=<%=telegramAcc[index]._id %>&groupId=<%=group._id %>" class="primary-btn delete-device-btn-style">Gỡ ra ×</a>
+                      </div>
+                    </span>
+                  </li>
+                  <% } } %>
+
+                </ul>
+              </div>
+
+            </div>
+
+            <div class="gap-xs"></div>
+            <label for="">Mô tả</label>
+            <div class="gap-xs"></div>
+            <div class="wrap-input">
+              <input type="text" name="description" placeholder="Mô tả / Có thể để trống" class="w-100" value="<%=group.description %>">
+            </div>
+
+            <div class="submit">
+              <button class="submit-btn">Gửi</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gap-md"></div>
+</div>

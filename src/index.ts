@@ -1,5 +1,4 @@
 import app from "./app";
-import { initJobs, mqttClient } from "./services";
 import { SocketService } from "./services";
 import { connectMongoDB } from "./config/dataSource";
 const port = process.env.PORT || 8002;
@@ -8,11 +7,12 @@ const port = process.env.PORT || 8002;
 
 const main = async () => {
   try {
-    connectMongoDB();
-    await initJobs(); // ✅ Load các job đã lưu từ file db.json
+    await connectMongoDB();
     console.log("✅ Scheduler initialized");
-    mqttClient;
-
+    const { initialService } = await import(
+      "./services/initial/initial.service"
+    );
+    await initialService(); // ✅ Gọi init sau khi đã connect
     app.listen(port, () => {
       console.log("🚀 HTTP Server is running on port", port);
     });

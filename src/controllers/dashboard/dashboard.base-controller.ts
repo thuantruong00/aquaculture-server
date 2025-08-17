@@ -3,6 +3,7 @@ import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 import { UserRole } from "~/utils/enum";
 import { getSidebarContentService } from "~/services/cms/sidebarControl.service";
+import { logger } from "~/utils/logger";
 
 type DTOConfig = {
   body?: new () => any;
@@ -18,7 +19,9 @@ export abstract class BaseController {
     this.userRole = userRole;
     this.defaultLayout = layout;
   }
-
+  handleRenderPage = async (req: Request, res: Response) => {
+    return this.renderWithSidebar(res);
+  };
   _middleware(pageCode: string, dtoConfig?: DTOConfig) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -106,7 +109,7 @@ export abstract class BaseController {
     viewName?: string,
     extraData: any = {}
   ) {
-    console.log(extraData);
+    logger.debug(extraData);
     const sidebar = res.locals.sidebar;
     const page = viewName ?? sidebar?.active_page?.page_name;
     return res.render(page, {

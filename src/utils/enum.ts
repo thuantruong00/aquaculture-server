@@ -22,6 +22,13 @@ export enum UserStatus {
   DELETED = "deleted",
 }
 
+export enum NotiAccountStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  BANNED = "banned",
+  DELETED = "deleted",
+}
+
 export enum DeviceGroup {
   DEFAULT = "default",
 }
@@ -99,7 +106,6 @@ export enum ExecutionSource {
   SCHEDULE = "schedule", // từ cron server
 }
 
-
 export enum RepeatUnit {
   DAY = "day",
   HOUR = "hour",
@@ -136,4 +142,16 @@ export enum MqttDeviceFunction {
 
 export enum OtpTarget {
   PAIRING = "pairing",
+}
+
+export enum NotificationSubscribedEvent {
+  TRIGGERED = "triggered",
+  EXECUTED = "executed",
+  FAILED = "failed",
+  TIMEOUT = "timeout",
+}
+export enum NotificationTemplate {
+  MESSAGE = "message",
+  TELEMETRY = "telemetry",
+  WARNING = "warning",
 }

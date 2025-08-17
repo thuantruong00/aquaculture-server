@@ -1,7 +1,3 @@
-import dotenv from "dotenv";
-
-dotenv.config();
-
 export const env = {
   DB_CONNECT_STRING: process.env.DB_CONNECT_STRING || "",
   MQTT_HOST: process.env.MQTT_HOST,
@@ -14,4 +10,7 @@ export const env = {
   ZONE_SECRET: process.env.ZONE_SECRET,
   BASIC_AUTH_USERNAME: process.env.BASIC_AUTH_USERNAME,
   BASIC_AUTH_PASSWORD: process.env.BASIC_AUTH_PASSWORD,
+  INIT: process.env.INIT || 0,
+  BOT_TOKEN: process.env.BOT_TOKEN || "",
+  BOT_ALLOW_USER: process.env.BOT_ALLOW_USER || 0,
 };

@@ -14,6 +14,11 @@ import { ConditionService } from "../condition";
 import { Action, IAction } from "~/entities/automatic-scene-action.entity";
 import { AutomationScene } from "~/entities/automatic-scene.entity";
 import { handleWriteCommandGet, handleWriteCommandSet } from "./mqttConnection";
+import { telegramService } from "..";
+import { INotificationOption } from "~/entities/notification-option.entity";
+import { TelegramAccount } from "~/entities/telegram-account.entity";
+import { t } from "~/utils/i18n/i18n";
+
 export interface SensorDataConditionProcesss {
   key: string;
   value: string | number | boolean;
@@ -116,7 +121,18 @@ export class MqttService {
               key: item.key,
             },
           },
-        }).populate<{ actions: IAction[] }>("actions");
+        })
+          .populate<{ actions: IAction[] }>("actions")
+          .populate<{ notifications: INotificationOption }>({
+            path: "notifications",
+            model: "NotificationOption",
+            // nếu muốn populate sâu các channels bên trong NotificationOption:
+            populate: [
+              { path: "channels.telegram", model: "TelegramAccount" },
+              // email thường là string hoặc EmailContact -> tùy schema
+            ],
+          })
+          .lean();
         console.log(findScene);
         const expected = findScene?.conditions.find(
           (cond) => cond.key == item.key
@@ -131,7 +147,28 @@ export class MqttService {
           console.log("check = ", check);
           if (check) {
             await this.handleAction(findScene?.actions);
+            if (findScene?.notifications) {
+              const telegramIds =
+                findScene?.notifications.channels.telegram.map((item) =>
+                  String(item._id)
+                );
+              const findTelegramAccount = await TelegramAccount.find({
+                _id: { $in: telegramIds },
+              });
+              const telegramAccountIds = findTelegramAccount.map(
+                (item) => item.telegramId
+              );
+              let message = findScene?.notifications?.message
+                ? findScene?.notifications?.message
+                : "Cảnh báo";
+              message += `\n${findScene.name}`;
+              message += `\n${t("sensors." + item.key.toLowerCase(), undefined, "vi")} : ${item.value}`;
 
+              await telegramService.sendManyUserSequential(
+                telegramAccountIds,
+                message
+              );
+            }
             return;
           }
         }

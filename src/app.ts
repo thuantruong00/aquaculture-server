@@ -1,20 +1,17 @@
 import "reflect-metadata";
 import express from "express";
-import dotenv from "dotenv";
+import "dotenv/config";
 import path from "path";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import expressLayouts from "express-ejs-layouts";
 import session from "express-session";
 
-
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-dotenv.config();
 
 // create a express server
 const app: express.Application = express();
@@ -32,14 +29,13 @@ app.use(express.urlencoded({ extended: false }));
 
 /* ===== Router ===== */
 import { routes } from "./routes";
-import { initialService } from "./services/initial/initial.service";
 import { errorHandler } from "./middlewares/errors.middleware";
 
 // setup express session
 app.use(
   session({
     secret: "secret",
-    // saveUninitialized: true,
+    saveUninitialized: true,
     resave: true,
     rolling: true,
     cookie: {
@@ -65,10 +61,8 @@ app.use(express.static(path.join(__dirname, "statics")));
 
 routes(app);
 app.get("/", function (req, res) {
-  res.redirect("/device-control");
+  res.redirect("/auth/sign-in");
 });
-
-// initialService();
 
 // error handling
 

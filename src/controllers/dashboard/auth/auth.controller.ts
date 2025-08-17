@@ -15,22 +15,22 @@ export class AuthController extends BaseController {
   }
 
   handleSignInPage = async (req: Request, res: Response) => {
-    // req.session.user = {
-    //   user_id: "u1",
-    //   username: "name",
-    //   role: UserRole.ROOT,
-    //   nickname: "nikc",
-    //   email: "email",
-    // };
-    // return res.render("page/dashboard/login", {
-    //   active_page: {
-    //     title: "Đăng nhập",
-    //     page_name: "Login",
-    //     page_parent_active: "Login",
-    //     page_id: "login",
-    //   },
-    //   layout: "./layouts/center-layout.ejs",
-    // });
+    req.session.user = {
+      user_id: "689ea07d5f9880283ee68a4a",
+      username: "name",
+      role: UserRole.ROOT,
+      nickname: "nikc",
+      email: "email",
+    };
+    return res.render("page/dashboard/login", {
+      active_page: {
+        title: "Đăng nhập",
+        page_name: "Login",
+        page_parent_active: "Login",
+        page_id: "login",
+      },
+      layout: "./layouts/center-layout.ejs",
+    });
     // dev
 
     if (req.session.user) {

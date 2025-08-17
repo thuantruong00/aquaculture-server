@@ -940,12 +940,14 @@ label {
   border-left: 3px solid rgba(0, 0, 0, 0);
 }
 
-.active-device-btn {
+.active-device-btn,
+.active-btn {
   border: 1px solid rgba(0, 0, 0, 0.7);
   display: inline-block;
   width: 100%;
   background-color: #fff;
 }
+
 
 .primary-btn {
   /* background: var(--active-color); */
@@ -973,9 +975,6 @@ label {
   color: #000;
 }
 
-/* .active-device-btn:focus{
-  background: rgba(0,0,0,0.1);
-} */
 /* ================= */
 .device-group>.wrap-device-group {
   /* background: #fff; */
@@ -1397,4 +1396,8 @@ label {
 .center-background {
   background: rgba(211, 243, 253, 1);
   min-height: 100vh;
+}
+
+.chart-bg {
+  background: #fff;
 }

@@ -30,6 +30,11 @@ import {
   AutomaticSceneUpdateBodySchema,
   TimerCreateBodySchema,
 } from "~/controllers/dashboard/automatic/automatic.dto";
+import {
+  AddTelegramAccountGroupSchema,
+  RemoveTelegramAccountGroupSchema,
+  UpdateGroupSchema,
+} from "~/controllers/dashboard/notificationSetting/notificationSetting.dto";
 import { Middleware, zodMultiValidator } from "~/middlewares";
 import { AllRoles, IsUserGroup } from "~/utils/const";
 import { UserRole } from "~/utils/enum";
@@ -232,12 +237,76 @@ dashboardRouter.get(
   middleware.webPageMiddleware("notificationSetting"),
   notificationSettingController.handleNotificationSettingPage
 );
+dashboardRouter.get(
+  "/notification-setting/inactive-telegram",
+  middleware.webPageMiddleware("notificationSettingActivateTelegram"),
+  notificationSettingController.handleActivateTelegramAccountPage
+);
+dashboardRouter.get(
+  "/notification-setting/activate-telegram/:id",
+  middleware.webPageMiddleware("notificationSettingActivateTelegram"),
+  notificationSettingController.handleActivateTelegramAccountSubmitPage
+);
+dashboardRouter.get(
+  "/notification-setting/delete-telegram/:id",
+  middleware.webPageMiddleware("notificationSettingActivateTelegram"),
+  notificationSettingController.handleDeleteTelegramAccountSubmitPage
+);
+dashboardRouter.get(
+  "/notification-setting/detail-telegram/:id",
+  middleware.webPageMiddleware("notificationSettingActivateTelegram"),
+  notificationSettingController.handleActivateTelegramAccountSubmitPage
+);
+dashboardRouter.get(
+  "/notification-setting/group",
+  middleware.webPageMiddleware("notificationGroup"),
+  notificationSettingController.handleNotificationSettingGroupPage
+);
+dashboardRouter.get(
+  "/notification-setting/group-detail/:id",
+  middleware.webPageMiddleware("notificationGroup"),
+  notificationSettingController.handleNotificationGroupDetailPage
+);
+
+dashboardRouter.post(
+  "/notification-setting/add-telegram-account-group",
+  zodMultiValidator({ body: AddTelegramAccountGroupSchema }),
+  middleware.webPageMiddleware("notificationGroup"),
+  notificationSettingController.handleAddTelegramAccountPage
+);
+dashboardRouter.get(
+  "/notification-setting/delete-group/:groupId",
+  middleware.webPageMiddleware("notificationGroup"),
+  notificationSettingController.handleDeleteGroup
+);
+dashboardRouter.get(
+  "/notification-setting/new-group/",
+  middleware.webPageMiddleware("notificationGroup"),
+  notificationSettingController.handleNewGroup
+);
+dashboardRouter.get(
+  "/notification-setting/remove-account-group/",
+  middleware.webPageMiddleware("notificationGroup"),
+  notificationSettingController.handleRemoveTelegramAccountPage
+);
+dashboardRouter.post(
+  "/notification-setting/update-group/:groupId",
+  zodMultiValidator({ body: UpdateGroupSchema }),
+  middleware.webPageMiddleware("notificationGroup"),
+  notificationSettingController.handleUpdateGroup
+);
 
 // ─── History ───────────────────────────────────────────────────────
 dashboardRouter.get(
   "/history",
   middleware.webPageMiddleware("history", { allowedRole: AllRoles }),
   historyController.handleHistoryPage
+);
+
+dashboardRouter.get(
+  "/history/chart",
+  middleware.webPageMiddleware("history", { allowedRole: AllRoles }),
+  historyController.handleRenderPage
 );
 
 // ─── Account ───────────────────────────────────────────────────────

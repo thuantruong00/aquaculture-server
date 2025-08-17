@@ -64,6 +64,7 @@ export const AutomaticSceneUpdateBodySchema = z.object({
   device: z.preprocess(ensureArray, z.array(z.string().min(1).max(300))),
   operator: z.preprocess(ensureArray, z.array(z.string().min(1).max(64))),
   value: z.preprocess(ensureArray, z.array(z.string().min(1).max(64))),
+  notiGroup: z.string().min(1).max(64),
 });
 
 export type IAutomaticSceneUpdateBodySchema = z.infer<

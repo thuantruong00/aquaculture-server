@@ -1,37 +1,45 @@
-import mongoose, { Schema } from "mongoose";
+import { Document, Schema, model, Types } from "mongoose";
+import { NotiAccountStatus, NotificationSubscribedEvent } from "~/utils/enum";
 
-const TelegramAccountSchema = new Schema(
+// Interface mô tả dữ liệu TelegramAccount
+export interface ITelegramAccount extends Document {
+  userId?: Types.ObjectId; // optional vì required: false
+  telegramId: string;
+  phoneNumber?: string;
+  name: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  status?: NotiAccountStatus;
+}
+
+// Schema
+const TelegramAccountSchema = new Schema<ITelegramAccount>(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "User", // liên kết nếu có bảng User
+      ref: "User",
       required: false,
     },
-
-    chatId: {
+    phoneNumber: {
+      type: String,
+      required: false,
+    },
+    name: {
       type: String,
       required: true,
-      unique: true, // mỗi tài khoản Telegram có chatId duy nhất
+      unique: true,
     },
-
-    description: {
+    telegramId: {
       type: String,
+      required: true,
+      unique: true,
     },
-
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-
-    subscribedEvents: {
-      type: [String],
-      enum: ["triggered", "executed", "failed", "timeout"],
-      default: ["triggered"],
-    },
-
-    // Optional: có thể gán alias cho tiện quản lý trong dashboard
-    alias: {
+    description: String,
+    status: {
       type: String,
+      enum: Object.values(NotiAccountStatus),
+      default: NotiAccountStatus.INACTIVE,
     },
   },
   {
@@ -39,7 +47,8 @@ const TelegramAccountSchema = new Schema(
   }
 );
 
-export const TelegramAccount = mongoose.model(
+// Model
+export const TelegramAccount = model<ITelegramAccount>(
   "TelegramAccount",
   TelegramAccountSchema
 );
