@@ -2,7 +2,7 @@
   <div class="gap-xs"></div>
   <div class="chart-wrap">
     <div class="my-form form-chart-1">
-      <div class="wrap-my-form">
+      <div class="wrap-my-form py-3">
         <div class="row">
           <div class="col-6">
             <label for="template-device-group">Danh sách giá trị cảm biến</label>
@@ -26,33 +26,54 @@
             </div>
           </div>
           <div class="col-3">
-            <label for="">Khung thời gian</label>
             <div class="gap-xs"></div>
-            <div class="wrap-input required">
-              <input type="number" name="bucket" value="<%= bucket ? bucket : 10 %>" step="1" min="1" max="60" class="w-100">
+            <div class="gap-xs"></div>
+            <div class="submit">
+              <button class="submit-btn" onclick="getRecordsData('.form-chart-1')">Xem</button>
             </div>
+
           </div>
         </div>
-        <div class="submit">
-          <button class="submit-btn" onclick="getChartData('.form-chart-1')">Xem</button>
-        </div>
+
       </div>
     </div>
 
 
-
     <div class="gap-sm"></div>
-    <div class="chart-bg">
-      <div id="chart"></div>
-    </div>
-    <div class="gap-xs"></div>
-    <div class="controls">
-      <button id="btnRefresh">Làm mới</button>
+    <div class="col-12">
+      <div class="base-list sensor-record-list">
+        <div class="wrap-box">
+          <ul class="">
+            <li class="d-flex">
+              <span>Stt</span>
+              <span class="device-name">Ngày</span>
+              <span class="device-name">Giờ</span>
+              <span>Loại</span>
+              <span>Giá trị</span>
+            </li>
+
+            <% if(records.length>0){ %>
+            <% for(index in records){ %>
+            <li class="d-flex">
+              <span><%=index %></span>
+              <span class="device-name short-text">
+                <%=new Date(records[index].t).toLocaleDateString('en-GB') %>
+              </span>
+              <span class="device-name short-text">
+                <%=new Date(records[index].t).toLocaleTimeString('en-GB') %>
+              </span>
+              <span class="short-text"><%=t("sensors."+records[index].key) %></span>
+              <span class="short-text"><%=records[index].value %></span>
+            </li>
+            <% } } %>
+
+          </ul>
+        </div>
+      </div>
+      <%
+      const path ="/history?deviceId="+ deviceId +"&key="+key+"&date="+date
+      %>
+      <%- include('../../partials/cms/pagination.ejs',{ offset , limit, total, path}) %>
     </div>
   </div>
 </div>
-<script>
-  const seriesAvg = <%- seriesAvg %>;
-  const seriesMin = <%- seriesMin %>;
-  const seriesMax = <%- seriesMax %>;
-</script>

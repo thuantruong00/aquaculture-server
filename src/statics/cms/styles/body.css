@@ -1401,3 +1401,55 @@ label {
 .chart-bg {
   background: #fff;
 }
+
+/* ============ pagination ============== */
+.pagination ul {
+  display: flex;
+}
+
+.pagination ul>li {
+  display: inline-block;
+  margin: 10px 10px;
+}
+
+.pagination ul>li>a {
+  text-align: center;
+  display: block;
+  min-width: 30px;
+  font-size: 18px;
+  padding: 10px 10px;
+  border: 1px solid rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.2);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.pagination ul>li>a.current {
+  font-weight: 600;
+  text-decoration: underline;
+  background: rgba(255, 255, 255, 1);
+}
+
+.pagination ul>li>a.disable {
+  opacity: 0.5;
+}
+
+/* ============================ */
+.sensor-record-list .wrap-box {
+  height: 60vh;
+  overflow-y: scroll;
+}
+
+.sensor-record-list .wrap-box>ul {
+  position: relative;
+}
+
+.sensor-record-list .wrap-box>ul>li:first-child {
+  position: sticky;
+  top: 0;
+  margin-top: 0;
+}
+
+.sensor-record-list .wrap-box>ul>li>span {
+  width: 30%;
+}

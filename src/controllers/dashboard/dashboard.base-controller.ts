@@ -110,24 +110,28 @@ export abstract class BaseController {
     extraData: any = {}
   ) {
     logger.debug(extraData);
-    const sidebar = res.locals.sidebar;
+    const sidebar = res.locals.sidebar || {};
     const page = viewName ?? sidebar?.active_page?.page_name;
-    return res.render(page, {
+
+    // keep helpers safe (will override any colliding keys)
+    const helpers = {
+      t: res.locals.t,
+      __: res.locals.__,
+      locale: res.locals.locale,
+      _tRaw: res.locals._tRaw,
+    };
+
+    const locals = {
+      // copy all other existing locals (optional)
+      ...res.locals,
+      // put sidebar and page-specific data
       ...sidebar,
       ...extraData,
       layout: this.defaultLayout,
-    });
-  }
-  protected handleApiResponse<T>(
-    res: Response,
-    data: T,
-    message = "Success",
-    statusCode = 200
-  ) {
-    return res.status(statusCode).json({
-      success: statusCode >= 200 && statusCode < 300,
-      message,
-      data,
-    });
+      // re-insert helpers at the end so they can't be overwritten
+      ...helpers,
+    };
+
+    return res.render(page, locals);
   }
 }

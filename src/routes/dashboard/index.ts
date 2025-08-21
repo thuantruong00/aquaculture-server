@@ -13,6 +13,7 @@ import {
   DeviceControlQuerySchema,
   DeviceSettingController,
   GetListDeviceGroupQuerySchema,
+  GetListRecordSchema,
   HistoryController,
   NotificationSettingController,
   UpdateDeviceGroupInfoSchema,
@@ -299,14 +300,15 @@ dashboardRouter.post(
 // ─── History ───────────────────────────────────────────────────────
 dashboardRouter.get(
   "/history",
+  zodMultiValidator({ query: GetListRecordSchema }),
   middleware.webPageMiddleware("history", { allowedRole: AllRoles }),
   historyController.handleHistoryPage
 );
 
 dashboardRouter.get(
-  "/history/chart",
-  middleware.webPageMiddleware("history", { allowedRole: AllRoles }),
-  historyController.handleRenderPage
+  "/chart",
+  middleware.webPageMiddleware("chart", { allowedRole: AllRoles }),
+  historyController.handleHistoryChartPage
 );
 
 // ─── Account ───────────────────────────────────────────────────────

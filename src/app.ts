@@ -26,10 +26,11 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
+app.use(localeMiddleware);
 /* ===== Router ===== */
 import { routes } from "./routes";
 import { errorHandler } from "./middlewares/errors.middleware";
+import { localeMiddleware } from "./middlewares/middleware.locale";
 
 // setup express session
 app.use(

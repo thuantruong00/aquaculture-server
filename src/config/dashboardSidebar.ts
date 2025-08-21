@@ -135,7 +135,22 @@ export const sidebarData = [
     title: "Lịch sử",
     href: "/history",
     page_name: "page/dashboard/history",
-    child: [],
+    child: [
+      {
+        page_id: "history",
+        title: "Lịch sử",
+        href: "/history",
+        page_name: "page/dashboard/history",
+        child: [],
+      },
+      {
+        page_id: "chart",
+        title: "Biểu đồ",
+        href: "/chart",
+        page_name: "page/dashboard/history-chart",
+        child: [],
+      },
+    ],
   },
   {
     page_id: "account",

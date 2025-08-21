@@ -320,7 +320,27 @@ function getChartData(formSelector) {
     const bucketVal = bucketInput.value;
 
     // build url
-    const url = `http://127.0.0.1:8002/history?deviceId=${encodeURIComponent(deviceId)}&key=${encodeURIComponent(key)}&date=${encodeURIComponent(dateVal)}&bucket=${encodeURIComponent(bucketVal)}`;
+    const url = `http://127.0.0.1:8002/chart?deviceId=${encodeURIComponent(deviceId)}&key=${encodeURIComponent(key)}&date=${encodeURIComponent(dateVal)}&bucket=${encodeURIComponent(bucketVal)}`;
+
+    // redirect
+    window.location.href = url;
+}
+function getRecordsData(formSelector) {
+    const form = document.querySelector(formSelector);
+    if (!form) return;
+
+    // lấy input device (giá trị dạng deviceId:key)
+    const deviceInput = form.querySelector("select[name='device']");
+    const deviceVal = deviceInput.value; // ví dụ: "687bbed3dc1a2beba639331e:temperature"
+    const [deviceId, key] = deviceVal.split(":");
+
+    // lấy ngày
+    const dateInput = form.querySelector("input[name='date']");
+    const dateVal = dateInput.value; // ví dụ: "2025-08-17"
+
+
+    // build url
+    const url = `http://127.0.0.1:8002/history?deviceId=${encodeURIComponent(deviceId)}&key=${encodeURIComponent(key)}&date=${encodeURIComponent(dateVal)}&limit=20`;
 
     // redirect
     window.location.href = url;
