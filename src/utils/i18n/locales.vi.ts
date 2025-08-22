@@ -24,7 +24,9 @@ export const VI = {
   },
   sensors: {
     temperature: "nhiệt độ",
+    TemperatureWater: "nhiệt độ nước",
     do: "oxy hòa tan",
+    DO: "oxy hòa tan",
   },
   logicOperator: {
     and: "Và",

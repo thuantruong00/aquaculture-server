@@ -35,5 +35,6 @@ export function localeMiddleware(
   // optional: expose a function to get raw dictionary value
   res.locals._tRaw = (key: string) => i18nT(key, undefined, locale);
 
+
   next();
 }

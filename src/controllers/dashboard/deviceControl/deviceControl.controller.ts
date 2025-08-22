@@ -193,10 +193,10 @@ export class DeviceControlController extends BaseController {
         });
         // mqttService.sendCommand
       }
-      return this.handleApiResponse(res, { payload: true }, undefined, 200);
+      return this.handleApiResponse(res, { payload: true }, 200);
     } catch (error) {
       logger.error("Err handleApiControlDevice", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
 }

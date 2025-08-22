@@ -15,23 +15,24 @@ export class AuthController extends BaseController {
   }
 
   handleSignInPage = async (req: Request, res: Response) => {
-    req.session.user = {
-      user_id: "689ea07d5f9880283ee68a4a",
-      username: "name",
-      role: UserRole.ROOT,
-      nickname: "nikc",
-      email: "email",
-    };
-    return res.render("page/dashboard/login", {
-      active_page: {
-        title: "Đăng nhập",
-        page_name: "Login",
-        page_parent_active: "Login",
-        page_id: "login",
-      },
-      layout: "./layouts/center-layout.ejs",
-    });
-    // dev
+    // ==============dev=============
+    // req.session.user = {
+    //   user_id: "689ea07d5f9880283ee68a4a",
+    //   username: "name",
+    //   role: UserRole.ROOT,
+    //   nickname: "nikc",
+    //   email: "email",
+    // };
+    // return res.render("page/dashboard/login", {
+    //   active_page: {
+    //     title: "Đăng nhập",
+    //     page_name: "Login",
+    //     page_parent_active: "Login",
+    //     page_id: "login",
+    //   },
+    //   layout: "./layouts/center-layout.ejs",
+    // });
+    // ==============dev=============
 
     if (req.session.user) {
       return res.redirect("/device-control");
@@ -63,6 +64,7 @@ export class AuthController extends BaseController {
       });
       if (user) {
         const verify = await user.comparePassword(password);
+        console.log(verify);
         if (verify) {
           req.session.user = {
             user_id: String(user._id),

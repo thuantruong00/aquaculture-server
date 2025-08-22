@@ -219,10 +219,10 @@ export class DeviceSettingController extends BaseController {
           }
         }
       }
-      return this.handleApiResponse(res, {}, undefined, 400);
+      return this.handleApiResponse(res, {}, 400);
     } catch (error) {
       logger.error("Err handleApiDeviceConnect", error);
-      return this.handleApiResponse(res, {}, undefined, 500);
+      return this.handleApiResponse(res, {}, 500);
     }
   };
 
@@ -245,12 +245,12 @@ export class DeviceSettingController extends BaseController {
             },
           }
         );
-        return this.handleApiResponse(res, { isSuccess: true }, undefined, 200);
+        return this.handleApiResponse(res, { isSuccess: true }, 200);
       }
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiActivateDevice", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
   handleApiUpdateDeviceStatus = async (req: Request, res: Response) => {
@@ -268,12 +268,12 @@ export class DeviceSettingController extends BaseController {
             },
           }
         );
-        return this.handleApiResponse(res, { isSuccess: true }, undefined, 200);
+        return this.handleApiResponse(res, { isSuccess: true }, 200);
       }
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiUpdateDeviceStatus", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
   handleApiUpdateDevice = async (req: Request, res: Response) => {
@@ -284,13 +284,13 @@ export class DeviceSettingController extends BaseController {
       const findDevice = await Device.findOne({ _id: deviceId });
       if (findDevice) {
         const udpate = await Device.updateOne({ _id: deviceId }, device);
-        return this.handleApiResponse(res, { payload: true }, undefined, 200);
+        return this.handleApiResponse(res, { payload: true }, 200);
       }
 
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiUpdateDevice", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
   handleApiUpdateDeviceOrders = async (req: Request, res: Response) => {
@@ -310,12 +310,12 @@ export class DeviceSettingController extends BaseController {
             },
           }))
         );
-        return this.handleApiResponse(res, { success: true }, undefined, 200);
+        return this.handleApiResponse(res, { success: true }, 200);
       }
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiUpdateDeviceOrders", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
   handleApiUpdateGroup = async (req: Request, res: Response) => {
@@ -328,13 +328,13 @@ export class DeviceSettingController extends BaseController {
           { _id: deviceId },
           { group: { _id: findGroup._id } }
         );
-        return this.handleApiResponse(res, { payload: udpate }, undefined, 200);
+        return this.handleApiResponse(res, { payload: udpate }, 200);
       }
 
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiUpdateGroup", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
   handleApiCreateDeviceModel = async (req: Request, res: Response) => {
@@ -355,13 +355,15 @@ export class DeviceSettingController extends BaseController {
         ],
       });
       if (insert) {
-        return this.handleApiResponse(res, { payload: insert }, undefined, 200);
+        return this.handleApiResponse(res, { payload: insert }, 200);
       }
 
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiCreateDeviceModel", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
+
+
 }

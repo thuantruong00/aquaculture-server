@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { BaseController } from "../dashboard.base-controller";
 import { TelegramAccount } from "~/entities/telegram-account.entity";
-import { NotiAccountStatus, NotificationTemplate } from "~/utils/enum";
+import {
+  NotiAccountStatus,
+  NotificationTemplate,
+  SceneStatus,
+} from "~/utils/enum";
 import { logger } from "~/utils/logger";
 import { NotificationOption } from "~/entities/notification-option.entity";
 import {
@@ -177,21 +181,18 @@ export class NotificationSettingController extends BaseController {
       const findGroup = await NotificationOption.findOne({ _id: groupId });
       const groupInScene = await AutomationScene.find({
         notifications: { $eq: groupId },
+        status: { $ne: SceneStatus.DELETED },
       });
-      console.log("=======1", groupInScene);
       if (findGroup && groupInScene.length < 1) {
-        console.log("=======2");
         const deleteGroup = await NotificationOption.deleteOne({
           _id: groupId,
         });
-        console.log("=======3", deleteGroup);
         return res.redirect(req.get("Referer") || "/fallback");
       }
-      console.log("=======5");
       res.statusCode = 400;
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
-      logger.error("Err handleUpdateGroupPage", error);
+      logger.error("Err handleDeleteGroup", error);
       res.statusCode = 500;
       return this.renderWithSidebar(res, "page/error");
     }

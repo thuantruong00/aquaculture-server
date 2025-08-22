@@ -16,6 +16,7 @@ import {
   GetListRecordSchema,
   HistoryController,
   NotificationSettingController,
+  FirmwareController,
   UpdateDeviceGroupInfoSchema,
   UpdateDeviceGroupSchema,
   UpdateDeviceOrdersSchema,
@@ -52,6 +53,7 @@ const historyController = new HistoryController();
 const notificationSettingController = new NotificationSettingController();
 const customUiController = new CustomUiController();
 const automaticController = new AutomaticController();
+const firmwareController = new FirmwareController();
 dashboardRouter.get(
   "/device-control",
   middleware.webPageMiddleware("deviceControl", { allowedRole: AllRoles }),
@@ -228,6 +230,12 @@ dashboardRouter.post(
   deviceSettingController.handleUpdateDevicePage
 );
 dashboardRouter.get(
+  "/device-setting",
+  middleware.webPageMiddleware("deviceSetting"),
+  deviceSettingController.handleDeviceSettingPage
+);
+
+dashboardRouter.get(
   "/device-setting/delete/:deviceId",
   middleware.webPageMiddleware("deviceSetting"),
   deviceSettingController.handleDeleteDevicePage
@@ -344,6 +352,14 @@ dashboardRouter.post(
 );
 dashboardRouter.get("/auth/sign-out", authController.handleSignOutPage);
 // dashboardRouter.post("/auth/login", accountController.handleAccountAddPage);
+
+// ─── OTA ───────────────────────────────────────────────────────
+
+dashboardRouter.get(
+  "/firmware/files/:filename",
+  middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
+  firmwareController.handleServeFirmware
+);
 
 //###############################################
 // ___API___

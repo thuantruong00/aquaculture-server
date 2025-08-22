@@ -1,20 +1,21 @@
-# Use an official Node.js runtime as a parent image
-FROM node:16-alpine
+# Dùng Node 20 Alpine
+FROM node:20-alpine
 
-# Set the working directory inside the container
 WORKDIR /app
+ENV NODE_ENV=production
 
-# Copy package.json and package-lock.json to the container
-COPY package.json package-lock.json ./
+# 1. Copy package.json và package-lock.json để cài deps
+COPY package*.json ./
 
-# Install dependencies
-RUN npm install --production
+# Cài tất cả deps (kể cả devDeps, vì cần tsx để chạy TS)
+RUN npm install
 
-# Copy the rest of the application code
-COPY dist ./dist
+# 2. Copy toàn bộ source code
+COPY . .
 
-# Expose the application port
-EXPOSE 80
+# 3. Expose port app
+ENV PORT=8002
+EXPOSE 8002
 
-# Command to run the application
-CMD ["node", "dist/index.js"]
+# 4. Run app trực tiếp bằng tsx
+CMD ["npx", "tsx", "src/index.ts"]

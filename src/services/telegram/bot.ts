@@ -6,10 +6,29 @@ import { TelegramService } from "./telegram.service";
 import { TelegramAccountRepository } from "~/repositories/telegram-account.repo";
 
 export const bot = new Telegraf(env.BOT_TOKEN);
-bot.telegram.setMyCommands([{ command: "start", description: "Bắt đầu" }], {
-  scope: { type: "all_private_chats" },
+
+// 1. Catch tất cả lỗi trong bot (toàn cục)
+bot.catch((err, ctx) => {
+  console.error(`❌ Bot error on update type ${ctx.updateType}`, err);
 });
-// Khởi tạo service dựa trên bot.telegram
+
+// 2. Set command an toàn
+(async () => {
+  try {
+    await bot.telegram.setMyCommands(
+      [{ command: "start", description: "Bắt đầu" }],
+      { scope: { type: "all_private_chats" } }
+    );
+    console.log("✅ Telegram commands set");
+  } catch (err) {
+    console.error(
+      "⚠️ Failed to set Telegram commands:",
+      (err as Error).message
+    );
+  }
+})();
+
+// 3. Khởi tạo service dựa trên bot.telegram
 export const telegramService = new TelegramService(bot.telegram);
 
 // == keyboard
@@ -19,71 +38,65 @@ export const mainInlineKeyboard = () =>
     [Markup.button.callback("Huỷ đăng ký", "menu:cancel")],
   ]);
 
+// Handlers
 bot.start(async (ctx) => {
-  // có thể đọc payload deep-link: t.me/your_bot?start=abc  -> ctx.startPayload === "abc"
-  await ctx.reply(
-    `Xin chào ${ctx.from.username ?? ctx.from.first_name} \nTôi là ${ctx.botInfo.username}`
-  );
-  // Gửi Reply Keyboard (hiện cố định dưới ô chat)
-  await ctx.reply("Menu chính:", mainInlineKeyboard());
+  try {
+    await ctx.reply(
+      `Xin chào ${ctx.from.username ?? ctx.from.first_name} \nTôi là ${ctx.botInfo.username}`
+    );
+    await ctx.reply("Menu chính:", mainInlineKeyboard());
+  } catch (err) {
+    console.error("❌ Error in /start:", err);
+  }
 });
 
-// (Ví dụ) middleware set role (nếu cần)
-// bot.use((ctx, next) => {
-//   ctx.state.role = ctx.state.role ?? "there"; // tránh undefined trong ví dụ của bạn
-//   return next();
-// });
-
-// bot.command("quit", async (ctx) => {
-//   await ctx.telegram.leaveChat(ctx.message.chat.id);
-//   await ctx.leaveChat();
-// });
-
 bot.command("menu", async (ctx) => {
-  await ctx.reply("Menu nhanh:", mainInlineKeyboard());
+  try {
+    await ctx.reply("Menu nhanh:", mainInlineKeyboard());
+  } catch (err) {
+    console.error("❌ Error in /menu:", err);
+  }
 });
 
 bot.on(message("text"), async (ctx) => {
-  // Giữ nguyên “reply” ở handler
-  await ctx.telegram.sendMessage(
-    ctx.message.chat.id,
-    `Hello ${ctx.state.role}`
-  );
-  await ctx.reply(`Hello ${ctx.state.role}`);
+  try {
+    await ctx.telegram.sendMessage(
+      ctx.message.chat.id,
+      `Hello ${ctx.state.role ?? "user"}`
+    );
+    await ctx.reply(`Hello ${ctx.state.role ?? "user"}`);
+  } catch (err) {
+    console.error("❌ Error in text handler:", err);
+  }
 });
+
 bot.action("menu:register", async (ctx) => {
-  const userId = ctx.from.id;
-  const username = ctx.from.username ?? ctx.from.first_name;
-  console.log("Người đăng ký:", userId);
-  console.log(ctx.from);
-  const create = await TelegramAccountRepository.createAccount(String(userId), username, {
-    default: "mac dinh",
-  });
-  await ctx.answerCbQuery("Đã đăng ký thành công!");
-  await ctx.reply(`Cảm ơn bạn đã đăng ký! (${username})`);
+  try {
+    const userId = ctx.from.id;
+    const username = ctx.from.username ?? ctx.from.first_name;
+    console.log("Người đăng ký:", userId, ctx.from);
+
+    await TelegramAccountRepository.createAccount(String(userId), username, {
+      default: "mac dinh",
+    });
+
+    await ctx.answerCbQuery("Đã đăng ký thành công!");
+    await ctx.reply(`Cảm ơn bạn đã đăng ký! (${username})`);
+  } catch (err) {
+    console.error("❌ Error in menu:register:", err);
+  }
 });
-// bot.on("callback_query", async (ctx) => {
-//   const data = ctx.callbackQuery.chat_instance;
-//   console.log(ctx.callbackQuery);
-//   if (data === "menu:register") {
-//     const userId = ctx.from.id; // lấy user id
-//     console.log("Người đăng ký:", userId);
 
-//     await ctx.answerCbQuery("Đã nhận thông tin đăng ký!");
-//     await ctx.reply(`Cảm ơn bạn đã đăng ký! (ID: ${userId})`);
-//     return;
-//   }
+// 4. Launch bot an toàn
+(async () => {
+  try {
+    await bot.launch();
+    console.log("🚀 Telegram bot launched");
+  } catch (err) {
+    console.error("❌ Failed to launch bot:", err);
+  }
+})();
 
-//   // Xử lý các callback khác
-//   if (data === "menu:products") {
-//     await ctx.answerCbQuery("Bạn chọn Sản phẩm");
-//   } else if (data === "menu:support") {
-//     await ctx.answerCbQuery("Bạn chọn Hỗ trợ");
-//   }
-// });
-
-bot.launch();
-
-// Graceful stop
+// 5. Graceful stop
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));

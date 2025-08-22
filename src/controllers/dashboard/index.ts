@@ -5,3 +5,4 @@ export * from "./history";
 export * from "./notificationSetting";
 export * from "./auth";
 export * from "./customUi";
+export * from "./firmware";

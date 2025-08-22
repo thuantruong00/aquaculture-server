@@ -231,18 +231,13 @@ export class CustomUiController extends BaseController {
           zone: { _id: findZone._id },
         });
         if (create) {
-          return this.handleApiResponse(
-            res,
-            { payload: create },
-            undefined,
-            200
-          );
+          return this.handleApiResponse(res, { payload: create }, 200);
         }
       }
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 400);
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiCreateGroup", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
   handleApiGetListDeviceGroups = async (req: Request, res: Response) => {
@@ -255,15 +250,10 @@ export class CustomUiController extends BaseController {
         .sort({ order: 1 })
         .skip(offset)
         .limit(limit);
-      return this.handleApiResponse(
-        res,
-        { payload: findDeviceGroup },
-        undefined,
-        200
-      );
+      return this.handleApiResponse(res, { payload: findDeviceGroup }, 200);
     } catch (error) {
       logger.error("Err handleApiGetListDeviceGroups", error);
-      return this.handleApiResponse(res, { isSuccess: false }, undefined, 500);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
     }
   };
 }

@@ -144,7 +144,7 @@ export const handleWriteCommandGet = async (
     env.MQTT_PREFIX_TOPIC +
     "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
     deviceId +
-    "/command/get/";
+    "/command/get";
   const data = key + ":" + value;
   mqttClient.publish(topic, data);
   return;

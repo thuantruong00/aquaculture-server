@@ -1118,13 +1118,27 @@ label {
   padding-left: 6px;
 }
 
+.wrap-device-item .sensor-value {
+ 
+  margin-bottom: 3px;
+}
+
 .wrap-device-item .sensor-value .value {
   font-size: 18px;
   margin-right: 5px;
+
 }
 
 .wrap-device-item .sensor-value .unit {
   font-size: 16px;
+}
+
+.wrap-device-item .device-key-label {
+  margin-top: 4px;
+  padding-top: 5px;
+  /* transform: translateY(3px); */
+  font-size: 14px;
+   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .wrap-device-group .group-name {

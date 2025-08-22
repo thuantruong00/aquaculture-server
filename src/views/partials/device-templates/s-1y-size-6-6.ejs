@@ -9,6 +9,7 @@
       <%
       if(device.deviceModel.fields.length>0){
         for(const item of device.deviceModel.fields){ %>
+      <div class="device-key-label"><%= t("sensors."+item.key)%> :</div>
       <div class="sensor-value x-key-<%= item.key %>"><span class="value">
 
 

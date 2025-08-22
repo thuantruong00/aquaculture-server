@@ -134,4 +134,18 @@ export abstract class BaseController {
 
     return res.render(page, locals);
   }
+  protected handleApiResponse(
+    res: Response,
+    payload: any,
+    statusCode: number = 200,
+    errorCode?: string
+  ) {
+    const success = statusCode >= 200 && statusCode < 300;
+
+    return res.status(statusCode).json({
+      success,
+      errorCode: errorCode || null,
+      data: payload,
+    });
+  }
 }

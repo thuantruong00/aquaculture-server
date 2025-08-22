@@ -59,7 +59,8 @@ export class Middleware {
 
         const sidebar = await getSidebarContentService(pageCode, currentRole);
         res.locals.sidebar = sidebar;
-
+        res.locals.user = req.session.user;
+        res.locals.pageCode = pageCode;
         next();
       } catch (error) {
         next(error);
