@@ -4,12 +4,17 @@ import { message } from "telegraf/filters";
 import { env } from "~/utils";
 import { TelegramService } from "./telegram.service";
 import { TelegramAccountRepository } from "~/repositories/telegram-account.repo";
+import { logger } from "~/utils/logger";
 
-export const bot = new Telegraf(env.BOT_TOKEN);
+export const bot = new Telegraf(env.BOT_TOKEN, {
+  telegram: {
+    apiRoot: "https://tele-proxy.bluesky2016s.workers.dev",
+  },
+});
 
 // 1. Catch tất cả lỗi trong bot (toàn cục)
 bot.catch((err, ctx) => {
-  console.error(`❌ Bot error on update type ${ctx.updateType}`, err);
+  logger.error(`❌ Bot error on update type ${ctx.updateType}`, err);
 });
 
 // 2. Set command an toàn
@@ -19,7 +24,7 @@ bot.catch((err, ctx) => {
       [{ command: "start", description: "Bắt đầu" }],
       { scope: { type: "all_private_chats" } }
     );
-    console.log("✅ Telegram commands set");
+    logger.info("✅ Telegram commands set");
   } catch (err) {
     console.error(
       "⚠️ Failed to set Telegram commands:",
@@ -74,7 +79,7 @@ bot.action("menu:register", async (ctx) => {
   try {
     const userId = ctx.from.id;
     const username = ctx.from.username ?? ctx.from.first_name;
-    console.log("Người đăng ký:", userId, ctx.from);
+    logger.info(`Người đăng ký: ${userId}, ${ctx.from}`);
 
     await TelegramAccountRepository.createAccount(String(userId), username, {
       default: "mac dinh",
@@ -83,7 +88,7 @@ bot.action("menu:register", async (ctx) => {
     await ctx.answerCbQuery("Đã đăng ký thành công!");
     await ctx.reply(`Cảm ơn bạn đã đăng ký! (${username})`);
   } catch (err) {
-    console.error("❌ Error in menu:register:", err);
+    logger.error("❌ Error in menu:register:", err);
   }
 });
 
@@ -91,9 +96,9 @@ bot.action("menu:register", async (ctx) => {
 (async () => {
   try {
     await bot.launch();
-    console.log("🚀 Telegram bot launched");
+    logger.info(`Telegram bot launched`);
   } catch (err) {
-    console.error("❌ Failed to launch bot:", err);
+    logger.error("❌ Failed to launch bot:", err);
   }
 })();
 

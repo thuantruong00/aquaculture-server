@@ -26,6 +26,7 @@ import is from "zod/v4/locales/is.cjs";
 import { addJob, listJobs, removeJob } from "~/services";
 import { IDeviceModel } from "~/entities/device-model.entity";
 import { NotificationOption } from "~/entities/notification-option.entity";
+import { randomString } from "~/utils/mqtt";
 
 export class AutomaticController extends BaseController {
   handleAutomaticPage = async (req: Request, res: Response) => {
@@ -53,6 +54,26 @@ export class AutomaticController extends BaseController {
       });
     } catch (error) {
       logger.error("Err handleAutomaticPage", error);
+      return this.renderWithSidebar(res, "page/error", {
+        layout: "/layouts/default-layout.ejs",
+      });
+    }
+  };
+  handleAutomaticCreateActionPage = async (req: Request, res: Response) => {
+    try {
+      const random = randomString(4, { lower: false, upper: false });
+      const createAction = await Action.create({
+        name: "Hành động " + random,
+        description: "Hành động . " + random,
+      });
+
+      if (createAction) {
+        return res.redirect(`/automatic/action-detail/${createAction._id}`);
+      }
+
+      return this.renderWithSidebar(res, "page/error");
+    } catch (error) {
+      logger.error("Err handleAutomaticSceneSavePage", error);
       return this.renderWithSidebar(res, "page/error", {
         layout: "/layouts/default-layout.ejs",
       });
@@ -215,6 +236,7 @@ export class AutomaticController extends BaseController {
       });
     }
   };
+
   handleAutomaticSceneUpdatePage = async (req: Request, res: Response) => {
     try {
       const { sceneId } = req.params as unknown as any;

@@ -86,6 +86,13 @@ dashboardRouter.get(
   middleware.webPageMiddleware("automatic", { allowedRole: AllRoles }),
   automaticController.handleAutomaticSceneDetailPage
 );
+
+dashboardRouter.get(
+  "/automatic/action-create",
+  middleware.webPageMiddleware("automaticSceneCreate", {}),
+  automaticController.handleAutomaticCreateActionPage
+);
+
 dashboardRouter.get(
   "/automatic/action-detail/:actionId",
   middleware.webPageMiddleware("automaticAction", { allowedRole: AllRoles }),

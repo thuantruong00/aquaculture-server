@@ -107,7 +107,7 @@
               </select>
               <label for="action">Chọn hành động</label>
               <div class="gap-sm"></div>
-              <a href="#" class="px-3">Tạo hành động (nếu chưa có)</a>
+              <a href="/automatic/action-create" class="px-3">Tạo hành động (nếu chưa có)</a>
             </div>
 
 
@@ -117,7 +117,7 @@
                 <option value="none">Không nhận thông báo</option>
                 <% if(notiGroup.length>0){ %>
                 <% for(item of notiGroup){ %>
-                <option value="<%=item._id %>" ><%=item.name %></option>
+                <option value="<%=item._id %>"><%=item.name %></option>
                 <% } } %>
               </select>
               <label for="logic">Chọn nhóm nhận thông báo</label>
