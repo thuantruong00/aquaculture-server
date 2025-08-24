@@ -1,4 +1,10 @@
-var socket = io(`${window.location.hostname}:3000`);
+var socket = io(`${webSocketUrl}`, {
+  path: "/socket.io",
+  reconnection: true,        // bật reconnect
+  reconnectionAttempts: 10,   // thử lại tối đa 5 lần
+  reconnectionDelay: 2000,   // 2 giây mỗi lần
+  transports: ["websocket", "polling"]
+});
 // Listen for 'chat message' event
 socket.on("data", function (msg) {
   const { data, topic } = msg;
@@ -21,7 +27,6 @@ socket.on("temp", function (data) {
 
 // ==============================
 socket.on("iotDataTelemetry", function (data) {
-  console.log(data);
   const { devices, id, ts } = data
   const now = new Date(Number(ts))
   $(`.x-item-${id} .updated-at i`).text(now.toLocaleTimeString('en-GB'))
@@ -33,7 +38,6 @@ socket.on("iotDataTelemetry", function (data) {
 });
 
 socket.on("iotDataResponse", function (data) {
-  console.log(data);
   const { field, id, template, ts } = data
   const now = new Date(Number(ts))
   if (template == "a-1y-size-12-12-onoff") {
@@ -72,7 +76,7 @@ function handleTurnOff(data, limitTemp) {
   console.log(data);
 
   $.ajax({
-    url: "/edit-device/update-temp",
+    url: "/dashboard/edit-device/update-temp",
     data,
     type: "POST",
     success: function (result) {
@@ -80,7 +84,7 @@ function handleTurnOff(data, limitTemp) {
       console.log(average);
       $("#average-value").text(average + "°C");
       $.ajax({
-        url: "/edit/turn-off",
+        url: "/dashboard/edit/turn-off",
         data: { average },
         type: "POST",
         success: function (result) { },
@@ -118,7 +122,7 @@ function handleRecover() {
       arrayData.push(data);
     });
     $.ajax({
-      url: "/control/recover",
+      url: "/dashboard/control/recover",
       data: { data: JSON.stringify(arrayData) },
       type: "POST",
       success: function (result) { },
@@ -242,7 +246,7 @@ function handleEditPort(e) {
   // }
 
   $.ajax({
-    url: "/edit-device/update",
+    url: "/dashboard/edit-device/update",
     type: "POST",
     data: { data: array },
     success: function (result) {
@@ -283,7 +287,7 @@ function handleAddNewDevice() {
   const data = { idDevice, type };
 
   $.ajax({
-    url: "add-device/add-mqtt-device",
+    url: "/dashboard/add-device/add-mqtt-device",
     type: "POST",
     data,
     success: function (result) {
@@ -362,7 +366,7 @@ function savePort() {
     });
 
     $.ajax({
-      url: "/control/edit",
+      url: "/dashboard/control/edit",
       type: "POST",
       data: { data: JSON.stringify(arrayData) },
       success: function (result) {
@@ -377,7 +381,7 @@ function savePort() {
 
 function findPortByUSB() {
   $.ajax({
-    url: "/add-device/find",
+    url: "/dashboard/add-device/find",
     type: "GET",
     success: function (result) {
       if (result.length > 0) {
@@ -408,7 +412,7 @@ function findPortByUSB() {
 
 function getInfoUSB(idPort, btn) {
   $.ajax({
-    url: "/add-device/get-info",
+    url: "/dashboard/add-device/get-info",
     type: "GET",
     data: { idPort },
     success: function (result) {
@@ -433,7 +437,7 @@ function saveDevice(id, btn) {
   const idPort = $(`.value-id-port-${id}`).text();
   const data = { idUSB, maxPortUSB, idPort };
   $.ajax({
-    url: "/add-device/add",
+    url: "/dashboard/add-device/add",
     type: "POST",
     data,
     success: function (result) {
@@ -464,7 +468,7 @@ function handleFilter1() {
     return;
   }
   $.ajax({
-    url: "/data/filter",
+    url: "/dashboard/data/filter",
     type: "POST",
     data,
     success: function (result) {
@@ -487,7 +491,7 @@ function command(idDevice, order) {
   console.log("command:", data);
 
   $.ajax({
-    url: "/control-device/custom-led",
+    url: "/dashboard/control-device/custom-led",
     type: "POST",
     data,
     success: function (result) { },
@@ -523,7 +527,7 @@ function handleExportData() {
   console.log(data);
 
   $.ajax({
-    url: "/export-csv",
+    url: "/dashboard/export-csv",
     type: "post",
     data,
     success: function (result) {
@@ -689,7 +693,7 @@ function handleSaveTemp(idDevice) {
   }
 
   $.ajax({
-    url: "/edit-device/update-temp",
+    url: "/dashboard/edit-device/update-temp",
     type: "POST",
     data,
     success: function (result) {
@@ -762,7 +766,7 @@ function submitTimer() {
     };
 
     $.ajax({
-      url: "/timer/set",
+      url: "/dashboard/timer/set",
       type: "POST",
       data: data,
       success: function (result) {
@@ -782,7 +786,7 @@ function submitTimer() {
 function handleDeleteTimer(_id) {
   const data = { _id };
   $.ajax({
-    url: "/timer/history",
+    url: "/dashboard/timer/history",
     type: "POST",
     data: data,
     success: function (result) {
@@ -806,7 +810,7 @@ function handleChangeStatus(_id) {
     data = { _id, status: "active" };
   }
   $.ajax({
-    url: "/timer/history/change-status",
+    url: "/dashboard/timer/history/change-status",
     type: "POST",
     data,
     success: function (result) {
@@ -819,7 +823,7 @@ function handleSetTemp() {
   const temp = document.getElementById("id-temp").value;
   const data = { temp };
   $.ajax({
-    url: "/set-temp/update",
+    url: "/dashboard/set-temp/update",
     type: "POST",
     data,
     success: function (result) {

@@ -138,7 +138,7 @@ export class CustomUiController extends BaseController {
           zone: { _id: findZone._id },
         });
         if (create) {
-          return res.redirect("/custom-ui/device-group");
+          return res.redirect("/dashboard/custom-ui/device-group");
         }
       }
       return this.renderWithSidebar(res, "page/error");

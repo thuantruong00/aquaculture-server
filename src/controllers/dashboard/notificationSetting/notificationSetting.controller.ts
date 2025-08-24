@@ -59,8 +59,7 @@ export class NotificationSettingController extends BaseController {
           { status: NotiAccountStatus.ACTIVE }
         );
         if (update) {
-          console.log("s========");
-          return res.redirect("/notification-setting/inactive-telegram");
+          return res.redirect("/dashboard/notification-setting/inactive-telegram");
         }
       }
       res.statusCode = 400;
@@ -84,7 +83,7 @@ export class NotificationSettingController extends BaseController {
         );
         if (update) {
           console.log("s========");
-          return res.redirect("/notification-setting/inactive-telegram");
+          return res.redirect("/dashboard/notification-setting/inactive-telegram");
         }
       }
       res.statusCode = 400;
@@ -206,10 +205,10 @@ export class NotificationSettingController extends BaseController {
       });
 
       if (create) {
-        return res.redirect(`/notification-setting/group-detail/${create._id}`);
+        return res.redirect(`/dashboard/notification-setting/group-detail/${create._id}`);
       }
       res.statusCode = 400;
-      return res.redirect(`/notification-setting/group?error=1`);
+      return res.redirect(`/dashboard/notification-setting/group?error=1`);
     } catch (error) {
       logger.error("Err handleUpdateGroupPage", error);
       res.statusCode = 500;
@@ -226,10 +225,10 @@ export class NotificationSettingController extends BaseController {
       );
 
       if (update) {
-        return res.redirect(`/notification-setting/group-detail/${groupId}`);
+        return res.redirect(`/dashboard/notification-setting/group-detail/${groupId}`);
       }
       res.statusCode = 400;
-      return res.redirect(`/notification-setting/group?error=1`);
+      return res.redirect(`/dashboard/notification-setting/group?error=1`);
     } catch (error) {
       logger.error("Err handleUpdateGroupPage", error);
       res.statusCode = 500;

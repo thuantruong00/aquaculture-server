@@ -22,11 +22,11 @@
           <span class="short-text"><%=notiList[index].telegramId %></span>
           <span class="short-text"><%= notiList[index].description %></span>
           <span class="action wrap-action-btn">
-            <a href="/notification-setting/activate-telegram/<%=notiList[index]._id %>">
+            <a href="/dashboard/notification-setting/activate-telegram/<%=notiList[index]._id %>">
               <button class="primary-btn">Kích hoạt</button>
             </a>
 
-            <a href="/notification-setting/delete-telegram/<%=notiList[index]._id %>">
+            <a href="/dashboard/notification-setting/delete-telegram/<%=notiList[index]._id %>">
               <button title="Xoá" value=".item-<%=notiList[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</button>
             </a>
           </span>

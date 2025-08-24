@@ -44,13 +44,13 @@
                     <span title="123123" class="short-text"><%= devices[index].deviceModel.name %></span>
                     <span class="action">
                       <div class="wrap-action-btn">
-                        <a href="/device-setting/detail/<%=devices[index]._id %>">
-                          <button value="<%= devices[index]._id %>" class="primary-btn update-device-group-btn">Sửa<span class="icon"><img class="img-icon" src="../cms/images/index/settings.png" alt=""></span><span class="icon icon-setting"></span></button>
+                        <a href="/dashboard/device-setting/detail/<%=devices[index]._id %>">
+                          <button value="<%= devices[index]._id %>" class="primary-btn update-device-group-btn">Sửa<span class="icon"><img class="img-icon" src="/cms/images/index/settings.png" alt=""></span><span class="icon icon-setting"></span></button>
                         </a>
                       </div>
                       <div class="wrap-action-btn">
 
-                        <a href="/device-setting/delete/<%=devices[index]._id %>">
+                        <a href="/dashboard/device-setting/delete/<%=devices[index]._id %>">
                           <button value="<%= devices[index]._id %>" class="primary-btn">Xoá ×</button>
                         </a>
                       </div>

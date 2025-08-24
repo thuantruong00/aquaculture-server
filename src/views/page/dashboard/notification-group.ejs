@@ -3,7 +3,7 @@
   <div class="row align-items-center">
     <div class="col-3">
       <div class="wrap-form">
-        <form action="/notification-setting/new-group/" method="get">
+        <form action="/dashboard/notification-setting/new-group/" method="get">
           <button class="px-3 py-1">+ Tạo nhóm mới</button>
         </form>
       </div>
@@ -33,10 +33,10 @@
           <span class="short-text"><%= groups[index].enabled ? "Kích hoạt" : "Khoá" %></span>
           <span class="short-text"><%= groups[index].description %></span>
           <span class="action wrap-action-btn">
-            <a href="/notification-setting/group-detail/<%=groups[index]._id %>">
+            <a href="/dashboard/notification-setting/group-detail/<%=groups[index]._id %>">
               <button class="primary-btn">Sửa</button>
             </a>
-            <a href="/notification-setting/delete-group/<%= groups[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</a>
+            <a href="/dashboard/notification-setting/delete-group/<%= groups[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</a>
           </span>
         </li>
         <% } } else { %>

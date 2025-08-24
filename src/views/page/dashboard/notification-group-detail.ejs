@@ -7,7 +7,7 @@
       </div>
       <div class="my-form #form_id">
         <div class="wrap-my-form">
-          <form action="/notification-setting/add-telegram-account-group" method="post">
+          <form action="/dashboard/notification-setting/add-telegram-account-group" method="post">
             <label for="template-device-group">Danh sách tài khoản</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
@@ -38,7 +38,7 @@
       </div>
       <div class="my-form #form_id">
         <div class="wrap-my-form">
-          <form action="/notification-setting/update-group/<%= group._id%>" method="post">
+          <form action="/dashboard/notification-setting/update-group/<%= group._id%>" method="post">
             <label for="">Tên nhóm</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
@@ -73,7 +73,7 @@
                     <span class="action">
                       <div class="wrap-action-btn">
 
-                        <a href="/notification-setting/remove-account-group?accountId=<%=telegramAcc[index]._id %>&groupId=<%=group._id %>" class="primary-btn delete-device-btn-style">Gỡ ra ×</a>
+                        <a href="/dashboard/notification-setting/remove-account-group?accountId=<%=telegramAcc[index]._id %>&groupId=<%=group._id %>" class="primary-btn delete-device-btn-style">Gỡ ra ×</a>
                       </div>
                     </span>
                   </li>

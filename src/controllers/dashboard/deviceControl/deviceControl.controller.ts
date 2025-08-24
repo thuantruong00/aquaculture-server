@@ -187,7 +187,6 @@ export class DeviceControlController extends BaseController {
             },
           ],
         });
-        console.log("send command");
         await handleWriteCommandSet(String(deviceId), key, Number(value), {
           commandId: String(insert._id),
         });

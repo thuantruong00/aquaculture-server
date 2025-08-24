@@ -9,7 +9,7 @@
           </div>
           <div class="my-form #form_id">
             <div class="wrap-my-form">
-              <form action="/automatic/timer-create" method="post">
+              <form action="/dashboard/automatic/timer-create" method="post">
                 <label for="template-device-group">Tên</label>
                 <div class="gap-xs"></div>
                 <div class="wrap-input required">
@@ -99,10 +99,10 @@
                   <span class="short-text"><%= timerJobs[index].repeatInterval%> <%= timerJobs[index].repeatUnit=="day"?"ngày":""%><%= timerJobs[index].repeatUnit=="hour"?"giờ":""%><%= timerJobs[index].repeatUnit=="minute"?"phút":""%></span>
                   <span class="action">
                     <div class="wrap-action-btn">
-                      <a href="/automatic/timer-control/<%=listJobs.indexOf(String(timerJobs[index]._id)) > -1 ?'stop':'start' %>/<%=timerJobs[index]._id %>" class="primary-btn"><%= listJobs.indexOf(String(timerJobs[index]._id)) > -1 ? "Dừng" : "Chạy" %></a>
+                      <a href="/dashboard/automatic/timer-control/<%=listJobs.indexOf(String(timerJobs[index]._id)) > -1 ?'stop':'start' %>/<%=timerJobs[index]._id %>" class="primary-btn"><%= listJobs.indexOf(String(timerJobs[index]._id)) > -1 ? "Dừng" : "Chạy" %></a>
                     </div>
                     <div class="wrap-action-btn">
-                      <a href="/automatic/timer-delete/<%=timerJobs[index]._id %>" value=".item-<%= timerJobs[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</a>
+                      <a href="/dashboard/automatic/timer-delete/<%=timerJobs[index]._id %>" value=".item-<%= timerJobs[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</a>
                     </div>
                   </span>
                 </li>

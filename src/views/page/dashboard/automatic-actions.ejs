@@ -3,7 +3,7 @@
   <div class="row align-items-center">
     <div class="col-3">
       <div class="wrap-form">
-        <form action="/automatic/action-create" method="get">
+        <form action="/dashboard/automatic/action-create" method="get">
           <button class="px-3 py-1">+ Tạo mới</button>
         </form>
       </div>
@@ -39,12 +39,12 @@
               <span class="short-text"><%=actions[index].description %></span>
               <span class="action">
                 <div class="wrap-action-btn">
-                  <a href="/automatic/action-detail/<%=actions[index]._id %>">
-                    <button title="id=<%=actions[index]._id %>" value=".item-<%=actions[index]._id %>" class="primary-btn">Sửa<span class="icon"><img class="img-icon" src="../cms/images/index/settings.png" alt=""></span></button>
+                  <a href="/dashboard/automatic/action-detail/<%=actions[index]._id %>">
+                    <button title="id=<%=actions[index]._id %>" value=".item-<%=actions[index]._id %>" class="primary-btn">Sửa<span class="icon"><img class="img-icon" src="/cms/images/index/settings.png" alt=""></span></button>
                   </a>
                 </div>
                 <div class="wrap-action-btn">
-                  <a href="/automatic/action-delete/<%=actions[index]._id %>">
+                  <a href="/dashboard/automatic/action-delete/<%=actions[index]._id %>">
                     <button title="id=<%=actions[index]._id %>" value=".item-<%=actions[index]._id %>" class="primary-btn delete-device-btn-style">Xoá ×</button>
                   </a>
                 </div>

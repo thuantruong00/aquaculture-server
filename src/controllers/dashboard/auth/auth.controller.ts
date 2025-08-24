@@ -35,7 +35,7 @@ export class AuthController extends BaseController {
     // ==============dev=============
 
     if (req.session.user) {
-      return res.redirect("/device-control");
+      return res.redirect("/dashboard/device-control");
     } else {
       // req.session.user = {
       //   user_id: "u1",
@@ -73,7 +73,7 @@ export class AuthController extends BaseController {
             nickname: user.nickname,
             email: user.email,
           };
-          return res.redirect("/device-control");
+          return res.redirect("/dashboard/device-control");
         }
       }
       return res.redirect(req.get("Referer") || "/fallback");
@@ -92,7 +92,7 @@ export class AuthController extends BaseController {
       }
 
       res.clearCookie("connect.sid"); // tên cookie mặc định của express-session
-      res.redirect("/auth/sign-in"); // hoặc trang chính
+      res.redirect("/dashboard/auth/sign-in"); // hoặc trang chính
     });
   };
 }

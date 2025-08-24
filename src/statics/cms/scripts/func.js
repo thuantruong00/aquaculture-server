@@ -9,7 +9,7 @@ $('.active-device-btn').click(function () {
     }
     const submit = $.ajax({
         type: "post",
-        url: `${path}/device-setting/activate`,
+        url: `${baseUrl}/dashboard/device-setting/activate`,
         data: JSON.stringify(data),
         contentType: "application/json",
         dataType: "json",
@@ -33,7 +33,7 @@ $('.delete-device-btn').click(function () {
     }
     const submit = $.ajax({
         type: "post",
-        url: `${path}/device-setting/update-status`,
+        url: `${baseUrl}/dashboard/device-setting/update-status`,
         data: JSON.stringify(data),
         contentType: "application/json",
         dataType: "json",
@@ -96,7 +96,7 @@ function submitChangeOrderForm(parent) {
 
     const submit = $.ajax({
         type: "post",
-        url: `${path}/device-setting/update-device-orders`,
+        url: `${baseUrl}/dashboard/device-setting/update-device-orders`,
         data: JSON.stringify({ order: data }),
         contentType: "application/json",
         dataType: "json",
@@ -117,7 +117,7 @@ function submitChangeOrderForm(parent) {
     const pathOnly = window.location.pathname;
     const hasNoQuery = window.location.search === "";
 
-    if (pathOnly.match(/^\/device-control\/?$/) && hasNoQuery) {
+    if (pathOnly.match(/^\/dashboard\/device-control\/?$/) && hasNoQuery) {
         const favoriteDeviceIds = JSON.parse(localStorage.getItem("favoriteDeviceIds") || "[]");
         const favoriteGroupIds = JSON.parse(localStorage.getItem("favoriteGroupIds") || "[]");
 
@@ -135,15 +135,13 @@ function submitChangeOrderForm(parent) {
         }
 
         // Redirect
-        const redirectUrl = `${window.location.origin}${pathOnly}?${queryParams.toString()}`;
+        // const redirectUrl = `${window.location.origin}${pathOnly}?${queryParams.toString()}`;
+        const redirectUrl = `${baseUrl}${pathOnly}?${queryParams.toString()}`;
         window.location.href = redirectUrl;
     }
 })();
 
 function handleAddPinLocalId(id, type) {
-    console.log("1====");
-    console.log(id, type);
-
     if (type == "device") {
         const deviceIds = JSON.parse(localStorage.getItem("favoriteDeviceIds") || "[]");
         if (!deviceIds.includes(id)) {
@@ -161,7 +159,7 @@ function handleAddPinLocalId(id, type) {
     }
 
     // ✅ Chuyển hướng sau khi thêm xong
-    window.location.href = "/device-control";
+    window.location.href = "/dashboard/device-control";
 }
 function handleRemovePinLocalId(id, type) {
     console.log("Removing:", id, type);
@@ -179,7 +177,7 @@ function handleRemovePinLocalId(id, type) {
     }
 
     // ✅ Chuyển hướng sau khi gỡ ghim
-    window.location.href = "/device-control";
+    window.location.href = "/dashboard/device-control";
 }
 
 
@@ -190,7 +188,7 @@ function controlDevice(deviceId, key, value) {
     console.log(data)
     const submit = $.ajax({
         type: "post",
-        url: `${path}/api/device-control/${deviceId}`,
+        url: `${baseUrl}/dashboard/api/device-control/${deviceId}`,
         data: JSON.stringify(data),
         contentType: "application/json",
         dataType: "json",
@@ -253,7 +251,7 @@ function getRecordsData(formSelector) {
 
 
     // build url
-    const url = `http://127.0.0.1:8002/history?deviceId=${encodeURIComponent(deviceId)}&key=${encodeURIComponent(key)}&date=${encodeURIComponent(dateVal)}&limit=20`;
+    const url = `${baseUrl}/dashboard/history?deviceId=${encodeURIComponent(deviceId)}&key=${encodeURIComponent(key)}&date=${encodeURIComponent(dateVal)}&limit=20`;
 
     // redirect
     window.location.href = url;

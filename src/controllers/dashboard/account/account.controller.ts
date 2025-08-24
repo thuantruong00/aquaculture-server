@@ -53,7 +53,7 @@ export class AccountController extends BaseController {
         salt,
       });
       if (createAccount) {
-        return res.redirect("/account/create");
+        return res.redirect("/dashboard/account/create");
       }
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
@@ -70,7 +70,7 @@ export class AccountController extends BaseController {
       if (findUser) {
         const deleteUser = await User.updateOne({ status: UserStatus.DELETED });
         if (deleteUser) {
-          return res.redirect("/account");
+          return res.redirect("/dashboard/account");
         }
       }
       return this.renderWithSidebar(res, "page/error");

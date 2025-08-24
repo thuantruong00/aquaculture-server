@@ -2,5 +2,5 @@ import { Application } from "express";
 import { dashboardRouter } from "./dashboard";
 
 export const routes = (app: Application) => {
-  app.use("/", dashboardRouter);
+  app.use("/dashboard/", dashboardRouter);
 };

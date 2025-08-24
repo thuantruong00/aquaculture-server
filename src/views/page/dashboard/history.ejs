@@ -71,7 +71,7 @@
         </div>
       </div>
       <%
-      const path ="/history?deviceId="+ deviceId +"&key="+key+"&date="+date
+      const path ="/dashboard/history?deviceId="+ deviceId +"&key="+key+"&date="+date
       %>
       <%- include('../../partials/cms/pagination.ejs',{ offset , limit, total, path}) %>
     </div>

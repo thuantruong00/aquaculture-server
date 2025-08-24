@@ -80,7 +80,7 @@ function getChartData(formSelector) {
     const bucketVal = bucketInput.value;
 
     // build url
-    const url = `http://127.0.0.1:8002/chart?deviceId=${encodeURIComponent(deviceId)}&key=${encodeURIComponent(key)}&date=${encodeURIComponent(dateVal)}&bucket=${encodeURIComponent(bucketVal)}`;
+    const url = `${baseUrl}/dashboard/chart?deviceId=${encodeURIComponent(deviceId)}&key=${encodeURIComponent(key)}&date=${encodeURIComponent(dateVal)}&bucket=${encodeURIComponent(bucketVal)}`;
 
     // redirect
     window.location.href = url;

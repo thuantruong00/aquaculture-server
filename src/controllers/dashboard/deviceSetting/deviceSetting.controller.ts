@@ -115,7 +115,7 @@ export class DeviceSettingController extends BaseController {
           { _id: deviceId },
           { status: DeviceStatus.DELETED }
         );
-        return res.redirect("/device-setting");
+        return res.redirect("/dashboard/device-setting");
       }
       res.statusCode = 400;
       return this.renderWithSidebar(res, "page/error");

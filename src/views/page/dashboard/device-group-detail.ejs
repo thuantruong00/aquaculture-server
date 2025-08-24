@@ -11,7 +11,7 @@ const formId="change-order-1"
       </div>
       <div class="my-form #form_id">
         <div class="wrap-my-form">
-          <form action="/custom-ui/add-device" method="post">
+          <form action="/dashboard/custom-ui/add-device" method="post">
             <label for="template-device-group">Danh sách thiết bị trong nhóm</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
@@ -68,7 +68,7 @@ const formId="change-order-1"
               </span>
               <span class="action">
                 <div class="wrap-action-btn">
-                  <form action="/custom-ui/remove-device" method="post">
+                  <form action="/dashboard/custom-ui/remove-device" method="post">
                     <input type="text" name="deviceId" value="<%=devices[index]._id %>" class="d-none">
                     <input type="text" name="groupId" value="<%=groupId %>" class="d-none">
                     <button value="<%=devices[index]._id %>" class="primary-btn delete-device-btn">Gỡ ra ×</button>
@@ -96,7 +96,7 @@ const formId="change-order-1"
       </div>
       <div class="my-form #form_id">
         <div class="wrap-my-form">
-          <form action="/custom-ui/update/<%=groupId %>" method="post">
+          <form action="/dashboard/custom-ui/update/<%=groupId %>" method="post">
             <label for="">Tên nhóm</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">

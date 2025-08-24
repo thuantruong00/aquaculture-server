@@ -62,7 +62,10 @@ app.use(express.static(path.join(__dirname, "statics")));
 
 routes(app);
 app.get("/", function (req, res) {
-  res.redirect("/auth/sign-in");
+  res.redirect("/dashboard/auth/sign-in");
+});
+app.get("/dashboard/", function (req, res) {
+  res.redirect("/dashboard/auth/sign-in");
 });
 
 // error handling

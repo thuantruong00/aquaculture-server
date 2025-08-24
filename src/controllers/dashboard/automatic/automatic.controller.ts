@@ -68,7 +68,7 @@ export class AutomaticController extends BaseController {
       });
 
       if (createAction) {
-        return res.redirect(`/automatic/action-detail/${createAction._id}`);
+        return res.redirect(`/dashboard/automatic/action-detail/${createAction._id}`);
       }
 
       return this.renderWithSidebar(res, "page/error");
@@ -222,10 +222,10 @@ export class AutomaticController extends BaseController {
         conditions: condition,
       });
       if (create && action == "createAction" && actionId) {
-        return res.redirect(`/automatic/action-detail/${actionId._id}`);
+        return res.redirect(`/dashboard/automatic/action-detail/${actionId._id}`);
       }
       if (create) {
-        return res.redirect("/automatic/scene-create");
+        return res.redirect("/dashboard/automatic/scene-create");
       }
 
       return this.renderWithSidebar(res, "page/error");
@@ -279,7 +279,7 @@ export class AutomaticController extends BaseController {
       );
 
       if (update) {
-        return res.redirect("/automatic");
+        return res.redirect("/dashboard/automatic");
       }
 
       return this.renderWithSidebar(res, "page/error");
@@ -301,7 +301,7 @@ export class AutomaticController extends BaseController {
       );
 
       if (update) {
-        return res.redirect("/automatic");
+        return res.redirect("/dashboard/automatic");
       }
 
       return this.renderWithSidebar(res, "page/error");
@@ -501,7 +501,7 @@ export class AutomaticController extends BaseController {
         //   return res.redirect(`/automatic/action-detail/${actionId}`);
         // }
         if (create) {
-          return res.redirect("/automatic/actions");
+          return res.redirect("/dashboard/automatic/actions");
         }
       }
 
@@ -530,7 +530,7 @@ export class AutomaticController extends BaseController {
             { status: ActionStatus.DELETED }
           );
           if (deleteAction) {
-            return res.redirect("/automatic/actions");
+            return res.redirect("/dashboard/automatic/actions");
           }
         }
       }
@@ -616,9 +616,9 @@ export class AutomaticController extends BaseController {
         }
         console.log(createTimer);
         if (createTimer && action === "createAction" && actionId) {
-          return res.redirect(`/automatic/action-detail/${actionId._id}`);
+          return res.redirect(`/dashboard/automatic/action-detail/${actionId._id}`);
         }
-        return res.redirect("/automatic/timer");
+        return res.redirect("/dashboard/automatic/timer");
       }
 
       return this.renderWithSidebar(res, "page/error");
@@ -646,7 +646,7 @@ export class AutomaticController extends BaseController {
             refTable: "action",
             refId: String(action._id),
           });
-          return res.redirect("/automatic/timer");
+          return res.redirect("/dashboard/automatic/timer");
         }
       }
 
@@ -669,7 +669,7 @@ export class AutomaticController extends BaseController {
         const action = findJob.action;
         if (action) {
           removeJob(String(findJob._id));
-          return res.redirect("/automatic/timer");
+          return res.redirect("/dashboard/automatic/timer");
         }
       }
 
@@ -694,7 +694,7 @@ export class AutomaticController extends BaseController {
         );
 
         if (update) {
-          return res.redirect("/automatic/timer");
+          return res.redirect("/dashboard/automatic/timer");
         }
       }
       return this.renderWithSidebar(res, "page/error");
