@@ -1,0 +1,22 @@
+<div class="wrap-mobile-menu d-md-none d-block">
+  <div class="mobile-menu">
+    <ul>
+      <% for (const key of mobileMenu.sidebar) { if(block_table.indexOf(key.page_id) < 0){ %>
+      <li>
+        <div class="line <%=key.page_id==active_page.page_id?'active':'' %>">
+          <a href="<%=key.href%>">
+            <img src="<%=key.icon%>" alt="" class="img-fluid menu-mobile-icon">
+            <div class="title"><%=key.title%></div>
+          </a>
+          <% if(key.child.length>0){ %>
+          <a href="#" class="wrap-arrow my-dropdown-button" dropdown-menu-name="#<%=key.page_id%>">
+            <img class="arrow-down" src="/cms/images/index/arrow-down.png" alt="">
+          </a>
+          <% } %>
+        </div>
+
+      </li>
+      <% } } %>
+    </ul>
+  </div>
+</div>

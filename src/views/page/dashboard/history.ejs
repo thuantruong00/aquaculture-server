@@ -4,7 +4,7 @@
     <div class="my-form form-chart-1">
       <div class="wrap-my-form py-3">
         <div class="row">
-          <div class="col-6">
+          <div class="col-lg-6 col-12">
             <label for="template-device-group">Danh sách giá trị cảm biến</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
@@ -18,16 +18,16 @@
               </select>
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-lg-3 col-12">
             <label for="">Ngày</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
               <input type="date" name="date" value="<%= date %>" class="w-100">
             </div>
           </div>
-          <div class="col-3">
-            <div class="gap-xs"></div>
-            <div class="gap-xs"></div>
+          <div class="col-lg-3">
+            <div class="gap-xs d-md-block d-none"></div>
+            <div class="gap-xs d-md-block d-none"></div>
             <div class="submit">
               <button class="submit-btn" onclick="getRecordsData('.form-chart-1')">Xem</button>
             </div>
@@ -76,4 +76,5 @@
       <%- include('../../partials/cms/pagination.ejs',{ offset , limit, total, path}) %>
     </div>
   </div>
+   <div class="gap-lg"></div>
 </div>

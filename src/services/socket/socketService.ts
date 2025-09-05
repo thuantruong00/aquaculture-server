@@ -4,7 +4,7 @@ import express, { Express } from "express";
 
 const socketApp = express();
 const server = createServer(socketApp);
-server.listen(3000);
+// server.listen(3000);
 export const io = new Server(server, {
   cors: {
     origin: "*", // Allow all origins

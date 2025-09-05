@@ -175,3 +175,38 @@ export const sidebarData = [
     ],
   },
 ];
+
+export const mobileMenuData = [
+  {
+    page_id: "deviceControl",
+    title: "Điều khiển",
+    icon: "/cms/images/index/smart-home.png",
+    href: "/dashboard/device-control",
+    page_name: "page/dashboard/device-control",
+    child: [],
+  },
+  {
+    page_id: "automaticTimer",
+    title: "Hẹn giờ",
+    icon: "/cms/images/index/timer.png",
+    href: "/dashboard/automatic/timer",
+    page_name: "page/dashboard/timer",
+    child: [],
+  },
+  {
+    page_id: "history",
+    title: "Thống kê",
+    icon: "/cms/images/index/chart.png",
+    href: "/dashboard/history",
+    page_name: "page/dashboard/history",
+    child: [],
+  },
+  {
+    page_id: "chart",
+    title: "Biểu đồ",
+    icon: "/cms/images/index/chart.png",
+    href: "/dashboard/chart",
+    page_name: "page/dashboard/history-chart",
+    child: [],
+  },
+];

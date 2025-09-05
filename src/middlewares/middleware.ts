@@ -2,7 +2,10 @@ import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
 import { UserRole } from "~/utils/enum";
-import { getSidebarContentService } from "~/services/cms/sidebarControl.service";
+import {
+  getMobileMenuService,
+  getSidebarContentService,
+} from "~/services/cms/sidebarControl.service";
 import { RoleAccess } from "~/config";
 import { env } from "~/utils";
 
@@ -58,7 +61,9 @@ export class Middleware {
         }
 
         const sidebar = await getSidebarContentService(pageCode, currentRole);
+        const mobileMenu = await getMobileMenuService(pageCode, currentRole);
         res.locals.sidebar = sidebar;
+        res.locals.mobileMenu = mobileMenu;
         res.locals.user = req.session.user;
         res.locals.pageCode = pageCode;
         next();

@@ -4,7 +4,7 @@
     <div class="my-form form-chart-1">
       <div class="wrap-my-form">
         <div class="row">
-          <div class="col-6">
+          <div class="col-lg-6 col-12">
             <label for="template-device-group">Danh sách giá trị cảm biến</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
@@ -18,14 +18,14 @@
               </select>
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-lg-3 col-12">
             <label for="">Ngày</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
               <input type="date" name="date" value="<%= date %>" class="w-100">
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-lg-3 col-12">
             <label for="">Khung thời gian</label>
             <div class="gap-xs"></div>
             <div class="wrap-input required">
@@ -50,6 +50,7 @@
       <button id="btnRefresh">Làm mới</button>
     </div>
   </div>
+  <div class="gap-lg"></div>
 </div>
 <script>
   const seriesAvg = <%- seriesAvg %>;

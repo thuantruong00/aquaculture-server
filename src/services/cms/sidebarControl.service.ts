@@ -1,5 +1,5 @@
 import { RoleAccess } from "~/config";
-import { sidebarData } from "~/config/dashboardSidebar";
+import { sidebarData, mobileMenuData } from "~/config/dashboardSidebar";
 
 export const getSidebarContentService = async (
   page_id: string,
@@ -55,6 +55,61 @@ export const getSidebarContentService = async (
     console.log(error);
     return error_page;
   }
+  if (active_page != undefined) {
+    return {
+      active_page: {
+        title: active_page.title,
+        page_name: active_page.page_name,
+        parent_id: page_parent_active,
+        page_id: active_page.page_id,
+      },
+      sidebar: sidebar_content,
+      block_table: block_table,
+    };
+  } else {
+    return error_page;
+  }
+};
+
+export const getMobileMenuService = async (
+  page_id: string,
+  user_type?: string
+) => {
+  // (<page_id_now>,<user_type>)
+  const is_user = user_type ? user_type : "guest";
+  let sidebar_content = mobileMenuData;
+  let active_page = undefined;
+  let page_parent_active;
+  let block_table = RoleAccess.block[is_user];
+  // console.log(block_table)
+
+  let error_page = {
+    active_page: {
+      title: "Lỗi",
+      page_name: "./cms-page/error",
+      page_parent_active: "deviceControl",
+      page_id: "deviceControl",
+    },
+    sidebar: sidebar_content,
+  };
+
+  try {
+    if (active_page == undefined) {
+      for (const key of sidebar_content) {
+        console.log(key.page_id,page_id, key.page_id == page_id)
+        if (key.page_id == page_id) {
+          page_parent_active = key.page_id;
+          active_page = key;
+          break;
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return error_page;
+  }
+
+
   if (active_page != undefined) {
     return {
       active_page: {
