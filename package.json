@@ -30,6 +30,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-fileupload": "^1.4.3",
     "express-session": "^1.17.3",
+    "fastq": "^1.19.1",
     "http-errors": "~1.6.3",
     "image-size": "^1.1.1",
     "imagemagick": "^0.1.3",

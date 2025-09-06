@@ -3,6 +3,7 @@ import { Low } from "lowdb";
 import { JSONFile } from "lowdb/node";
 import { DataSchema, JobEntry } from "./cronJob.interface";
 import { MqttService } from "../mqtt";
+import { actionQueue } from "../queues";
 
 const adapter = new JSONFile<DataSchema>("data/db.json");
 const defaultData: DataSchema = { jobs: [] };
@@ -49,7 +50,7 @@ export function listJobs(): JobEntry[] {
 
 function startJob(job: JobEntry): void {
   const task = cron.schedule(job.schedule, async () => {
-    console.log(`🕒 Job [${job.id}] running →`, job);
+    // console.log(`🕒 Job [${job.id}] running →`, job);
 
     try {
       await executeJobAction(job);
@@ -70,9 +71,15 @@ function startJob(job: JobEntry): void {
 
 // Example runner: customize theo hệ thống
 async function executeJobAction(cmd: JobEntry) {
-  console.log(`⚙ Thực thi lệnh →`, cmd);
-  if (cmd.refId && cmd.refTable=="action") {
-    mqttService.processByActionId(cmd.refId);
+  // console.log(`⚙ Thực thi lệnh →`, cmd);
+  if (cmd.refId && cmd.refTable == "action") {
+    // add to queue
+    // mqttService.processByActionId(cmd.refId);
+    actionQueue.push({
+      topic: cmd.refTable,
+      payload: { refId: cmd.refId, command: cmd.command },
+    });
   }
+  return;
   // TODO: Gửi MQTT hoặc trigger thiết bị thật
 }

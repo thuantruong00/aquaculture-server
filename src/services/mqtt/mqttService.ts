@@ -35,7 +35,6 @@ export class MqttService {
     deviceId: string,
     value: string
   ) => {
-    console.log("handlTetelemetry");
     const findDevice = await Device.findOne({ _id: deviceId })
       .populate("zone")
       .populate("group")
@@ -58,7 +57,6 @@ export class MqttService {
           values: valueInsert,
         });
         const check = await this.processSensorValue(deviceId, valueInsert);
-        console.log("check ====");
         // ========================
 
         this.socketService.sendIotDataTelemetry({
@@ -77,7 +75,6 @@ export class MqttService {
     commandId: string,
     value: string
   ) => {
-    console.log("handlResponse");
     const findDevice = await Device.findOne({ _id: deviceId })
       .populate("zone")
       .populate("group")
@@ -91,7 +88,6 @@ export class MqttService {
         const key = arrStringValue[0];
         const value = arrStringValue[1];
         const ts = Date.now().valueOf();
-        console.log(value, typeCast(value, valueType), deviceModel);
         this.socketService.sendIotDataResponse({
           id: deviceId,
           ts: ts,
@@ -110,7 +106,6 @@ export class MqttService {
     deviceId: string,
     data: SensorDataConditionProcesss[]
   ) => {
-    console.log(deviceId, data);
     if (data.length > 0) {
       for (const item of data) {
         const findScene = await AutomationScene.findOne({
@@ -133,7 +128,6 @@ export class MqttService {
             ],
           })
           .lean();
-        console.log(findScene);
         const expected = findScene?.conditions.find(
           (cond) => cond.key == item.key
         );
@@ -144,7 +138,6 @@ export class MqttService {
             expected?.value,
             DeviceFieldType.FLOAT
           );
-          console.log("check = ", check);
           if (check) {
             await this.handleAction(findScene?.actions);
             if (findScene?.notifications) {

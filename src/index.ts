@@ -1,6 +1,7 @@
 import app from "./app";
 import { SocketService } from "./services";
 import { connectMongoDB } from "./config/dataSource";
+const { initialService } = await import("./services/initial/initial.service");
 const port = process.env.PORT || 8002;
 
 //test
@@ -9,9 +10,7 @@ const main = async () => {
   try {
     await connectMongoDB();
     console.log("✅ Scheduler initialized");
-    const { initialService } = await import(
-      "./services/initial/initial.service"
-    );
+
     await initialService(); // ✅ Gọi init sau khi đã connect
     app.listen(port, () => {
       console.log("🚀 HTTP Server is running on port", port);

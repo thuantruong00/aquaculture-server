@@ -14,7 +14,7 @@ function getWebSocketUrl() {
 
     if (isIp) {
         // Nếu là IP → ws://IP:3000
-        return `${wsProtocol}//${hostname}:3000`;
+        return `${wsProtocol}//${hostname}:8000`;
     } else {
         // Nếu là domain → ws://domain/socket
         return `${wsProtocol}//${hostname}`;

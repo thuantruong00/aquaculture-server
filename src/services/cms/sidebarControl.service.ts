@@ -81,7 +81,6 @@ export const getMobileMenuService = async (
   let active_page = undefined;
   let page_parent_active;
   let block_table = RoleAccess.block[is_user];
-  // console.log(block_table)
 
   let error_page = {
     active_page: {
@@ -96,7 +95,6 @@ export const getMobileMenuService = async (
   try {
     if (active_page == undefined) {
       for (const key of sidebar_content) {
-        console.log(key.page_id,page_id, key.page_id == page_id)
         if (key.page_id == page_id) {
           page_parent_active = key.page_id;
           active_page = key;
