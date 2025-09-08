@@ -52,7 +52,6 @@ export class HistoryController extends BaseController {
           },
         },
       ]);
-      console.log(isDefault, key, deviceId);
       if (!isDefault) {
         const selectedDevice = await Device.findOne({ _id: deviceId }).populate(
           "deviceModel"
@@ -64,9 +63,6 @@ export class HistoryController extends BaseController {
           offset,
           limit
         );
-        console.log(res.locals)
-        console.log("date", date);
-        console.log(qr, "total-page " + Math.ceil(qr.total / limit));
         return this.renderWithSidebar(res, undefined, {
           deviceId,
           key,
@@ -139,7 +135,88 @@ export class HistoryController extends BaseController {
           },
         },
       ]);
-      console.log(isDefault, key, deviceId);
+      if (!isDefault) {
+        const selectedDevice = await Device.findOne({ _id: deviceId }).populate(
+          "deviceModel"
+        );
+        const qr = await DeviceRecordRepository.getDeviceRecordByDateAndKey(
+          String(deviceId),
+          String(key),
+          date
+        );
+        const seriesData = qr.map((item) => ({
+          x: new Date(item.t).getTime(),
+          y: item.value,
+        }));
+
+        return this.renderWithSidebar(res, undefined, {
+          deviceId,
+          key,
+          date,
+          bucket,
+          series: JSON.stringify(seriesData),
+          devices: result,
+          selectedDevice,
+        });
+      }
+      return this.renderWithSidebar(res, undefined, {
+        deviceId: "",
+        key: "",
+        date,
+        bucket,
+        series: [],
+        devices: result,
+      });
+    } catch (err) {
+      console.error("renderDeviceChart error:", err);
+      return res.status(500).send("Lỗi khi lấy dữ liệu biểu đồ");
+    }
+  };
+  handleAverageChartPage = async (req: Request, res: Response) => {
+    try {
+      const deviceId = req.query.deviceId;
+      const key = req.query.key;
+      const isDefault = key && deviceId ? false : true;
+
+      const date = String(
+        req.query.date || new Date().toISOString().split("T")[0]
+      );
+      const bucket = req.query.bucket ? Number(req.query.bucket) : 15;
+      const result = await Device.aggregate([
+        {
+          $match: {
+            status: DeviceStatus.ACTIVE,
+          },
+        },
+        {
+          $lookup: {
+            from: "devicemodels",
+            localField: "deviceModel",
+            foreignField: "_id",
+            as: "deviceModel",
+          },
+        },
+        { $unwind: "$deviceModel" },
+        { $unwind: "$deviceModel.fields" },
+        {
+          $match: {
+            "deviceModel.fields.deviceType": "sensor",
+          },
+        },
+        {
+          $project: {
+            label: {
+              $concat: ["$name", " - ", "$deviceModel.fields.label"],
+            },
+            source: {
+              $literal: "device", // hoặc dùng EnumSource.device nếu đã import
+            },
+            deviceId: "$_id",
+            key: "$deviceModel.fields.key",
+            deviceType: "$deviceModel.fields.deviceType",
+          },
+        },
+      ]);
       if (!isDefault) {
         const selectedDevice = await Device.findOne({ _id: deviceId }).populate(
           "deviceModel"

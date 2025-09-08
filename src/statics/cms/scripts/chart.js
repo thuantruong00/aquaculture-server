@@ -1,4 +1,46 @@
 // =========================================
+// const optionsAverage = {
+//     chart: {
+//         type: 'line',
+//         height: 400,
+//         zoom: { enabled: true }
+//     },
+//     series: [
+//         { name: 'Giá trị trung bình', data: seriesAvg || [] },
+//         { name: 'Giá trị thấp nhất', data: seriesMin || [] },
+//         { name: 'Giá trị cao nhất', data: seriesMax || [] }
+//     ],
+//     colors: ['#000000', '#1E90FF', '#FF0000'],
+//     xaxis: {
+//         type: 'datetime',
+//         labels: {
+//             datetimeUTC: false // để hiện giờ theo local VN
+//         }
+//     },
+//     yaxis: {
+//         decimalsInFloat: 2,
+//         title: { text: "Value" }
+//     },
+//     grid: {
+//         show: true,
+//         borderColor: 'red',
+//         strokeDashArray: 3,
+//         position: 'back',
+//         xaxis: {
+//             lines: { show: true }  // lưới dọc
+//         },
+//         yaxis: {
+//             lines: { show: true }  // lưới ngang
+//         },
+//         row: {
+//             colors: ['#f9f9f9', 'transparent'], // xen kẽ
+//             opacity: 0.5
+//         }
+//     },
+//     tooltip: {
+//         x: { format: 'dd/MM HH:mm' }
+//     }
+// };
 const options = {
     chart: {
         type: 'line',
@@ -6,11 +48,9 @@ const options = {
         zoom: { enabled: true }
     },
     series: [
-        { name: 'Giá trị trung bình', data: seriesAvg || [] },
-        { name: 'Giá trị thấp nhất', data: seriesMin || [] },
-        { name: 'Giá trị cao nhất', data: seriesMax || [] }
+        { name: 'Giá trị trung bình', data: series || [] },
     ],
-    colors: ['#000000', '#1E90FF', '#FF0000'],
+    colors: ['#ff0404'],
     xaxis: {
         type: 'datetime',
         labels: {
@@ -45,16 +85,16 @@ const options = {
 const chart = new ApexCharts(document.querySelector("#chart"), options);
 chart.render();
 
-// Toggle series
-document.getElementById("chkAvg").addEventListener("change", e => {
-    chart.toggleSeries("Avg");
-});
-document.getElementById("chkMin").addEventListener("change", e => {
-    chart.toggleSeries("Min");
-});
-document.getElementById("chkMax").addEventListener("change", e => {
-    chart.toggleSeries("Max");
-});
+// // Toggle series
+// document.getElementById("chkAvg").addEventListener("change", e => {
+//     chart.toggleSeries("Avg");
+// });
+// document.getElementById("chkMin").addEventListener("change", e => {
+//     chart.toggleSeries("Min");
+// });
+// document.getElementById("chkMax").addEventListener("change", e => {
+//     chart.toggleSeries("Max");
+// });
 
 // Refresh button (reload page)
 document.getElementById("btnRefresh").addEventListener("click", () => {

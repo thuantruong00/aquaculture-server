@@ -12,4 +12,5 @@ export const env = {
   INIT: process.env.INIT || 0,
   BOT_TOKEN: process.env.BOT_TOKEN || "",
   BOT_ALLOW_USER: process.env.BOT_ALLOW_USER || 0,
+  NODE_ENV: process.env.NODE_ENV || "production",
 };

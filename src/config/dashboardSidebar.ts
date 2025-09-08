@@ -22,6 +22,28 @@ export const sidebarData = [
     ],
   },
   {
+    page_id: "history",
+    title: "Lịch sử",
+    href: "/dashboard/history",
+    page_name: "page/dashboard/history",
+    child: [
+      {
+        page_id: "chart",
+        title: "Biểu đồ",
+        href: "/dashboard/chart",
+        page_name: "page/dashboard/history-chart",
+        child: [],
+      },
+      {
+        page_id: "history",
+        title: "Lịch sử",
+        href: "/dashboard/history",
+        page_name: "page/dashboard/history",
+        child: [],
+      },
+    ],
+  },
+  {
     page_id: "automatic",
     title: "Kịch bản tự động",
     href: "/dashboard/automatic",
@@ -130,28 +152,7 @@ export const sidebarData = [
       },
     ],
   },
-  {
-    page_id: "history",
-    title: "Lịch sử",
-    href: "/dashboard/history",
-    page_name: "page/dashboard/history",
-    child: [
-      {
-        page_id: "history",
-        title: "Lịch sử",
-        href: "/dashboard/history",
-        page_name: "page/dashboard/history",
-        child: [],
-      },
-      {
-        page_id: "chart",
-        title: "Biểu đồ",
-        href: "/dashboard/chart",
-        page_name: "page/dashboard/history-chart",
-        child: [],
-      },
-    ],
-  },
+
   {
     page_id: "account",
     title: "Tài khoản",

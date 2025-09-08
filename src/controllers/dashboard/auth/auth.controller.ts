@@ -8,6 +8,7 @@ import { generateZoneKey } from "~/utils/mqtt";
 import { logger } from "~/utils/logger";
 import { IActionSignInBodySchema } from "./auth.dto";
 import { User } from "~/entities/user.entity";
+import { env } from "~/utils";
 
 export class AuthController extends BaseController {
   constructor() {
@@ -16,22 +17,26 @@ export class AuthController extends BaseController {
 
   handleSignInPage = async (req: Request, res: Response) => {
     // ==============dev=============
-    // req.session.user = {
-    //   user_id: "689ea07d5f9880283ee68a4a",
-    //   username: "name",
-    //   role: UserRole.ROOT,
-    //   nickname: "nikc",
-    //   email: "email",
-    // };
-    // return res.render("page/dashboard/login", {
-    //   active_page: {
-    //     title: "Đăng nhập",
-    //     page_name: "Login",
-    //     page_parent_active: "Login",
-    //     page_id: "login",
-    //   },
-    //   layout: "./layouts/center-layout.ejs",
-    // });
+    if (env.NODE_ENV == "development") {
+      console.log("dev mode")
+      req.session.user = {
+        user_id: "689ea07d5f9880283ee68a4a",
+        username: "name",
+        role: UserRole.ROOT,
+        nickname: "nikc",
+        email: "email",
+      };
+      return res.render("page/dashboard/login", {
+        active_page: {
+          title: "Đăng nhập",
+          page_name: "Login",
+          page_parent_active: "Login",
+          page_id: "login",
+        },
+        layout: "./layouts/center-layout.ejs",
+      });
+    }
+
     // ==============dev=============
 
     if (req.session.user) {

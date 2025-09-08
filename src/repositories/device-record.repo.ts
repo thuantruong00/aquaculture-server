@@ -151,7 +151,7 @@ export class DeviceRecordRepository {
     const total =
       Array.isArray(count) && count.length ? (count[0].total ?? 0) : 0;
     const totalPages = limit > 0 ? Math.ceil(total / limit) : 0;
-    return { records:rows, total, offset, limit };
+    return { records: rows, total, offset, limit };
   }
   static async getDeviceRecordMinMaxAvg(
     deviceId: string,
@@ -271,6 +271,90 @@ export class DeviceRecordRepository {
       bucket
     );
     return toApexSeries(getRows, key);
+  }
+  static async getDeviceRecordByDateAndKey(
+    deviceId: string,
+    key: string,
+    date: string
+  ) {
+    const tz = process.env.TZ || "Asia/Ho_Chi_Minh";
+
+    // tạo start và end theo ngày (VN timezone)
+    const startLocal = new Date(`${date}T00:00:00+07:00`);
+    const endLocal = new Date(`${date}T23:59:59.999+07:00`);
+
+    const matchStage: any = {
+      deviceId: new Types.ObjectId(deviceId),
+      timestamp: { $gte: startLocal, $lt: endLocal },
+    };
+
+    const pipeline: PipelineStage[] = [
+      { $match: matchStage },
+      { $unwind: "$values" },
+      { $match: { "values.key": key } },
+
+      // convert value về string
+      {
+        $addFields: {
+          _valueStr: {
+            $convert: {
+              input: "$values.value",
+              to: "string",
+              onError: null,
+              onNull: null,
+            },
+          },
+        },
+      },
+      // replace dấu phẩy thành dấu chấm
+      {
+        $addFields: {
+          _valueStr2: {
+            $cond: [
+              { $ifNull: ["$_valueStr", false] },
+              {
+                $replaceAll: {
+                  input: "$_valueStr",
+                  find: ",",
+                  replacement: ".",
+                },
+              },
+              "$_valueStr",
+            ],
+          },
+        },
+      },
+      // convert về số
+      {
+        $addFields: {
+          valueNumeric: {
+            $convert: {
+              input: "$_valueStr2",
+              to: "double",
+              onError: null,
+              onNull: null,
+            },
+          },
+        },
+      },
+      { $match: { valueNumeric: { $ne: null } } },
+
+      // chỉ lấy ra timestamp và valueNumeric
+      {
+        $project: {
+          _id: 0,
+          t: "$timestamp",
+          value: "$valueNumeric",
+        },
+      },
+      { $sort: { t: 1 } },
+    ];
+
+    const rows = await DeviceRecord.aggregate(pipeline)
+      .allowDiskUse(true)
+      .exec();
+
+    return rows;
   }
 }
 
