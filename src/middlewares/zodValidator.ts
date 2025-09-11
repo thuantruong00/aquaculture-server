@@ -13,13 +13,21 @@ export function zodMultiValidator(schemas: SchemaMap) {
 
       const valueToValidate = req[key];
       const result = schema.safeParse(valueToValidate);
-      console.log(valueToValidate, result);
+      // console.log(valueToValidate, result);
       if (!result.success) {
-        return res.status(422).render("page/error.ejs", {
-          message: `Invalid ${key}`,
-          errors: treeifyError(result.error),
-          layout: "layouts/default-layout.ejs",
-        });
+        if (res.locals.mode === "json") {
+          return res.status(422).json({
+            message: `Invalid ${key}`,
+            errors: treeifyError(result.error),
+          });
+        } else {
+          return res.status(422).render("page/error.ejs", {
+            message: `Invalid ${key}`,
+            errors: treeifyError(result.error),
+            layout: "layouts/default-layout.ejs",
+          });
+        }
+
       }
 
       (req as any)[key] = result.data;

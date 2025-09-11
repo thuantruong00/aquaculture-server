@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { DeviceStatus, DeviceType } from "~/utils/enum";
-import { PagiLimit, PagiOffset } from "~/utils/const";
+import { IPV4_REGEX, PagiLimit, PagiOffset } from "~/utils/const";
 
 export const GetListDeviceQuerySchema = z.object({
   offset: z
@@ -151,3 +151,13 @@ export const DeviceConnectSchema = z.object({
 });
 
 export type IDeviceConnectDTO = z.infer<typeof DeviceConnectSchema>;
+
+export const UpdateIpSchema = z.object({
+  ip: z.string().regex(IPV4_REGEX, "Invalid IPv4 address"),
+  secret: z
+    .string()
+    .min(8, { message: "deviceId must be at least 8 characters" })
+    .max(64, { message: "deviceId must be at most 64 characters" }),
+});
+
+export type IUpdateIpDTO = z.infer<typeof UpdateIpSchema>;

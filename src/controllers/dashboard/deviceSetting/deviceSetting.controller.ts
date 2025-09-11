@@ -9,6 +9,7 @@ import {
   IUpdateDeviceGroupDTO,
   IUpdateDeviceOrdersDTO,
   IUpdateDeviceStatusDTO,
+  IUpdateIpDTO,
 } from "./deviceSetting.dto";
 import {
   DeviceFieldType,
@@ -27,6 +28,8 @@ import { OtpExpireTimeInMs, PagiLimit, PagiOffset } from "~/utils/const";
 import { Otp } from "~/entities/otp.entity";
 import { randomString } from "~/utils/mqtt";
 import { logger } from "~/utils/logger";
+import { LiteCacheService } from "~/services";
+import { env } from "~/utils";
 export class DeviceSettingController extends BaseController {
   constructor() {
     super();
@@ -365,5 +368,31 @@ export class DeviceSettingController extends BaseController {
     }
   };
 
+  // ======================
+  handleApiUpdateIp = async (req: Request, res: Response) => {
+    try {
+      const { ip, secret } = req.body as IUpdateIpDTO;
+      if (secret === env.SECRET_KEY_INTERNAL) {
+        const liteCache = new LiteCacheService();
+        const setCache = await liteCache.set("serverIp", ip);
 
+        return this.handleApiResponse(res, { isSuccess: true }, 200);
+      }
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
+    } catch (error) {
+      logger.error("Err handleApiUpdateIp", error);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
+    }
+  };
+  handleApiGetIp = async (req: Request, res: Response) => {
+    try {
+      const liteCache = new LiteCacheService();
+      const get = await liteCache.get("serverIp");
+
+      return this.handleApiResponse(res, { payload: { ip: get } }, 200);
+    } catch (error) {
+      logger.error("Err handleApiUpdateIp", error);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
+    }
+  };
 }

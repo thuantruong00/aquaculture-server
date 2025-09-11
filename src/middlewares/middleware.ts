@@ -66,6 +66,7 @@ export class Middleware {
         res.locals.mobileMenu = mobileMenu;
         res.locals.user = req.session.user;
         res.locals.pageCode = pageCode;
+        res.locals.mode = "render";
         next();
       } catch (error) {
         next(error);
@@ -108,7 +109,7 @@ export class Middleware {
         if (auth.success) {
           req.user = auth.user;
         }
-
+        res.locals.mode = "json";
         next();
       } catch (error) {
         next(error);

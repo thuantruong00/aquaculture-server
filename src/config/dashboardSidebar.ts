@@ -28,17 +28,17 @@ export const sidebarData = [
     page_name: "page/dashboard/history",
     child: [
       {
-        page_id: "chart",
-        title: "Biểu đồ",
-        href: "/dashboard/chart",
-        page_name: "page/dashboard/history-chart",
-        child: [],
-      },
-      {
         page_id: "history",
         title: "Lịch sử",
         href: "/dashboard/history",
         page_name: "page/dashboard/history",
+        child: [],
+      },
+      {
+        page_id: "chart",
+        title: "Biểu đồ",
+        href: "/dashboard/chart",
+        page_name: "page/dashboard/history-chart",
         child: [],
       },
     ],

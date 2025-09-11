@@ -13,4 +13,5 @@ export const env = {
   BOT_TOKEN: process.env.BOT_TOKEN || "",
   BOT_ALLOW_USER: process.env.BOT_ALLOW_USER || 0,
   NODE_ENV: process.env.NODE_ENV || "production",
+  SECRET_KEY_INTERNAL: process.env.SECRET_KEY_INTERNAL || "pl12hs228as",
 };

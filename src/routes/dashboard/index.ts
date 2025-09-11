@@ -22,6 +22,7 @@ import {
   UpdateDeviceOrdersSchema,
   UpdateDeviceSchema,
   UpdateDeviceStatusSchema,
+  UpdateIpSchema,
 } from "~/controllers";
 import { ActionCreateAccountBodySchema } from "~/controllers/dashboard/account/account.dto";
 import { ActionSignInBodySchema } from "~/controllers/dashboard/auth/auth.dto";
@@ -247,6 +248,20 @@ dashboardRouter.get(
   middleware.webPageMiddleware("deviceSetting"),
   deviceSettingController.handleDeleteDevicePage
 );
+
+dashboardRouter.post(
+  "/device-setting/server-ip",
+  middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
+  zodMultiValidator({ body: UpdateIpSchema }),
+  deviceSettingController.handleApiUpdateIp
+);
+
+dashboardRouter.get(
+  "/device-setting/server-ip",
+  middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
+  deviceSettingController.handleApiGetIp
+);
+
 // ─── Notification Setting ──────────────────────────────────────────
 dashboardRouter.get(
   "/notification-setting",

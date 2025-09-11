@@ -145,7 +145,7 @@ export abstract class BaseController {
     return res.status(statusCode).json({
       success,
       errorCode: errorCode || null,
-      data: payload,
+      ...payload,
     });
   }
 }

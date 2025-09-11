@@ -30,3 +30,6 @@ export const IsUserGroup = [UserRole.USER, UserRole.ADMIN, UserRole.ROOT];
 
 export const IsAdminGroup = [UserRole.USER, UserRole.ADMIN, UserRole.ROOT];
 export const OtpExpireTimeInMs = 1000 * 60 * 60;
+
+export const IPV4_REGEX =
+  /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;

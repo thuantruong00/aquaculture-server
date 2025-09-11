@@ -4,3 +4,4 @@ export * from "./mqtt";
 export * from "./cronjob";
 export * from "./condition";
 export * from "./telegram";
+export * from "./liteCache";

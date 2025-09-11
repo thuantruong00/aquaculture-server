@@ -6,13 +6,13 @@ let arr = ["0"]
 <% } %>
 
 <% if(total > 1) { 
-    if(offset>1){
+    if(offset>limit){
 			arr.push("...")
 		}
-    if(offset > 0 && offset < total-1 ){
-        arr.push(String(offset))
+    if(offset >= limit && offset < (total-1)*limit ){
+        arr.push(String(offset/limit))
     }    
-    if(offset < total-2){
+    if(offset < (total-2)*limit){
 			arr.push("...")
 		}
     arr.push(String(total-1))
@@ -21,10 +21,13 @@ let arr = ["0"]
 <% } %>
 
 <div class="wrap-pagination">
+  <%= offset %>
+  <%= limit %>
+  <%= total %>
   <div class="pagination">
     <ul>
       <li>
-        <a href="<%= path %>&limit=<%=limit%>&offset=<%= offset > 0 ? offset-1 : 0 %>" class="<%=offset > 0 ? '':'disable' %>">Trang trước</a>
+        <a href="<%= path %>&limit=<%=limit%>&offset=<%= offset > limit ? offset-limit : 0 %>" class="<%=offset > 0 ? '':'disable' %>">Trang trước</a>
       </li>
       <% for(index in arr){ %>
       <% if(arr[index]==="..."){ %>
@@ -36,7 +39,7 @@ let arr = ["0"]
         <a class="<%= arr[index]==offset ? 'current' :'' %>" href="<%= path %>&limit=<%=limit%>&offset=<%= arr[index] %>"><%= arr[index] %></a>
       </li>
       <% } } %>
-      <li><a href="<%= path %>&limit=<%=limit%>&offset=<%= offset < total-1 ? (offset+1)*limit : offset*limit %>" class="<%= offset < total-1 ? '':'disable' %>">Trang sau</a></li>
+      <li><a href="<%= path %>&limit=<%=limit%>&offset=<%= offset < (total-1)*limit ? offset + limit : (total-1) * limit %>" class="<%= offset < total-1 ? '':'disable' %>">Trang sau</a></li>
     </ul>
   </div>
 </div>
