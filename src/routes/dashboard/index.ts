@@ -463,3 +463,9 @@ dashboardRouter.post(
   }),
   deviceController.handleApiControlDevice
 );
+
+dashboardRouter.post(
+  "/device-control/logs",
+  middleware.APImiddleware("deviceControl", { allowedRole: AllRoles }),
+  deviceController.handleApiLogsDevice
+);

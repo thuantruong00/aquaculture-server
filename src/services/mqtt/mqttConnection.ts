@@ -149,3 +149,13 @@ export const handleWriteCommandGet = async (
   mqttClient.publish(topic, data);
   return;
 };
+
+export const handlePushLogs = async (deviceId: string, msg: string) => {
+  const topic =
+    env.MQTT_PREFIX_TOPIC +
+    "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
+    deviceId +
+    "/log/";
+  mqttClient.publish(topic, msg);
+  return;
+};

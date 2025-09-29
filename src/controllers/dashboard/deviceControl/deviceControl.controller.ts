@@ -10,7 +10,7 @@ import {
 } from "./deviceControl.dto";
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { ExecutionLog } from "~/entities/execution-log.entity";
-import { handleWriteCommandSet, MqttService } from "~/services";
+import { handlePushLogs, handleWriteCommandSet, MqttService } from "~/services";
 import { logger } from "~/utils/logger";
 DeviceGroup;
 
@@ -191,6 +191,19 @@ export class DeviceControlController extends BaseController {
           commandId: String(insert._id),
         });
         // mqttService.sendCommand
+      }
+      return this.handleApiResponse(res, { payload: true }, 200);
+    } catch (error) {
+      logger.error("Err handleApiControlDevice", error);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
+    }
+  };
+  handleApiLogsDevice = async (req: Request, res: Response) => {
+    try {
+      const { deviceId, log } = req.body as any;
+      console.log(req.body);
+      if (deviceId && log) {
+        await handlePushLogs(deviceId, log);
       }
       return this.handleApiResponse(res, { payload: true }, 200);
     } catch (error) {

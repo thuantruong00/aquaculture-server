@@ -98,7 +98,7 @@ export class Middleware {
           pageCode,
           allowedRole: opts?.allowedRole,
         });
-        console.log(access);
+        // console.log(access);
         if (!access.allowed) {
           if (!auth.success) {
             return res.status(401).json({ message: "Unauthenticated." });
@@ -124,9 +124,9 @@ export function checkAccess(options: {
   allowedRole?: UserRole[];
 }): { allowed: boolean; reason?: "unauthenticated" | "unauthorized" } {
   const { role, pageCode, allowedRole } = options;
-  console.log("currentRole", role);
-  console.log("pageCode", pageCode);
-  console.log("allowedRole", allowedRole);
+  // console.log("currentRole", role);
+  // console.log("pageCode", pageCode);
+  // console.log("allowedRole", allowedRole);
   // Nếu có cấu hình allowedRole tại route, ưu tiên sử dụng
   if (allowedRole && allowedRole.length > 0) {
     const isAllowed = allowedRole.includes(role);
