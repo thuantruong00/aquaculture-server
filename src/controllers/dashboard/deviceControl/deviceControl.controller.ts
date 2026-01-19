@@ -10,15 +10,18 @@ import {
 } from "./deviceControl.dto";
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { ExecutionLog } from "~/entities/execution-log.entity";
-import { handlePushLogs, handleWriteCommandSet, MqttService } from "~/services";
+import { handlePushLogs, handleWriteCommandSet } from "~/services";
 import { logger } from "~/utils/logger";
+import { DeviceMessageService } from "~/services/deviceMessage";
+import { signDecrypt, signEncrypt } from "~/utils/sign";
+import { env } from "~/utils";
 DeviceGroup;
 
 export class DeviceControlController extends BaseController {
-  private mqttService: MqttService;
+  private deviceMessageService: DeviceMessageService;
   constructor() {
     super();
-    this.mqttService = new MqttService();
+    this.deviceMessageService = new DeviceMessageService();
   }
   handleDeviceControlPage = async (req: Request, res: Response) => {
     try {
@@ -190,7 +193,6 @@ export class DeviceControlController extends BaseController {
         await handleWriteCommandSet(String(deviceId), key, Number(value), {
           commandId: String(insert._id),
         });
-        // mqttService.sendCommand
       }
       return this.handleApiResponse(res, { payload: true }, 200);
     } catch (error) {
@@ -206,6 +208,34 @@ export class DeviceControlController extends BaseController {
         await handlePushLogs(deviceId, log);
       }
       return this.handleApiResponse(res, { payload: true }, 200);
+    } catch (error) {
+      logger.error("Err handleApiControlDevice", error);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
+    }
+  };
+
+  handleApiTelemetry = async (req: Request, res: Response) => {
+    try {
+      const { deviceId } = req.params as any;
+      const { sign, value } = req.body as any;
+      const now = Number(Date.now() / 1000).toFixed(0);
+      const en = signEncrypt(`${env.SECRET_KEY_SIGN}|${now}`);
+      console.log(en);
+      const deString = signDecrypt(sign);
+      const secretKey = deString.split("|")[1];
+      const ts = deString.split("|")[0];
+      console.log(now, ts, deString);
+      if (secretKey == env.SECRET_KEY_SIGN) {
+        if (Number(now) - Number(ts) < 30) {
+          await this.deviceMessageService.handleTetelemetry(
+            "",
+            deviceId,
+            value
+          );
+          return this.handleApiResponse(res, { payload: true }, 200);
+        }
+      }
+      return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiControlDevice", error);
       return this.handleApiResponse(res, { isSuccess: false }, 500);

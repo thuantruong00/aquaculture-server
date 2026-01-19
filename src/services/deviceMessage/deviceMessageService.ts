@@ -13,7 +13,7 @@ import { DeviceModel, IDeviceModel } from "~/entities/device-model.entity";
 import { ConditionService } from "../condition";
 import { Action, IAction } from "~/entities/automatic-scene-action.entity";
 import { AutomationScene } from "~/entities/automatic-scene.entity";
-import { handleWriteCommandGet, handleWriteCommandSet } from "./mqttConnection";
+import { handleWriteCommandGet, handleWriteCommandSet } from "../mqtt";
 import { telegramService } from "..";
 import { INotificationOption } from "~/entities/notification-option.entity";
 import { TelegramAccount } from "~/entities/telegram-account.entity";
@@ -23,7 +23,7 @@ export interface SensorDataConditionProcesss {
   key: string;
   value: string | number | boolean;
 }
-export class MqttService {
+export class DeviceMessageService {
   private socketService: SocketService;
   private conditionService: ConditionService;
   constructor() {
@@ -58,7 +58,6 @@ export class MqttService {
         });
         const check = await this.processSensorValue(deviceId, valueInsert);
         // ========================
-
         this.socketService.sendIotDataTelemetry({
           id: deviceId,
           ts: ts,

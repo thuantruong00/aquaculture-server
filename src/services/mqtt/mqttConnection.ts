@@ -66,7 +66,7 @@ mqttClient.on("message", async (topic: string, message: Buffer) => {
   if (isMatchZone && isMatchZone.status) {
     switch (arrTopic[3]) {
       case MqttDeviceFunction.TELEMETRY:
-        mqttService.handlTetelemetry(arrTopic[1], arrTopic[2], msg);
+        mqttService.handleTetelemetry(arrTopic[1], arrTopic[2], msg);
         break;
       case MqttDeviceFunction.RESPONSE:
         mqttService.handlResponse(arrTopic[1], arrTopic[2], arrTopic[4], msg);

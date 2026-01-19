@@ -51,3 +51,10 @@ export const ApiDeviceControlParamsSchema = z.object({
 export type IApiDeviceControlParamsDTO = z.infer<
   typeof ApiDeviceControlParamsSchema
 >;
+
+export const ApiTelemetryBodySchema = z.object({
+  sign: z.string().min(1).max(255),
+  value: z.string().min(1).max(255),
+});
+
+export type IApiTelemetryBodyDTO = z.infer<typeof ApiTelemetryBodySchema>;

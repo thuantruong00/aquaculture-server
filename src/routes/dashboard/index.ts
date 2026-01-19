@@ -23,6 +23,7 @@ import {
   UpdateDeviceSchema,
   UpdateDeviceStatusSchema,
   UpdateIpSchema,
+  ApiTelemetryBodySchema,
 } from "~/controllers";
 import { ActionCreateAccountBodySchema } from "~/controllers/dashboard/account/account.dto";
 import { ActionSignInBodySchema } from "~/controllers/dashboard/auth/auth.dto";
@@ -468,4 +469,14 @@ dashboardRouter.post(
   "/device-control/logs",
   middleware.APImiddleware("deviceControl", { allowedRole: AllRoles }),
   deviceController.handleApiLogsDevice
+);
+
+dashboardRouter.post(
+  "/api/device-control/telemetry/:deviceId",
+  middleware.webPageMiddleware("deviceControl", { allowedRole: AllRoles }),
+  zodMultiValidator({
+    body: ApiTelemetryBodySchema,
+    params: ApiDeviceControlParamsSchema,
+  }),
+  deviceController.handleApiTelemetry
 );
