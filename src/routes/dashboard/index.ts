@@ -60,111 +60,111 @@ dashboardRouter.get(
   "/device-control",
   middleware.webPageMiddleware("deviceControl", { allowedRole: AllRoles }),
   zodMultiValidator({ query: DeviceControlQuerySchema }),
-  deviceController.handleDeviceControlPage
+  deviceController.handleDeviceControlPage.bind(deviceController),
 );
 dashboardRouter.get(
   "/device-control/management",
   middleware.webPageMiddleware("deviceControlManagement", {
     allowedRole: AllRoles,
   }),
-  deviceController.handleDeviceControlManagementPage
+  deviceController.handleDeviceControlManagementPage.bind(deviceController),
 );
 
 // ─── Automatic ────────────────────────────────────────────────
 dashboardRouter.get(
   "/automatic/",
   middleware.webPageMiddleware("automatic", { allowedRole: AllRoles }),
-  automaticController.handleAutomaticPage
+  automaticController.handleAutomaticPage.bind(automaticController),
 );
 dashboardRouter.get(
   "/automatic/scene-create",
   middleware.webPageMiddleware("automaticSceneCreate", {
     allowedRole: AllRoles,
   }),
-  automaticController.handleAutomaticSceneCreatePage
+  automaticController.handleAutomaticSceneCreatePage.bind(automaticController),
 );
 dashboardRouter.get(
   "/automatic/scene-detail/:sceneId",
   middleware.webPageMiddleware("automatic", { allowedRole: AllRoles }),
-  automaticController.handleAutomaticSceneDetailPage
+  automaticController.handleAutomaticSceneDetailPage.bind(automaticController),
 );
 
 dashboardRouter.get(
   "/automatic/action-create",
   middleware.webPageMiddleware("automaticSceneCreate", {}),
-  automaticController.handleAutomaticCreateActionPage
+  automaticController.handleAutomaticCreateActionPage.bind(automaticController),
 );
 
 dashboardRouter.get(
   "/automatic/action-detail/:actionId",
   middleware.webPageMiddleware("automaticAction", { allowedRole: AllRoles }),
-  automaticController.handleAutomaticActionDetailPage
+  automaticController.handleAutomaticActionDetailPage.bind(automaticController),
 );
 
 dashboardRouter.post(
   "/automatic/action-detail/:actionId",
   middleware.webPageMiddleware("automaticAction"),
   zodMultiValidator({ body: ActionUpdateBodySchema }),
-  automaticController.handleAutomaticActionUpdatePage
+  automaticController.handleAutomaticActionUpdatePage.bind(automaticController),
 );
 dashboardRouter.get(
   "/automatic/action-delete/:actionId",
   middleware.webPageMiddleware("automaticAction"),
-  automaticController.handleAutomaticActionDeletePage
+  automaticController.handleAutomaticActionDeletePage.bind(automaticController),
 );
 
 dashboardRouter.post(
   "/automatic/scene-save",
   zodMultiValidator({ body: AutomaticSceneSaveBodySchema }),
   middleware.webPageMiddleware("automaticSceneCreate"),
-  automaticController.handleAutomaticSceneSavePage
+  automaticController.handleAutomaticSceneSavePage.bind(automaticController),
 );
 dashboardRouter.post(
   "/automatic/scene-detail/:sceneId",
   zodMultiValidator({ body: AutomaticSceneUpdateBodySchema }),
   middleware.webPageMiddleware("automaticSceneCreate"),
-  automaticController.handleAutomaticSceneUpdatePage
+  automaticController.handleAutomaticSceneUpdatePage.bind(automaticController),
 );
 
 dashboardRouter.get(
   "/automatic/scene-delete/:sceneId",
   middleware.webPageMiddleware("automaticSceneCreate"),
-  automaticController.handleAutomaticSceneDeletePage
+  automaticController.handleAutomaticSceneDeletePage.bind(automaticController),
 );
 
 dashboardRouter.get(
   "/automatic/timer",
   middleware.webPageMiddleware("automaticTimer", { allowedRole: AllRoles }),
-  automaticController.handleAutomaticTimerPage
+  automaticController.handleAutomaticTimerPage.bind(automaticController),
 );
 dashboardRouter.post(
   "/automatic/timer-create",
   zodMultiValidator({ body: TimerCreateBodySchema }),
   middleware.webPageMiddleware("automaticTimer"),
-  automaticController.handleAutomaticTimerCreatePage
+  automaticController.handleAutomaticTimerCreatePage.bind(automaticController),
 );
 
 dashboardRouter.get(
   "/automatic/timer-control/start/:timerJobId",
   middleware.webPageMiddleware("automaticTimer", { allowedRole: AllRoles }),
-  automaticController.handleAutomaticTimerStart
+  automaticController.handleAutomaticTimerStart.bind(automaticController),
 );
 dashboardRouter.get(
   "/automatic/timer-control/stop/:timerJobId",
   middleware.webPageMiddleware("automaticTimer"),
-  automaticController.handleAutomaticTimerStop
+  automaticController.handleAutomaticTimerStop.bind(automaticController),
 );
 
 dashboardRouter.get(
   "/automatic/actions",
   middleware.webPageMiddleware("automaticAction", { allowedRole: AllRoles }),
-  automaticController.handleAutomaticActionPage
+  automaticController.handleAutomaticActionPage.bind(automaticController),
 );
 
 dashboardRouter.get(
   "/automatic/timer-delete/:timerId",
   middleware.webPageMiddleware("automaticSceneCreate"),
-  automaticController.handleAutomaticTimerDeletePage
+  automaticController.handleAutomaticTimerDeletePage.bind(automaticController),
 );
 
 // ─── Custom UI ────────────────────────────────────────────────
@@ -173,159 +173,159 @@ dashboardRouter.get(
   "/custom-ui",
   zodMultiValidator({ query: GetListDeviceGroupQuerySchema }),
   middleware.webPageMiddleware("customUi"),
-  customUiController.handleCustomUiPage
+  customUiController.handleCustomUiPage.bind(customUiController),
 );
 dashboardRouter.get(
   "/custom-ui/device-group",
   middleware.webPageMiddleware("deviceGroup"),
-  customUiController.handleDeviceGroupPage
+  customUiController.handleDeviceGroupPage.bind(customUiController),
 );
 dashboardRouter.get(
   "/custom-ui/detail/:groupId",
   middleware.webPageMiddleware("customUi"),
-  customUiController.handleDetailDeviceGroupPage
+  customUiController.handleDetailDeviceGroupPage.bind(customUiController),
 );
 dashboardRouter.get(
   "/custom-ui/delete/:groupId",
   middleware.webPageMiddleware("customUi"),
-  customUiController.handleDeleteDeviceGroupPage
+  customUiController.handleDeleteDeviceGroupPage.bind(customUiController),
 );
 dashboardRouter.post(
   "/custom-ui/update/:groupId",
   zodMultiValidator({ body: UpdateDeviceGroupInfoSchema }),
   middleware.webPageMiddleware("customUi"),
-  customUiController.handleUpdateGroupInfoPage
+  customUiController.handleUpdateGroupInfoPage.bind(customUiController),
 );
 dashboardRouter.post(
   "/custom-ui/create-group",
   zodMultiValidator({ body: CreateDeviceGroupSchema }),
   middleware.APImiddleware("deviceGroup"),
-  customUiController.handleCreateGroupPage
+  customUiController.handleCreateGroupPage.bind(customUiController),
 );
 
 dashboardRouter.post(
   "/custom-ui/add-device",
   zodMultiValidator({ body: UpdateDeviceGroupSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
-  customUiController.handleUpdateGroupPage
+  customUiController.handleUpdateGroupPage.bind(customUiController),
 );
 dashboardRouter.post(
   "/custom-ui/remove-device",
   zodMultiValidator({ body: UpdateDeviceGroupSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
-  customUiController.handleRemoveDevicePage
+  customUiController.handleRemoveDevicePage.bind(customUiController),
 );
 
 // ─── Device Setting ────────────────────────────────────────────────
 dashboardRouter.get(
   "/device-setting",
   middleware.webPageMiddleware("deviceSetting"),
-  deviceSettingController.handleDeviceSettingPage
+  deviceSettingController.handleDeviceSettingPage.bind(deviceSettingController),
 );
 dashboardRouter.get(
   "/device-setting/add",
   middleware.webPageMiddleware("deviceSettingAdd"),
-  deviceSettingController.handleAddDeviceSettingPage
+  deviceSettingController.handleAddDeviceSettingPage.bind(deviceSettingController),
 );
 dashboardRouter.get(
   "/device-setting/detail/:deviceId",
   middleware.webPageMiddleware("deviceSetting"),
-  deviceSettingController.handleDetailDevicePage
+  deviceSettingController.handleDetailDevicePage.bind(deviceSettingController),
 );
 dashboardRouter.post(
   "/device-setting/update/:deviceId",
   zodMultiValidator({ body: UpdateDeviceSchema }),
   middleware.webPageMiddleware("deviceSetting"),
-  deviceSettingController.handleUpdateDevicePage
+  deviceSettingController.handleUpdateDevicePage.bind(deviceSettingController),
 );
 dashboardRouter.get(
   "/device-setting",
   middleware.webPageMiddleware("deviceSetting"),
-  deviceSettingController.handleDeviceSettingPage
+  deviceSettingController.handleDeviceSettingPage.bind(deviceSettingController),
 );
 
 dashboardRouter.get(
   "/device-setting/delete/:deviceId",
   middleware.webPageMiddleware("deviceSetting"),
-  deviceSettingController.handleDeleteDevicePage
+  deviceSettingController.handleDeleteDevicePage.bind(deviceSettingController),
 );
 
 dashboardRouter.post(
   "/device-setting/server-ip",
   middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
   zodMultiValidator({ body: UpdateIpSchema }),
-  deviceSettingController.handleApiUpdateIp
+  deviceSettingController.handleApiUpdateIp.bind(deviceSettingController),
 );
 
 dashboardRouter.get(
   "/device-setting/server-ip",
   middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
-  deviceSettingController.handleApiGetIp
+  deviceSettingController.handleApiGetIp.bind(deviceSettingController),
 );
 
 // ─── Notification Setting ──────────────────────────────────────────
 dashboardRouter.get(
   "/notification-setting",
   middleware.webPageMiddleware("notificationSetting"),
-  notificationSettingController.handleNotificationSettingPage
+  notificationSettingController.handleNotificationSettingPage.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/inactive-telegram",
   middleware.webPageMiddleware("notificationSettingActivateTelegram"),
-  notificationSettingController.handleActivateTelegramAccountPage
+  notificationSettingController.handleActivateTelegramAccountPage.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/activate-telegram/:id",
   middleware.webPageMiddleware("notificationSettingActivateTelegram"),
-  notificationSettingController.handleActivateTelegramAccountSubmitPage
+  notificationSettingController.handleActivateTelegramAccountSubmitPage.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/delete-telegram/:id",
   middleware.webPageMiddleware("notificationSettingActivateTelegram"),
-  notificationSettingController.handleDeleteTelegramAccountSubmitPage
+  notificationSettingController.handleDeleteTelegramAccountSubmitPage.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/detail-telegram/:id",
   middleware.webPageMiddleware("notificationSettingActivateTelegram"),
-  notificationSettingController.handleActivateTelegramAccountSubmitPage
+  notificationSettingController.handleActivateTelegramAccountSubmitPage.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/group",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleNotificationSettingGroupPage
+  notificationSettingController.handleNotificationSettingGroupPage.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/group-detail/:id",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleNotificationGroupDetailPage
+  notificationSettingController.handleNotificationGroupDetailPage.bind(notificationSettingController),
 );
 
 dashboardRouter.post(
   "/notification-setting/add-telegram-account-group",
   zodMultiValidator({ body: AddTelegramAccountGroupSchema }),
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleAddTelegramAccountPage
+  notificationSettingController.handleAddTelegramAccountPage.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/delete-group/:groupId",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleDeleteGroup
+  notificationSettingController.handleDeleteGroup.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/new-group/",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleNewGroup
+  notificationSettingController.handleNewGroup.bind(notificationSettingController),
 );
 dashboardRouter.get(
   "/notification-setting/remove-account-group/",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleRemoveTelegramAccountPage
+  notificationSettingController.handleRemoveTelegramAccountPage.bind(notificationSettingController),
 );
 dashboardRouter.post(
   "/notification-setting/update-group/:groupId",
   zodMultiValidator({ body: UpdateGroupSchema }),
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleUpdateGroup
+  notificationSettingController.handleUpdateGroup.bind(notificationSettingController),
 );
 
 // ─── History ───────────────────────────────────────────────────────
@@ -333,37 +333,37 @@ dashboardRouter.get(
   "/history",
   zodMultiValidator({ query: GetListRecordSchema }),
   middleware.webPageMiddleware("history", { allowedRole: AllRoles }),
-  historyController.handleHistoryPage
+  historyController.handleHistoryPage.bind(historyController),
 );
 
 dashboardRouter.get(
   "/chart",
   middleware.webPageMiddleware("chart", { allowedRole: AllRoles }),
-  historyController.handleHistoryChartPage
+  historyController.handleHistoryChartPage.bind(historyController),
 );
 
 // ─── Account ───────────────────────────────────────────────────────
 dashboardRouter.get(
   "/account",
   middleware.webPageMiddleware("account"),
-  accountController.handleAccountPage
+  accountController.handleAccountPage.bind(accountController),
 );
 dashboardRouter.get(
   "/account/create",
   middleware.webPageMiddleware("accountAdd"),
-  accountController.handleAccountCreatePage
+  accountController.handleAccountCreatePage.bind(accountController),
 );
 dashboardRouter.post(
   "/account/create",
   zodMultiValidator({ body: ActionCreateAccountBodySchema }),
   middleware.webPageMiddleware("accountAdd"),
-  accountController.handleAccountCreateFormPage
+  accountController.handleAccountCreateFormPage.bind(accountController),
 );
 
 dashboardRouter.get(
   "/account/delete/:userId",
   middleware.webPageMiddleware("accountAdd"),
-  accountController.handleAccountDeleteFormPage
+  accountController.handleAccountDeleteFormPage.bind(accountController),
 );
 
 // ─── Auth ───────────────────────────────────────────────────────
@@ -371,7 +371,7 @@ dashboardRouter.get("/auth/sign-in", authController.handleSignInPage);
 dashboardRouter.post(
   "/auth/sign-in",
   zodMultiValidator({ body: ActionSignInBodySchema }),
-  authController.handleSignInFormPage
+  authController.handleSignInFormPage,
 );
 dashboardRouter.get("/auth/sign-out", authController.handleSignOutPage);
 // dashboardRouter.post("/auth/login", accountController.handleAccountAddPage);
@@ -381,7 +381,7 @@ dashboardRouter.get("/auth/sign-out", authController.handleSignOutPage);
 dashboardRouter.get(
   "/firmware/files/:filename",
   middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
-  firmwareController.handleServeFirmware
+  firmwareController.handleServeFirmware,
 );
 
 //###############################################
@@ -392,14 +392,14 @@ dashboardRouter.post(
   "/device-setting/connect",
   zodMultiValidator({ body: DeviceConnectSchema }),
   middleware.APImiddleware("deviceSettingAdd"),
-  deviceSettingController.handleApiDeviceConnect
+  deviceSettingController.handleApiDeviceConnect.bind(deviceSettingController),
 );
 dashboardRouter.post(
   "/device-setting/create-otp",
   middleware.webPageMiddleware("deviceSettingAdd", {
     allowedRole: IsUserGroup,
   }),
-  deviceSettingController.handleCreatePairingOtpPage
+  deviceSettingController.handleCreatePairingOtpPage.bind(deviceSettingController),
 );
 
 // chua test dto
@@ -407,34 +407,34 @@ dashboardRouter.post(
   "/device-setting/activate",
   zodMultiValidator({ body: ActivateDeviceSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
-  deviceSettingController.handleApiActivateDevice
+  deviceSettingController.handleApiActivateDevice.bind(deviceSettingController),
 );
 
 dashboardRouter.post(
   "/device-setting/update-status",
   zodMultiValidator({ body: UpdateDeviceStatusSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
-  deviceSettingController.handleApiUpdateDeviceStatus
+  deviceSettingController.handleApiUpdateDeviceStatus.bind(deviceSettingController),
 );
 
 dashboardRouter.post(
   "/device-setting/update-device-orders",
   zodMultiValidator({ body: UpdateDeviceOrdersSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
-  deviceSettingController.handleApiUpdateDeviceOrders
+  deviceSettingController.handleApiUpdateDeviceOrders.bind(deviceSettingController),
 );
 dashboardRouter.post(
   "/api/device-setting/update-group",
   zodMultiValidator({ body: UpdateDeviceGroupSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
-  deviceSettingController.handleApiUpdateGroup
+  deviceSettingController.handleApiUpdateGroup.bind(deviceSettingController),
 );
 
 // cheat
 dashboardRouter.post(
   "/device-setting/create-device-model",
   middleware.APImiddleware("deviceSettingActivate"),
-  deviceSettingController.handleApiCreateDeviceModel
+  deviceSettingController.handleApiCreateDeviceModel.bind(deviceSettingController),
 );
 
 // dashboardRouter.post(
@@ -462,13 +462,13 @@ dashboardRouter.post(
     body: ApiDeviceControlBodySchema,
     params: ApiDeviceControlParamsSchema,
   }),
-  deviceController.handleApiControlDevice
+  deviceController.handleApiControlDevice.bind(deviceController),
 );
 
 dashboardRouter.post(
   "/device-control/logs",
   middleware.APImiddleware("deviceControl", { allowedRole: AllRoles }),
-  deviceController.handleApiLogsDevice
+  deviceController.handleApiLogsDevice.bind(deviceController),
 );
 
 dashboardRouter.post(
@@ -478,5 +478,5 @@ dashboardRouter.post(
     body: ApiTelemetryBodySchema,
     params: ApiDeviceControlParamsSchema,
   }),
-  deviceController.handleApiTelemetry
+  deviceController.handleApiTelemetry.bind(deviceController),
 );

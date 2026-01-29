@@ -50,7 +50,7 @@ export class Middleware {
           if (!access.allowed) {
             if (access.reason === "unauthenticated") {
               return res.redirect(
-                `/auth/sign-in?redirect=${encodeURIComponent(req.originalUrl)}`
+                `/dashboard/auth/sign-in?redirect=${encodeURIComponent(req.originalUrl)}`
               );
             }
 

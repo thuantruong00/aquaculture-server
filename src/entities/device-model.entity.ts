@@ -19,6 +19,7 @@ export interface IDeviceFieldDef {
   max?: number;
   group?: string;
   deviceType: DeviceType; // "sensor" | "actuator"
+  config?: Record<string, unknown>;
 }
 
 const DeviceFieldDefSchema = new Schema<IDeviceFieldDef>(
@@ -40,6 +41,7 @@ const DeviceFieldDefSchema = new Schema<IDeviceFieldDef>(
       enum: Object.values(DeviceType), // ✅ FIXED
       required: true,
     },
+    config: { type: Schema.Types.Mixed, default: {} },
   },
   { _id: false }
 );

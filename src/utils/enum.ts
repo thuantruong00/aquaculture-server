@@ -38,6 +38,14 @@ export enum DeviceGroupStatus {
   BANNED = "banned",
   DELETED = "deleted",
 }
+
+export enum DeviceFieldLayoutStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  BANNED = "banned",
+  DELETED = "deleted",
+}
+
 export enum DeviceZone {
   DEFAULT = "default",
 }

@@ -20,6 +20,7 @@ export interface IDevice extends Document {
   deviceModel?: Types.ObjectId; // liên kết với DeviceModel
   zone?: Types.ObjectId | null | IZone;
   order: number;
+  config?: Types.ObjectId | null;
 }
 
 const deviceSchema = new Schema<IDevice>(
@@ -55,6 +56,7 @@ const deviceSchema = new Schema<IDevice>(
       default: null,
     },
     order: { type: Number, default: 0 },
+    config: { type: Schema.Types.ObjectId, ref: "DeviceFieldConfig", default: null },
   },
   {
     timestamps: true,
