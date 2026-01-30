@@ -3,6 +3,7 @@ import { BaseController } from "../dashboard.base-controller";
 import { Device, IDevice } from "~/entities/device.entity";
 import {
   IActivateDeviceDTO,
+  ICreateDeviceModelDTO,
   IDeviceConnectDTO,
   IGetListDeviceQueryDTO,
   IUpdateDeviceDTO,
@@ -116,7 +117,7 @@ export class DeviceSettingController extends BaseController {
       if (findDevice) {
         const update = await Device.updateOne(
           { _id: deviceId },
-          { status: DeviceStatus.DELETED }
+          { status: DeviceStatus.DELETED },
         );
         return res.redirect("/dashboard/device-setting");
       }
@@ -182,15 +183,16 @@ export class DeviceSettingController extends BaseController {
           name: deviceModel,
         })) as IDeviceModel;
         const isActiveDevice = isExistedMacId.find(
-          (item) => item.status === DeviceStatus.ACTIVE
+          (item) => item.status === DeviceStatus.ACTIVE,
         );
         const isInactiveDevice = isExistedMacId.filter(
-          (item) => item.status === DeviceStatus.INACTIVE || DeviceStatus.BANNED
+          (item) =>
+            item.status === DeviceStatus.INACTIVE || DeviceStatus.BANNED,
         );
         if (isActiveDevice) {
           const update = await Device.updateOne(
             { _id: isActiveDevice._id },
-            { $set: { isOnline: true } }
+            { $set: { isOnline: true } },
           );
           return this.handleApiResponse(res, {
             macValue: macValue,
@@ -205,7 +207,7 @@ export class DeviceSettingController extends BaseController {
                   deviceModel: { _id: findModel._id },
                   status: { $eq: DeviceStatus.INACTIVE || DeviceStatus.BANNED },
                 },
-                { $set: { status: DeviceStatus.DELETED, isOnline: false } }
+                { $set: { status: DeviceStatus.DELETED, isOnline: false } },
               );
             }
             const data: Partial<IDevice> = {
@@ -246,7 +248,7 @@ export class DeviceSettingController extends BaseController {
               zone: defaultZone._id,
               name: deviceName,
             },
-          }
+          },
         );
         return this.handleApiResponse(res, { isSuccess: true }, 200);
       }
@@ -269,7 +271,7 @@ export class DeviceSettingController extends BaseController {
             $set: {
               status: status,
             },
-          }
+          },
         );
         return this.handleApiResponse(res, { isSuccess: true }, 200);
       }
@@ -311,7 +313,7 @@ export class DeviceSettingController extends BaseController {
               filter: { _id: deviceId },
               update: { $set: { order: index + ratio * 10 } },
             },
-          }))
+          })),
         );
         return this.handleApiResponse(res, { success: true }, 200);
       }
@@ -329,7 +331,7 @@ export class DeviceSettingController extends BaseController {
       if (findDevice && findGroup) {
         const udpate = await Device.updateOne(
           { _id: deviceId },
-          { group: { _id: findGroup._id } }
+          { group: { _id: findGroup._id } },
         );
         return this.handleApiResponse(res, { payload: udpate }, 200);
       }
@@ -342,25 +344,11 @@ export class DeviceSettingController extends BaseController {
   };
   handleApiCreateDeviceModel = async (req: Request, res: Response) => {
     try {
-      const insert = await DeviceModel.insertOne({
-        name: "pump-1",
-        description: "pump 1HP 220VAC V1",
-        template: "actuator-1",
-        type: [DeviceType.ACTUATOR],
-        fields: [
-          {
-            key: "pump",
-            label: "Pump",
-            valueType: "boolean",
-            deviceType: DeviceType.ACTUATOR,
-            // unit: undefined,
-          },
-        ],
-      });
+      const deviceModel = req.body as ICreateDeviceModelDTO;
+      const insert = await DeviceModel.create({ ...deviceModel });
       if (insert) {
         return this.handleApiResponse(res, { payload: insert }, 200);
       }
-
       return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiCreateDeviceModel", error);

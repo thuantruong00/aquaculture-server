@@ -432,7 +432,7 @@ dashboardRouter.post(
 
 // cheat
 dashboardRouter.post(
-  "/device-setting/create-device-model",
+  "/api/device-models/create",
   middleware.APImiddleware("deviceSettingActivate"),
   deviceSettingController.handleApiCreateDeviceModel.bind(deviceSettingController),
 );

@@ -11,7 +11,7 @@ export interface IDeviceModel extends Document {
 
 export interface IDeviceFieldDef {
   key: string; // "temp", "pump"
-  label?: string; // "Nhiệt độ", "Bơm nước"
+  label: string; // "Nhiệt độ", "Bơm nước"
   valueType: DeviceFieldType; // "integer", "float", "boolean", "string"
   unit?: string; // "°C", "%"
   icon?: string;

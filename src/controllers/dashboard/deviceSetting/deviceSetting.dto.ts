@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-import { DeviceStatus, DeviceType } from "~/utils/enum";
+import { DeviceFieldType, DeviceStatus, DeviceType } from "~/utils/enum";
 import { IPV4_REGEX, PagiLimit, PagiOffset } from "~/utils/const";
+import { config } from "dotenv";
 
 export const GetListDeviceQuerySchema = z.object({
   offset: z
@@ -26,7 +27,7 @@ export type IGetListDeviceQueryDTO = z.infer<typeof GetListDeviceQuerySchema>;
 const DeviceOrderItemSchema = z.object({
   index: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
-    z.number({ message: "index phải là số" }).min(0, "index phải >= 0")
+    z.number().min(0),
   ),
   deviceId: z.string().min(1, "deviceId là bắt buộc"),
 });
@@ -40,39 +41,33 @@ export const UpdateDeviceOrdersSchema = z.object({
 export type IDeviceOrderItemDTO = z.infer<typeof DeviceOrderItemSchema>;
 export type IUpdateDeviceOrdersDTO = z.infer<typeof UpdateDeviceOrdersSchema>;
 
+const DeviceFieldDefSchema = z.object({
+  key: z.string().min(1).max(64),
+  label: z.string().min(1).max(128),
+  valueType: z.enum(DeviceFieldType),
+  unit: z.string().min(1).max(32).optional(),
+  icon: z.string().min(1).max(128).optional(),
+  min: z.number().optional(),
+  max: z.number().optional(),
+  group: z.string().min(1).max(64).optional(),
+  deviceType: z.enum(DeviceType),
+  config: z.record(z.string(), z.unknown()).optional(),
+});
+
 export const CreateDeviceModelSchema = z.object({
-  name: z.string().min(1, "name là bắt buộc").max(64, "Tối đa 64 ký tự"),
-
-  description: z
-    .union([z.string().min(1).max(64), z.literal("")])
-    .transform((val) => (val === "" ? undefined : val))
-    .optional(),
-
-  template: z
-    .union([z.string().min(1).max(64), z.literal("")])
-    .transform((val) => (val === "" ? undefined : val))
-    .optional(),
-
-  type: z
-    .array(z.enum(DeviceType), {
-      message: "type phải là một mảng các giá trị hợp lệ",
-    })
-    .nonempty("type không được để trống")
-    .optional(),
+  name: z.string().min(1).max(64),
+  description: z.string().min(1).max(64).optional(),
+  template: z.string().min(1).max(64),
+  type: z.array(z.enum(DeviceType)),
+  fields: z.array(DeviceFieldDefSchema),
 });
 
 export type ICreateDeviceModelDTO = z.infer<typeof CreateDeviceModelSchema>;
 
 export const UpdateDeviceGroupSchema = z.object({
-  deviceId: z
-    .string()
-    .min(8, "deviceId phải có ít nhất 8 ký tự")
-    .max(64, "deviceId tối đa 64 ký tự"),
+  deviceId: z.string().min(8).max(64),
 
-  groupId: z
-    .string()
-    .min(8, "groupId phải có ít nhất 8 ký tự")
-    .max(64, "groupId tối đa 64 ký tự"),
+  groupId: z.string().min(8).max(64),
 });
 
 export type IUpdateDeviceGroupDTO = z.infer<typeof UpdateDeviceGroupSchema>;
@@ -80,13 +75,9 @@ export type IUpdateDeviceGroupDTO = z.infer<typeof UpdateDeviceGroupSchema>;
 export const UpdateDeviceSchema = z.object({
   status: z.enum(DeviceStatus).optional(),
 
-  name: z
-    .string()
-    .min(1, "Tên phải có ít nhất 1 ký tự")
-    .max(64, "Tên tối đa 64 ký tự")
-    .optional(),
+  name: z.string().min(1).max(64).optional(),
 
-  description: z.string().max(256, "Mô tả tối đa 256 ký tự").optional(),
+  description: z.string().max(256).optional(),
 
   model: z
     .union([z.string().min(1).max(64), z.literal("")])
@@ -106,7 +97,7 @@ export const UpdateDeviceSchema = z.object({
   order: z
     .preprocess(
       (val) => (val === "" ? undefined : Number(val)),
-      z.number().min(0, "Thứ tự phải >= 0")
+      z.number().min(0),
     )
     .optional(),
 });

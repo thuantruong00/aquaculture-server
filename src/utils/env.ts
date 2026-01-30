@@ -1,5 +1,6 @@
 export const env = {
   DB_CONNECT_STRING: process.env.DB_CONNECT_STRING || "",
+  DN_NAME: process.env.DN_NAME || "aquadb",
   MQTT_HOST: process.env.MQTT_HOST,
   MQTT_PORT: process.env.MQTT_PORT || 1883,
   MQTT_USERNAME: process.env.MQTT_USERNAME || "default_user",
