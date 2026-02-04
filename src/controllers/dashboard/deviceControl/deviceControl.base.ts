@@ -177,7 +177,6 @@ export class DeviceControlControllerBase extends BaseController {
       const { deviceId } = req.params as unknown as IApiDeviceControlParamsDTO;
       const { key, value } = req.body as IApiDeviceControlBodyDTO;
       const findDevice = await Device.findOne({ _id: deviceId });
-      console.log(deviceId);
       if (findDevice) {
         const insert = await ExecutionLog.create({
           source: ExecutionSource.MANUAL,

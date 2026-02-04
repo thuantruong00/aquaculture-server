@@ -1,1 +1,75 @@
-x
+<div class="col-12 my-2 x-item-<%= device._id %>">
+  <div class="device-item">
+    <div class="wrap-device-item">
+      <%- include('../cms/setting.ejs',{id:device._id,type:"device", setting:setting}) %>
+      <a href="#" class="wrap-name">
+        <h6 class="name link-icon"><%= device.name %></h6>
+      </a>
+      <div class="updated-at"><small><i><%= device?.latestRecord ? new Date(device.latestRecord.timestamp).toLocaleTimeString('en-GB') :"--/--" %></i></small></div>
+
+      <div class="row">
+        <%
+      if(device.deviceModel.fields.length>0){
+        for(let item = 0; item < device.deviceModel.fields.length ; item+=2){ 
+          const xKey1 = device.deviceModel.fields[item].key;  
+          const xKey2 = device.deviceModel.fields[item+1].key;  
+        %>
+        <div class="col-6">
+          <div class="ledbox-wrapper my-2 py-1 px-3">
+            <div class="x-key-<%= xKey1 %>">
+              <div class="device-key-label border-0"><%= t("sensors." + device.deviceModel.fields[item].key)%> :</div>
+
+              <div class="d-flex justify-content-between align-items-end">
+                <button class="ledbar-btn button-brightness ledbar-btn-dec" onclick="handleLedDecBtn('<%= device._id%>', '<%= xKey1 %>')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" style="color: white;"></path>
+                  </svg>
+                </button>
+                <div class="wrap-ledbar-control text-center">
+                  <div class="value">0</div>
+                  <input class="form-range form-range-light w-100" type="range" name="" id="" min="0" max="100" value="0" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey1 %>')">
+                </div>
+                <button class="ledbar-btn button-brightness ledbar-btn-inc text-center" onclick="handleLedIncBtn('<%= device._id%>', '<%= xKey1 %>')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" style="color: white;"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="gap-xs"></div>
+            <div class="gap-xs"></div>
+            <div class="x-key-<%= xKey2 %>">
+              <div class="d-flex justify-content-between align-items-end">
+                <button class="ledbar-btn button-brightness ledbar-btn-dec" onclick="handleLedDecBtn('<%= device._id%>', '<%= xKey2 %>')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" style="color: white;"></path>
+                  </svg>
+                </button>
+                <div class="wrap-ledbar-control text-center">
+                  <div class="value">0</div>
+                  <input class="form-range form-range-light w-100" type="range" name="" id="" min="0" max="100" value="0" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey2 %>')">
+                </div>
+                <button class="ledbar-btn button-brightness ledbar-btn-inc" onclick="handleLedIncBtn('<%= device._id%>', '<%= xKey2 %>')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" style="color: white;"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="gap-xs"></div>
+            <div class="gap-xs"></div>
+          </div>
+        </div>
+        <%
+        }
+      }
+      %>
+      </div>
+
+
+
+
+
+    </div>
+  </div>
+</div>

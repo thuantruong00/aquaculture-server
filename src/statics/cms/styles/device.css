@@ -1,0 +1,96 @@
+.form-range {
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 0 1px;
+    border: 1px solid #ccc;
+}
+
+/* General Track Styles (WebKit and Gecko) */
+.form-range::-webkit-slider-runnable-track {
+    height: 15px;
+    border-radius: 16px;
+}
+
+.form-range::-moz-range-track {
+    height: 15px;
+    border-radius: 16px;
+}
+
+/* General Thumb Styles */
+.form-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 15px;
+    width: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #2ed8b6;
+    box-shadow: -407px 0 0 400px #2ed8b6;
+}
+
+.form-range::-moz-range-thumb {
+    height: 15px;
+    /* Ensure consistency with WebKit */
+    width: 15px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #2ed8b6;
+    box-shadow: -407px 0 0 400px #2ed8b6;
+}
+
+/* Red Slider */
+.form-range-red::-webkit-slider-thumb {
+    box-shadow: -407px 0 0 400px #ef5a68 !important;
+    border: 2px solid #ef5a68;
+}
+
+.form-range-red::-moz-range-thumb {
+    box-shadow: -407px 0 0 400px #ef5a68 !important;
+    border: 2px solid #ef5a68;
+}
+
+/* Light Slider */
+.form-range-light::-webkit-slider-thumb {
+    box-shadow: -407px 0 0 400px #efec9b !important;
+    border: 2px solid #efec9b;
+}
+
+.form-range-light::-moz-range-thumb {
+    box-shadow: -407px 0 0 400px #efec9b !important;
+    border: 2px solid #efec9b;
+}
+
+/* Blue Slider */
+.form-range-blue::-webkit-slider-thumb {
+    box-shadow: -407px 0 0 400px #4099ff !important;
+    border: 2px solid #4099ff;
+}
+
+.form-range-blue::-moz-range-thumb {
+    box-shadow: -407px 0 0 400px #4099ff !important;
+    border: 2px solid #4099ff;
+}
+
+.button-brightness {
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    border: none;
+    border-radius: 4px;
+    font-size: 20px;
+    background-color: #4099ff;
+}
+
+.ledbox-wrapper {
+    /* background: #cccccc29; */
+    border-radius: 10px;
+    border: 1px solid #c0acac;
+}
+
+.wrap-ledbar-control{
+    width: 60%;
+}

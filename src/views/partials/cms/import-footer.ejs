@@ -14,10 +14,15 @@
 
 <!-- /*-----*-----*-- my-script --*-----*-----*/ -->
 
+<script>
+  window.__ENV = <%- JSON.stringify(publicEnv || {}) %>;
+</script>
+
 <script src="/assets/function.js"></script>
 <script src="/cms/scripts/refactor.js"></script>
 <script src="/cms/scripts/func.js"></script>
 <script src="/cms/scripts/main.js"></script>
+<script src="/cms/scripts/device.js"></script>
 <% if(pageCode==="chart"){ %>
 <script src="/cms/scripts/chart.js"></script>
 <% } %>

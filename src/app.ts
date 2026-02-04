@@ -60,6 +60,17 @@ app.set("layout", "layouts/default-layout");
 // setting static content
 app.use(express.static(path.join(__dirname, "statics")));
 
+// expose only safe env values to client-rendered pages
+app.use((req, res, next) => {
+  res.locals.publicEnv = {
+    SOCKET_HOST: process.env.SOCKET_HOST || "",
+    SOCKET_PORT: process.env.SOCKET_PORT || "",
+    MQTT_PREFIX_TOPIC: process.env.MQTT_PREFIX_TOPIC || "",
+    NODE_ENV: process.env.NODE_ENV || "production",
+  };
+  next();
+});
+
 routes(app);
 app.get("/", function (req, res) {
   res.redirect("/dashboard/auth/sign-in");

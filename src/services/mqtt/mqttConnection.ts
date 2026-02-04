@@ -22,7 +22,7 @@ export const mqttClient: MqttClient = mqtt.connect(
     username: process.env.MQTT_USERNAME || "",
     password: process.env.MQTT_PWD || "",
     port: Number(process.env.MQTT_PORT || "1883"),
-  }
+  },
 );
 
 mqttClient.on("connect", () => {
@@ -122,23 +122,23 @@ export const handleWriteCommandSet = async (
   deviceId: string,
   key: string,
   value: string | number | boolean,
-  opts: { commandId: string }
+  opts: { commandId: string },
 ) => {
   const topic =
     env.MQTT_PREFIX_TOPIC +
     "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
     deviceId +
-    "/command/set/" +
-    (opts.commandId ?? "undefined");
-  const data = key + ":" + value;
-  mqttClient.publish(topic, data);
+    "/command/set";
+  const data = { key, value };
+  console.log("Publishing to topic:", topic, "with data:", data);
+  mqttClient.publish(topic, JSON.stringify(data));
   return;
 };
 export const handleWriteCommandGet = async (
   deviceId: string,
   key: string,
   value: string | number | boolean,
-  opts?: { commandId?: string }
+  opts?: { commandId?: string },
 ) => {
   const topic =
     env.MQTT_PREFIX_TOPIC +
