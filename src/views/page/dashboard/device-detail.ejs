@@ -1,72 +1,175 @@
-<div class="container modal-id ">
+﻿<div class="container modal-id ">
   <div class="gap-sm"></div>
   <div class="row justify-content-start">
-    <div class="col-9">
+    <div class="col-12">
       <div class="wrap-title">
         <div class="title">Chỉnh sửa thông tin thiết bị</div>
       </div>
-      <div class="my-form #form_id">
-        <div class="wrap-my-form">
-          <form action="/dashboard/device-setting/update/<%= device._id%>" method="post">
-            <label for="">Tên thiết bị</label>
-            <div class="gap-xs"></div>
-            <div class="wrap-input required">
-              <input type="text" name="name" required placeholder="Tên thiết bị" class="w-100" value="<%=device.name %>">
+    </div>
+  </div>
+  <div class="gap-xs"></div>
+  <div class="row justify-content-center">
+    <div class="col-10">
+      <div class="my-form">
+        <ul class="nav nav-tabs" id="deviceDetailBottomTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="device-bottom-info-tab" data-toggle="tab" href="#device-bottom-info" role="tab" aria-controls="device-bottom-info" aria-selected="true">Thông tin</a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" id="device-bottom-extra-tab" data-toggle="tab" href="#device-bottom-extra" role="tab" aria-controls="device-bottom-extra" aria-selected="false">Thuộc tính</a>
+          </li>
+        </ul>
+        <div class="tab-content pt-3" id="deviceDetailBottomTabsContent">
+          <div class="tab-pane fade show active" id="device-bottom-info" role="tabpanel" aria-labelledby="device-bottom-info-tab">
+            <div class="my-form #form_id">
+              <div class="wrap-my-form">
+                <form action="/dashboard/device-setting/update/<%= device._id%>" method="post">
+                  <label for="">Tên thiết bị</label>
+                  <div class="gap-xs"></div>
+                  <div class="wrap-input required">
+                    <input type="text" name="name" required placeholder="TÃªn thiáº¿t bá»‹" class="w-100" value="<%=device.name %>">
+                  </div>
+
+                  <label for="">Trạng thái</label>
+                  <div class="gap-xs"></div>
+                  <div class="wrap-input required">
+                    <select name="status" id="" class="w-50">
+                      <% if(deviceStatus.length > 0){ for( const status of deviceStatus ){ %>
+                      <option value="<%=status.value %>" <%= status.value == device.status ? 'selected' : '' %>><%=status.label %></option>
+                      <% } } %>
+                    </select>
+                  </div>
+
+                  <label for="">Vị trí</label>
+                  <div class="gap-xs"></div>
+                  <div class="wrap-input required">
+                    <input type="number" name="order" step="1" min="0" max="100" placeholder="Vị trí" class="w-100" value="<%=device.order %>">
+                  </div>
+
+                  <label for="">Model</label>
+                  <div class="gap-xs"></div>
+                  <div class="wrap-input required">
+                    <select name="model" id="" class="w-50">
+                      <% if(model.length > 0){ for( const item of model ){ %>
+                      <option value="<%=item._id %>" <%= String(item._id) == String(device.deviceModel._id) ? 'selected' : '' %>><%=item.name %></option>
+                      <% } } %>
+                    </select>
+                  </div>
+
+                  <label for="">Nhóm: <%=device.group?device.group.name : "Chưa có" %></label>
+                  <div class="gap-xs"></div>
+
+
+                  <label for="">Chọn khu vực</label>
+                  <div class="gap-xs"></div>
+                  <div class="wrap-input required">
+                    <select name="zone" id="template-device-group" class="w-50">
+                      <% if(zone.length > 0){ for( const item of zone ){ %>
+                      <option value="<%=item._id %>"><%=item.name %></option>
+                      <% } } %>
+                    </select>
+                  </div>
+
+                  <label for="">Mô tả</label>
+                  <div class="gap-xs"></div>
+                  <div class="wrap-input">
+                    <input type="text" name="description" placeholder="Mô tả / Có thể để trống" class="w-100" value="<%=device.description %>">
+                  </div>
+
+                  <div class="submit">
+                    <button class="submit-btn">Lưu</button>
+                  </div>
+                </form>
+              </div>
             </div>
-
-            <label for="">Trạng thái</label>
-            <div class="gap-xs"></div>
-            <div class="wrap-input required">
-              <select name="status" id="=" class="w-50">
-                <% if(deviceStatus.length > 0){ for( const status of deviceStatus ){ %>
-                <option value="<%=status.value %>" <%= status.value == device.status ? 'selected' : '' %>><%=status.label %></option>
-                <% } } %>
-              </select>
+          </div>
+          <div class="tab-pane fade" id="device-bottom-extra" role="tabpanel" aria-labelledby="device-bottom-extra-tab">
+            <% if (!fieldConfig || !fieldConfig.fields || fieldConfig.fields.length === 0) { %>
+            <div class="wrap-my-form">
+              <form action="/dashboard/device-setting/create-field-config" method="post">
+                <input type="hidden" name="deviceId" value="<%= device._id %>">
+                <button type="submit" class="primary-btn">Tạo mới</button>
+              </form>
             </div>
+            <% } else { %>
+            <div class="base-list device-field-list">
+              <form action="/dashboard/device-setting/update-field-config" method="post">
+                <input type="hidden" name="deviceId" value="<%= device._id %>">
+                <div class="wrap-btn">
+                  <button type="submit" class="px-5 py-1"><strong>Lưu</strong></button>
+                </div>
+                <div class="wrap-box">
+                <ul>
+                  <li class="d-flex w-100 justify-content-start align-items-center header-row">
+                    <span class="text-center">STT</span>
+                    <span class="text-center">Field</span>
+                    <span class="text-center">Thuộc tính</span>
+                  </li>
+                  <% const modelFields = (device.deviceModel && device.deviceModel.fields) ? device.deviceModel.fields : []; %>
 
-            <label for="">Vị trí</label>
-            <div class="gap-xs"></div>
-            <div class="wrap-input required">
-              <input type="number" name="order" step="1" min="0" max="100" placeholder="Vị trí" class="w-100" value="<%=device.order %>">
+                  <% for (let index = 0; index < fieldConfig.fields.length; index++) { %>
+                  <% const field = fieldConfig.fields[index]; %>
+                  <% const attrsEntries = (field.attrs instanceof Map) ? Array.from(field.attrs.entries()) : Object.entries(field.attrs || {}); %>
+                  <% const modelField = modelFields.find((mf) => mf.key === field.key) || {}; %>
+                  <% const modelConfig = modelField.config || {}; %>
+                  <li class="d-flex w-100 justify-content-start align-items-center">
+                    <span><%= index + 1 %></span>
+                    <span>
+                      <input type="hidden" name="fieldKey_<%= index %>" value="<%= field.key %>">
+                      <%= field.key %>
+                    </span>
+                    <span>
+                      <% if (attrsEntries.length === 0) { %>
+                      <em>Trá»‘ng</em>
+                      <% } else { %>
+                      <% for (const [k, v] of attrsEntries) { %>
+                      <div class="mb-3">
+                        <div class="text-left mb-2">
+                          <strong><%= k %>:</strong>
+                        </div>
+                        <% const cfgVal = modelConfig[k]; %>
+                        <% if (Array.isArray(cfgVal)) { %>
+                        <% if (k === "color") { %>
+                        <div class="d-flex align-items-center">
+                          <% for (const opt of cfgVal) { %>
+                          <label class="d-flex align-items-center mr-5" style="cursor:pointer;">
+                            <input type="radio" name="attr_<%= index %>_<%= k %>" value="<%= opt %>" <%= String(opt) === String(v) ? "checked" : "" %>>
+                            <span style="margin-left:4px;display:inline-block;width:18px;height:18px;border-radius:50%;border:1px solid #ccc;background-color:<%= opt %>;"></span>
+                          </label>
+                          <% } %>
+                        </div>
+                        <% } else { %>
+                        <select class="w-50" name="attr_<%= index %>_<%= k %>">
+                          <% for (const opt of cfgVal) { %>
+                          <option value="<%= opt %>" <%= String(opt) === String(v) ? "selected" : "" %>><%= opt %></option>
+                          <% } %>
+                        </select>
+                        <% } %>
+                        <% } else { %>
+                        <input type="text" class="w-100" name="attr_<%= index %>_<%= k %>" value="<%= v %>">
+                        <% } %>
+                      </div>
+                      <% } %>
+                      <% } %>
+                    </span>
+                  </li>
+                  <% } %>
+                </ul>
+                </div>
+              </form>
             </div>
-
-            <label for="">Model</label>
-            <div class="gap-xs"></div>
-            <div class="wrap-input required">
-              <select name="model" id="" class="w-50">
-                <% if(model.length > 0){ for( const item of model ){ %>
-                <option value="<%=item._id %>" <%= String(item._id) == String(device.deviceModel._id) ? 'selected' : '' %>><%=item.name %></option>
-                <% } } %>
-              </select>
-            </div>
-
-            <label for="">Nhóm: <%=device.group?device.group.name : "Chưa có" %></label>
-            <div class="gap-xs"></div>
-
-
-            <label for="">Chọn khu vực</label>
-            <div class="gap-xs"></div>
-            <div class="wrap-input required">
-              <select name="zone" id="template-device-group" class="w-50">
-                <% if(zone.length > 0){ for( const item of zone ){ %>
-                <option value="<%=item._id %>"><%=item.name %></option>
-                <% } } %>
-              </select>
-            </div>
-
-            <label for="">Mô tả</label>
-            <div class="gap-xs"></div>
-            <div class="wrap-input">
-              <input type="text" name="description" placeholder="Mô tả / Có thể để trống" class="w-100" value="<%=device.description %>">
-            </div>
-
-            <div class="submit">
-              <button class="submit-btn">Gửi</button>
-            </div>
-          </form>
+            <% } %>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="gap-md"></div>
 </div>
+<div class="gap-lg"></div>
+
+
+
+
+
+
+

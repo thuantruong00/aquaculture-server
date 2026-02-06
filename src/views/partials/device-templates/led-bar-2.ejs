@@ -10,27 +10,46 @@
       <div class="row">
         <%
       if(device.deviceModel.fields.length>0){
+        const fieldConfigs = device.fieldConfig?.fields || [];
+        const getFieldColor = (key) => {
+          const field = fieldConfigs.find((f) => f.key === key);
+          if (!field || !field.attrs) return "";
+          if (field.attrs instanceof Map) {
+            return field.attrs.get("color") || "";
+          }
+          return field.attrs.color || "";
+        };
+        const getFieldName = (key, fallback) => {
+          const field = fieldConfigs.find((f) => f.key === key);
+          if (!field || !field.attrs) return fallback;
+          if (field.attrs instanceof Map) {
+            return field.attrs.get("name") || fallback;
+          }
+          return field.attrs.name || fallback;
+        };
         for(let item = 0; item < device.deviceModel.fields.length ; item+=2){ 
           const xKey1 = device.deviceModel.fields[item].key;  
           const xKey2 = device.deviceModel.fields[item+1].key;  
+          const xColor1 = getFieldColor(xKey1);
+          const xColor2 = getFieldColor(xKey2);
         %>
         <div class="col-6">
           <div class="ledbox-wrapper my-2 py-1 px-3">
             <div class="x-key-<%= xKey1 %>">
-              <div class="device-key-label border-0"><%= t("sensors." + device.deviceModel.fields[item].key)%> :</div>
+              <div class="device-key-label border-0"><%= getFieldName(xKey1, t("sensors." + device.deviceModel.fields[item].key)) %> :</div>
 
               <div class="d-flex justify-content-between align-items-end">
                 <button class="ledbar-btn button-brightness ledbar-btn-dec" onclick="handleLedDecBtn('<%= device._id%>', '<%= xKey1 %>')">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" style="color: white;"></path>
                   </svg>
                 </button>
                 <div class="wrap-ledbar-control text-center">
                   <div class="value">0</div>
-                  <input class="form-range form-range-light w-100" type="range" name="" id="" min="0" max="100" value="0" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey1 %>')">
+                  <input class="form-range w-100" style="<%= xColor1 ? `--range-color: ${xColor1};` : '' %>" type="range" name="" id="" min="0" max="100" value="0" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey1 %>')">
                 </div>
                 <button class="ledbar-btn button-brightness ledbar-btn-inc text-center" onclick="handleLedIncBtn('<%= device._id%>', '<%= xKey1 %>')">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" style="color: white;"></path>
                   </svg>
                 </button>
@@ -39,18 +58,19 @@
             <div class="gap-xs"></div>
             <div class="gap-xs"></div>
             <div class="x-key-<%= xKey2 %>">
+              <div class="device-key-label border-0"><%= getFieldName(xKey2, t("sensors." + device.deviceModel.fields[item].key)) %> :</div>
               <div class="d-flex justify-content-between align-items-end">
                 <button class="ledbar-btn button-brightness ledbar-btn-dec" onclick="handleLedDecBtn('<%= device._id%>', '<%= xKey2 %>')">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-dash-lg" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" style="color: white;"></path>
                   </svg>
                 </button>
                 <div class="wrap-ledbar-control text-center">
                   <div class="value">0</div>
-                  <input class="form-range form-range-light w-100" type="range" name="" id="" min="0" max="100" value="0" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey2 %>')">
+                  <input class="form-range w-100" style="<%= xColor2 ? `--range-color: ${xColor2};` : '' %>" type="range" name="" id="" min="0" max="100" value="0" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey2 %>')">
                 </div>
                 <button class="ledbar-btn button-brightness ledbar-btn-inc" onclick="handleLedIncBtn('<%= device._id%>', '<%= xKey2 %>')">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" style="color: white;"></path>
                   </svg>
                 </button>

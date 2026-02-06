@@ -1,11 +1,19 @@
 import { Schema, model, Document, Types } from "mongoose";
+import { DeviceFieldAttrKey } from "~/utils/enum";
+
+export type FieldAttrValue = string | number;
+export type FieldAttrs = Record<string, FieldAttrValue>;
+
+export interface IDeviceFieldItem {
+  key: string;
+  attrs: FieldAttrs;
+}
 
 export interface IDeviceFieldConfig extends Document {
   name?: string;
   description?: string;
   device: Types.ObjectId;
-  fields: Array<String>;
-  data: Record<string, string | number>;
+  fields: IDeviceFieldItem[];
 }
 
 const deviceFieldConfigSchema = new Schema<IDeviceFieldConfig>(
@@ -15,26 +23,35 @@ const deviceFieldConfigSchema = new Schema<IDeviceFieldConfig>(
     device: {
       type: Schema.Types.ObjectId,
       ref: "Device",
-      default: null,
-    },
-    fields: [{ type: String, required: true }],
-    data: {
-      type: Map,
-      of: Schema.Types.Mixed,
       required: true,
-      default: {},
-      validate: {
-        validator: (val: Map<string, unknown>) => {
-          for (const value of val.values()) {
-            if (typeof value !== "string" && typeof value !== "number") {
-              return false;
-            }
-          }
-          return true;
-        },
-        message: "data values must be string or number",
-      },
+      unique: true,
     },
+    fields: [
+      {
+        key: { type: String, required: true },
+        attrs: {
+          type: Map,
+          of: Schema.Types.Mixed,
+          default: {},
+          validate: {
+            validator: (val: Map<string, unknown>) => {
+              const allowedKeys = Object.values(DeviceFieldAttrKey);
+              for (const [key, value] of val.entries()) {
+                if (!allowedKeys.includes(key as DeviceFieldAttrKey)) {
+                  return false;
+                }
+                if (typeof value !== "string" && typeof value !== "number") {
+                  return false;
+                }
+              }
+              return true;
+            },
+            message:
+              "attrs keys must be one of DeviceFieldAttrKey and values must be string or number",
+          },
+        },
+      },
+    ],
   },
   {
     timestamps: true,

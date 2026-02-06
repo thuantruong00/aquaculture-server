@@ -152,3 +152,27 @@ export const UpdateIpSchema = z.object({
 });
 
 export type IUpdateIpDTO = z.infer<typeof UpdateIpSchema>;
+
+export const CreateDeviceFieldConfigSchema = z.object({
+  deviceId: z
+    .string()
+    .min(8, { message: "deviceId must be at least 8 characters" })
+    .max(64, { message: "deviceId must be at most 64 characters" }),
+});
+
+export type ICreateDeviceFieldConfigDTO = z.infer<
+  typeof CreateDeviceFieldConfigSchema
+>;
+
+export const UpdateDeviceFieldConfigSchema = z
+  .object({
+    deviceId: z
+      .string()
+      .min(8, { message: "deviceId must be at least 8 characters" })
+      .max(64, { message: "deviceId must be at most 64 characters" }),
+  })
+  .passthrough();
+
+export type IUpdateDeviceFieldConfigDTO = z.infer<
+  typeof UpdateDeviceFieldConfigSchema
+>;

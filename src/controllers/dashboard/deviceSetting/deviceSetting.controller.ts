@@ -4,9 +4,11 @@ import { Device, IDevice } from "~/entities/device.entity";
 import {
   IActivateDeviceDTO,
   ICreateDeviceModelDTO,
+  ICreateDeviceFieldConfigDTO,
   IDeviceConnectDTO,
   IGetListDeviceQueryDTO,
   IUpdateDeviceDTO,
+  IUpdateDeviceFieldConfigDTO,
   IUpdateDeviceGroupDTO,
   IUpdateDeviceOrdersDTO,
   IUpdateDeviceStatusDTO,
@@ -14,6 +16,7 @@ import {
 } from "./deviceSetting.dto";
 import {
   DeviceFieldType,
+  DeviceFieldAttrKey,
   DeviceGroupStatus,
   DeviceStatus,
   DeviceType,
@@ -21,6 +24,10 @@ import {
   OtpTarget,
 } from "~/utils/enum";
 import { DeviceModel, IDeviceModel } from "~/entities/device-model.entity";
+import {
+  DeviceFieldConfig,
+  IDeviceFieldItem,
+} from "~/entities/device-field-config.entity";
 import { Types } from "mongoose";
 import { ObjectId } from "typeorm";
 import { Zone } from "~/entities/zone.entity";
@@ -74,7 +81,10 @@ export class DeviceSettingController extends BaseController {
         .populate("group")
         .populate("deviceModel");
       const findZone = await Zone.find({});
-      const findModel = await DeviceModel.find({});
+      const findModel = await DeviceModel.find({}).populate("fields");
+      const findFieldConfig = await DeviceFieldConfig.findOne({
+        device: deviceId,
+      });
       if (!findDevice || !findZone || !findModel) {
         return this.renderWithSidebar(res, "page/error");
       }
@@ -87,6 +97,7 @@ export class DeviceSettingController extends BaseController {
         ],
         zone: findZone,
         model: findModel,
+        fieldConfig: findFieldConfig,
       });
     } catch (error) {
       logger.error("Err handleDetailDevicePage", error);
@@ -353,6 +364,115 @@ export class DeviceSettingController extends BaseController {
     } catch (error) {
       logger.error("Err handleApiCreateDeviceModel", error);
       return this.handleApiResponse(res, { isSuccess: false }, 500);
+    }
+  };
+
+  handleCreateDeviceFieldConfigPage = async (req: Request, res: Response) => {
+    try {
+      const { deviceId } = req.body as ICreateDeviceFieldConfigDTO;
+      const device = await Device.findOne({ _id: deviceId }).populate(
+        "deviceModel",
+      );
+      if (!device || !device.deviceModel) {
+        return this.renderWithSidebar(res, "page/error");
+      }
+
+      const existing = await DeviceFieldConfig.findOne({ device: deviceId });
+      if (existing) {
+        return res.redirect(`/dashboard/device-setting/detail/${deviceId}`);
+      }
+
+      const model = device.deviceModel as unknown as IDeviceModel;
+      const fields: IDeviceFieldItem[] = model.fields.map((field) => {
+        const attrs: Record<string, string | number> = {};
+        if (field.label) {
+          attrs["name"] = field.label;
+        }
+
+        const config = (field.config ?? {}) as Record<string, unknown>;
+        for (const key of Object.values(DeviceFieldAttrKey)) {
+          const value = config[key];
+          if (Array.isArray(value)) {
+            if (value.length > 0) {
+              const first = value[0];
+              if (typeof first === "string" || typeof first === "number") {
+                attrs[key] = first;
+              }
+            }
+            continue;
+          }
+          if (value === null) {
+            // null => treat as text input with empty default
+            attrs[key] = "";
+            continue;
+          }
+          if (typeof value === "string" || typeof value === "number") {
+            attrs[key] = value;
+          }
+        }
+
+        return { key: field.key, attrs };
+      });
+
+      const created = await DeviceFieldConfig.create({
+        name: device.name,
+        device: deviceId,
+        fields,
+      });
+
+      await Device.updateOne(
+        { _id: deviceId },
+        { $set: { config: created._id } },
+      );
+
+      return res.redirect(`/dashboard/device-setting/detail/${deviceId}`);
+    } catch (error) {
+      logger.error("Err handleCreateDeviceFieldConfigPage", error);
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
+
+  handleUpdateDeviceFieldConfigPage = async (req: Request, res: Response) => {
+    try {
+      const body = req.body as IUpdateDeviceFieldConfigDTO;
+      const { deviceId, ...rest } = body as Record<string, string>;
+
+      const fieldKeys = new Map<number, string>();
+      const fieldAttrs = new Map<number, Record<string, string | number>>();
+
+      for (const [key, value] of Object.entries(rest)) {
+        const keyMatch = key.match(/^fieldKey_(\d+)$/);
+        if (keyMatch) {
+          fieldKeys.set(Number(keyMatch[1]), String(value));
+          continue;
+        }
+
+        const attrMatch = key.match(/^attr_(\d+)_(.+)$/);
+        if (attrMatch) {
+          const index = Number(attrMatch[1]);
+          const attrKey = attrMatch[2];
+          const attrs = fieldAttrs.get(index) ?? {};
+          attrs[attrKey] = value as string;
+          fieldAttrs.set(index, attrs);
+        }
+      }
+
+      const indices = Array.from(fieldKeys.keys()).sort((a, b) => a - b);
+      const fields = indices.map((index) => ({
+        key: fieldKeys.get(index) ?? "",
+        attrs: fieldAttrs.get(index) ?? {},
+      }));
+
+      await DeviceFieldConfig.updateOne(
+        { device: deviceId },
+        { $set: { fields } },
+      );
+
+      return res.redirect(req.get("Referer") || "/fallback");
+    } catch (error) {
+      logger.error("Err handleUpdateDeviceFieldConfigPage", error);
+      res.statusCode = 500;
+      return this.renderWithSidebar(res, "page/error");
     }
   };
 

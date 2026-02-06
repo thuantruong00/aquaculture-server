@@ -1,4 +1,5 @@
 import app from "./app";
+import "./entities";
 import { SocketService } from "./services";
 import { connectMongoDB } from "./config/dataSource";
 const { initialService } = await import("./services/initial/initial.service");

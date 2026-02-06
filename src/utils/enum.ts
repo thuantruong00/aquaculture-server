@@ -60,6 +60,11 @@ export enum DeviceFieldType {
   STRING = "string",
 }
 
+export enum DeviceFieldAttrKey {
+  NAME = "name",
+  COLOR = "color",
+}
+
 export enum ComparisonOperator {
   LT = "lt",
   LTE = "lte",

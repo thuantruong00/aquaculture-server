@@ -660,6 +660,7 @@ label {
 }
 
 .form-range {
+  --range-color: #2ed8b6;
   -webkit-appearance: none;
   appearance: none;
   cursor: pointer;
@@ -689,8 +690,8 @@ label {
   width: 15px;
   background-color: #fff;
   border-radius: 50%;
-  border: 2px solid #2ed8b6;
-  box-shadow: -407px 0 0 400px #2ed8b6;
+  border: 2px solid var(--range-color);
+  box-shadow: -407px 0 0 400px var(--range-color);
 }
 
 .form-range::-moz-range-thumb {
@@ -699,41 +700,34 @@ label {
   width: 15px;
   background-color: #fff;
   border-radius: 50%;
-  border: 2px solid #2ed8b6;
-  box-shadow: -407px 0 0 400px #2ed8b6;
+  border: 2px solid var(--range-color);
+  box-shadow: -407px 0 0 400px var(--range-color);
+}
+
+/* Higher-specificity override to beat framework defaults */
+.wrap-ledbar-control .form-range::-webkit-slider-thumb {
+  border: 2px solid var(--range-color) !important;
+  box-shadow: -407px 0 0 400px var(--range-color) !important;
+}
+
+.wrap-ledbar-control .form-range::-moz-range-thumb {
+  border: 2px solid var(--range-color) !important;
+  box-shadow: -407px 0 0 400px var(--range-color) !important;
 }
 
 /* Red Slider */
-.form-range-red::-webkit-slider-thumb {
-  box-shadow: -407px 0 0 400px #ef5a68 !important;
-  border: 2px solid #ef5a68;
-}
-
-.form-range-red::-moz-range-thumb {
-  box-shadow: -407px 0 0 400px #ef5a68 !important;
-  border: 2px solid #ef5a68;
+.form-range-red {
+  --range-color: #ef5a68;
 }
 
 /* Light Slider */
-.form-range-light::-webkit-slider-thumb {
-  box-shadow: -407px 0 0 400px #efec9b !important;
-  border: 2px solid #efec9b;
-}
-
-.form-range-light::-moz-range-thumb {
-  box-shadow: -407px 0 0 400px #efec9b !important;
-  border: 2px solid #efec9b;
+.form-range-light {
+  --range-color: #efec9b;
 }
 
 /* Blue Slider */
-.form-range-blue::-webkit-slider-thumb {
-  box-shadow: -407px 0 0 400px #4099ff !important;
-  border: 2px solid #4099ff;
-}
-
-.form-range-blue::-moz-range-thumb {
-  box-shadow: -407px 0 0 400px #4099ff !important;
-  border: 2px solid #4099ff;
+.form-range-blue {
+  --range-color: #4099ff;
 }
 
 .box-temp {
@@ -1118,7 +1112,7 @@ label {
 }
 
 .wrap-device-item .sensor-value {
- 
+
   margin-bottom: 3px;
 }
 
@@ -1132,12 +1126,74 @@ label {
   font-size: 16px;
 }
 
+.ledbox-wrapper {
+  background:
+    radial-gradient(120% 120% at 100% 0%, rgba(17, 24, 39, 0.06) 0%, rgba(17, 24, 39, 0) 55%),
+    linear-gradient(180deg, #ffffff 0%, #f6f7fb 100%);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 16px;
+  box-shadow:
+    0 10px 24px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.wrap-ledbar-control {
+  min-width: 120px;
+}
+
+.wrap-ledbar-control .value {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.ledbar-btn {
+  background: #4099ff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #fff;
+  box-shadow:
+    0 6px 12px rgba(64, 153, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+}
+
+.ledbar-btn:hover {
+  background: #2f87ee;
+  box-shadow:
+    0 8px 16px rgba(64, 153, 255, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
+.ledbar-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.wrap-ledbar-control .form-range {
+  height: 18px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, #f8fafc 0%, #e5e7eb 100%);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.wrap-ledbar-control .form-range:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
 .wrap-device-item .device-key-label {
   margin-top: 4px;
   padding-top: 5px;
   /* transform: translateY(3px); */
   font-size: 14px;
-   border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .wrap-device-group .group-name {
@@ -1465,4 +1521,44 @@ label {
 
 .sensor-record-list .wrap-box>ul>li>span {
   width: 30%;
+}
+
+/* ============================= */
+.device-field-list .wrap-box>ul>li>span:first-child {
+  width: 7%;
+}
+.device-field-list .wrap-box>ul>li>span:nth-child(2) {
+  width:30%;
+}
+.device-field-list .wrap-box>ul>li>span:nth-child(3) {
+  width: 50%;
+}
+
+/* Device detail tabs */
+#deviceDetailBottomTabs {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+  gap: 8px;
+}
+
+#deviceDetailBottomTabs .nav-link {
+  color: #222;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: none;
+  padding: 8px 16px;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+#deviceDetailBottomTabs .nav-link:hover {
+  background: #fff;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.08);
+}
+
+#deviceDetailBottomTabs .nav-link.active {
+  background: #fff;
+  border-bottom-color: #fff;
 }

@@ -6,6 +6,7 @@ import {
   ApiDeviceControlBodySchema,
   ApiDeviceControlParamsSchema,
   AuthController,
+  CreateDeviceFieldConfigSchema,
   CreateDeviceGroupSchema,
   CustomUiController,
   DeviceConnectSchema,
@@ -21,6 +22,7 @@ import {
   UpdateDeviceGroupSchema,
   UpdateDeviceOrdersSchema,
   UpdateDeviceSchema,
+  UpdateDeviceFieldConfigSchema,
   UpdateDeviceStatusSchema,
   UpdateIpSchema,
   ApiTelemetryBodySchema,
@@ -422,6 +424,18 @@ dashboardRouter.post(
   zodMultiValidator({ body: UpdateDeviceOrdersSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
   deviceSettingController.handleApiUpdateDeviceOrders.bind(deviceSettingController),
+);
+dashboardRouter.post(
+  "/device-setting/create-field-config",
+  zodMultiValidator({ body: CreateDeviceFieldConfigSchema }),
+  middleware.webPageMiddleware("deviceSetting", { allowedRole: AllRoles }),
+  deviceSettingController.handleCreateDeviceFieldConfigPage.bind(deviceSettingController),
+);
+dashboardRouter.post(
+  "/device-setting/update-field-config",
+  zodMultiValidator({ body: UpdateDeviceFieldConfigSchema }),
+  middleware.webPageMiddleware("deviceSetting", { allowedRole: AllRoles }),
+  deviceSettingController.handleUpdateDeviceFieldConfigPage.bind(deviceSettingController),
 );
 dashboardRouter.post(
   "/api/device-setting/update-group",
