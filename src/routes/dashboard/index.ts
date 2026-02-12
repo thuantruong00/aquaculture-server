@@ -36,6 +36,7 @@ import {
   AutomaticSceneUpdateBodySchema,
   TimerCreateBodySchema,
 } from "~/controllers/dashboard/automatic/automatic.dto";
+import { IntroductionController } from "~/controllers/dashboard/introduction";
 import {
   AddTelegramAccountGroupSchema,
   RemoveTelegramAccountGroupSchema,
@@ -58,6 +59,7 @@ const notificationSettingController = new NotificationSettingController();
 const customUiController = new CustomUiController();
 const automaticController = new AutomaticController();
 const firmwareController = new FirmwareController();
+const introductionController = new IntroductionController();
 dashboardRouter.get(
   "/device-control",
   middleware.webPageMiddleware("deviceControl", { allowedRole: AllRoles }),
@@ -384,6 +386,13 @@ dashboardRouter.get(
   "/firmware/files/:filename",
   middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
   firmwareController.handleServeFirmware,
+);
+// ─── Introduction ───────────────────────────────────────────────────────
+
+dashboardRouter.get(
+  "/introduction/",
+  middleware.webPageMiddleware("introduction", { allowedRole: AllRoles }),
+  introductionController.handleIntroductionPage.bind(introductionController),
 );
 
 //###############################################

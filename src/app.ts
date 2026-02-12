@@ -9,6 +9,7 @@ import session from "express-session";
 
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { siteMeta } from "./config/siteMeta";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -68,6 +69,7 @@ app.use((req, res, next) => {
     MQTT_PREFIX_TOPIC: process.env.MQTT_PREFIX_TOPIC || "",
     NODE_ENV: process.env.NODE_ENV || "production",
   };
+  res.locals.meta = { ...siteMeta };
   next();
 });
 

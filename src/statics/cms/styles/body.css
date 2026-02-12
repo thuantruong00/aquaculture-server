@@ -1562,3 +1562,82 @@ label {
   background: #fff;
   border-bottom-color: #fff;
 }
+
+/* =================== Introduction =================== */
+.intro-card {
+  position: relative;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f7f7f2 0%, #eef3f0 100%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.intro-card::after {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(
+    circle at center,
+    rgba(46, 125, 50, 0.18),
+    rgba(46, 125, 50, 0)
+  );
+  pointer-events: none;
+}
+
+.intro-logo {
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.intro-title {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.intro-desc {
+  color: #5f6b66;
+  font-size: 0.98rem;
+}
+
+.intro-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+
+.intro-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(46, 125, 50, 0.1);
+  color: #1b5e20;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.intro-meta {
+  background: #fff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+.intro-meta strong {
+  color: #2f3a35;
+}
+
+
+.intro-desc {
+  white-space: pre-line;
+}

@@ -1,0 +1,20 @@
+{
+  "title": "Phù Sa DTC Farm",
+  "description": "Phù Sa DTC Farm - Nền tảng giám sát hệ thống nuôi trồng thủy sản.",
+  "siteName": "Phù Sa DTC Farm",
+  "image": "/cms/images/index/logo.png",
+  "type": "website",
+  "version": "v1.4.2",
+  "build": "2026.02.12-01",
+  "copyright": "© 2026 Phù Sa DTC Farm"
+},
+{
+  "title": "Plant Phenomics Lab - Smart Farm",
+  "description": "Nền tảng giám sát hệ thống nông nghiệp thông minh.",
+  "siteName": "Smart Farm",
+  "image": "/cms/images/index/logo.png",
+  "type": "website",
+  "version": "v1.4.2",
+  "build": "2026.02.12-01",
+  "copyright": "© 2026 Plant Phenomics Lab"
+}

@@ -1,5 +1,5 @@
 <div class="col-12 my-2 x-item-<%= device._id %>">
-  <div class="device-item">
+  <div class="device-item relative">  
     <div class="wrap-device-item">
       <%- include('../cms/setting.ejs',{id:device._id,type:"device", setting:setting}) %>
       <a href="#" class="wrap-name">
@@ -44,8 +44,9 @@
                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" style="color: white;"></path>
                   </svg>
                 </button>
-                <div class="wrap-ledbar-control text-center">
+                <div class="wrap-ledbar-control text-center relative">
                   <div class="value">0</div>
+                  <div class="color-label" style="background-color: <%= xColor1 %>;"></div>
                   <input class="form-range w-100" style="<%= xColor1 ? `--range-color: ${xColor1};` : '' %>" type="range" name="" id="" min="0" max="100" value="0" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey1 %>')">
                 </div>
                 <button class="ledbar-btn button-brightness ledbar-btn-inc text-center" onclick="handleLedIncBtn('<%= device._id%>', '<%= xKey1 %>')">
@@ -65,8 +66,9 @@
                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8" style="color: white;"></path>
                   </svg>
                 </button>
-                <div class="wrap-ledbar-control text-center">
+                <div class="wrap-ledbar-control text-center relative">
                   <div class="value">0</div>
+                  <div class="color-label" style="background-color: <%= xColor2 %>;"></div>
                   <input class="form-range w-100" style="<%= xColor2 ? `--range-color: ${xColor2};` : '' %>" type="range" name="" id="" min="0" max="100" value="0" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey2 %>')">
                 </div>
                 <button class="ledbar-btn button-brightness ledbar-btn-inc" onclick="handleLedIncBtn('<%= device._id%>', '<%= xKey2 %>')">

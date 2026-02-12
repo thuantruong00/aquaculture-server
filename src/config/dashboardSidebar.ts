@@ -175,6 +175,13 @@ export const sidebarData = [
       },
     ],
   },
+  {
+    page_id: "introduction",
+    title: "Giới thiệu",
+    href: "/dashboard/introduction",
+    page_name: "page/dashboard/introduction",
+    child: [],
+  },
 ];
 
 export const mobileMenuData = [

@@ -1,20 +1,28 @@
+<%
+  const m = (typeof meta !== "undefined" && meta) ? meta : {};
+  const title = m.title || "Phù Sa DTC Farm";
+  const description = m.description || title;
+  const siteName = m.siteName || title;
+  const image = m.image || "/cms/images/index/logo.png";
+  const type = m.type || "website";
+%>
 <!-- description -->
-<meta name='description' content='Phù Sa DTC Farm'>
-<meta property='og:description' content='Phù Sa DTC Farm'>
-<meta name='twitter:description' content='Phù Sa DTC Farm'>
+<meta name='description' content='<%= description %>'>
+<meta property='og:description' content='<%= description %>'>
+<meta name='twitter:description' content='<%= description %>'>
 
-<meta property='og:site_name' content='Phù Sa DTC Farm'>
-<meta property='og:type' content='website'>
+<meta property='og:site_name' content='<%= siteName %>'>
+<meta property='og:type' content='<%= type %>'>
 
 <!-- image -->
-<meta property="og:image" content="/cms/images/index/logo.png">
-<meta property="og:image:alt" content="/cms/images/index/logo.png">
-<meta name="twitter:image" content="/cms/images/index/logo.png">
+<meta property="og:image" content="<%= image %>">
+<meta property="og:image:alt" content="<%= image %>">
+<meta name="twitter:image" content="<%= image %>">
 <!-- Minimal -->
-<link rel='icon' type='image/png' href='/cms/images/index/logo.png'>
-<link rel='icon' sizes='192x192' href='/cms/images/index/logo.png'> <!-- web -->
-<link rel='apple-touch-icon' href='/cms/images/index/logo.png'>
-<meta name='msapplication-square310x310logo' content='/cms/images/index/logo.png'>
+<link rel='icon' type='image/png' href='<%= image %>'>
+<link rel='icon' sizes='192x192' href='<%= image %>'> <!-- web -->
+<link rel='apple-touch-icon' href='<%= image %>'>
+<meta name='msapplication-square310x310logo' content='<%= image %>'>
 <!-- title -->
-<meta property='og:title' content='Phù Sa DTC Farm'>
-<meta name='twitter:title' content='Phù Sa DTC Farm'>
+<meta property='og:title' content='<%= title %>'>
+<meta name='twitter:title' content='<%= title %>'>

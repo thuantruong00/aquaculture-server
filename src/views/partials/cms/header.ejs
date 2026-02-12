@@ -1,9 +1,18 @@
+<%
+  const m = (typeof meta !== "undefined" && meta) ? meta : {};
+  const title = m.title || "Phù Sa DTC Farm";
+  const description = m.description || title;
+  const siteName = m.siteName || title;
+  const image = m.image || "/cms/images/index/logo.png";
+  const type = m.type || "website";
+%>
+
 <div class="header">
   <div class="header-contain d-flex justify-content-between">
     <div class="wrap-logo">
       <a href="#">
         <img src="/cms/images/index/home.png" alt="">
-        <span>phusadtcfarm</span>
+        <span><%= title %></span>
       </a>
     </div>
     <div class="profile-user relative">
