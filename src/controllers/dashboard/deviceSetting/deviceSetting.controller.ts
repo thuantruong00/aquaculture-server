@@ -51,11 +51,14 @@ export class DeviceSettingController extends BaseController {
         offset = offset ?? PagiOffset;
         limit = limit ?? PagiLimit;
       }
+      let statusInclude = [DeviceStatus.ACTIVE, DeviceStatus.BANNED];
       if (!status) {
-        status = status ?? DeviceStatus.ACTIVE;
+      } else {
+        statusInclude = [status];
       }
+
       const findDevice = await Device.find({
-        status: { $ne: DeviceGroupStatus.DELETED },
+        status: { $in: statusInclude },
       })
         .populate("zone")
         .populate("group")

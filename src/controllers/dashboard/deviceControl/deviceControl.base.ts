@@ -10,7 +10,11 @@ import {
 } from "./deviceControl.dto";
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { ExecutionLog } from "~/entities/execution-log.entity";
-import { handlePushLogs, handleWriteCommandSet } from "~/services";
+import {
+  handlePushLogs,
+  handleWriteCommandGet,
+  handleWriteCommandSet,
+} from "~/services";
 import { logger } from "~/utils/logger";
 import { DeviceMessageService } from "~/services/deviceMessage";
 import { signDecrypt, signEncrypt } from "~/utils/sign";
@@ -192,6 +196,19 @@ export class DeviceControlControllerBase extends BaseController {
         await handleWriteCommandSet(String(deviceId), key, Number(value), {
           commandId: String(insert._id),
         });
+      }
+      return this.handleApiResponse(res, { payload: true }, 200);
+    } catch (error) {
+      logger.error("Err handleApiControlDevice", error);
+      return this.handleApiResponse(res, { isSuccess: false }, 500);
+    }
+  }
+  async handleApiControlDeviceGet(req: Request, res: Response) {
+    try {
+      const { deviceId } = req.params as unknown as IApiDeviceControlParamsDTO;
+      const findDevice = await Device.findOne({ _id: deviceId });
+      if (findDevice) {
+        await handleWriteCommandGet(String(deviceId));
       }
       return this.handleApiResponse(res, { payload: true }, 200);
     } catch (error) {

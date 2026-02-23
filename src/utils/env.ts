@@ -1,6 +1,6 @@
 export const env = {
   DB_CONNECT_STRING: process.env.DB_CONNECT_STRING || "",
-  DN_NAME: process.env.DN_NAME || "aquadb",
+  DB_NAME: process.env.DB_NAME || "aquadb",
   MQTT_HOST: process.env.MQTT_HOST,
   MQTT_PORT: process.env.MQTT_PORT || 1883,
   MQTT_USERNAME: process.env.MQTT_USERNAME || "default_user",
@@ -17,4 +17,5 @@ export const env = {
   SECRET_KEY_INTERNAL: process.env.SECRET_KEY_INTERNAL || "pl12hs228as",
   KEY_SIGN: process.env.KEY_SIGN || "",
   SECRET_KEY_SIGN: process.env.SECRET_KEY_SIGN || "",
+  REDIRECT_URL: process.env.REDIRECT_URL || "/dashboard/device-control",
 };

@@ -1,11 +1,12 @@
 {
-  "name": "cms",
-  "version": "0.0.0",
+  "name": "edgeon",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "npx nodemon",
     "build": "node esbuild.js",
+    "build:prod": "npm version patch --no-git-tag-version && tsc",
     "start": "node dist/index.js",
     "dell": "nodemon --watch . --exec ts-node app.js",
     "lint": "eslint .",

@@ -3,8 +3,6 @@ import "express-session";
 import { UserRole, UserStatus } from "~/utils/enum";
 
 import { BaseController } from "../dashboard.base-controller";
-import { ZoneRepository } from "~/repositories";
-import { generateZoneKey } from "~/utils/mqtt";
 import { logger } from "~/utils/logger";
 import { IActionSignInBodySchema } from "./auth.dto";
 import { User } from "~/entities/user.entity";
@@ -18,7 +16,7 @@ export class AuthController extends BaseController {
   handleSignInPage = async (req: Request, res: Response) => {
     // ==============dev=============
     if (env.NODE_ENV == "development") {
-      console.log("dev mode")
+      console.log("dev mode");
       req.session.user = {
         user_id: "689ea07d5f9880283ee68a4a",
         username: "name",
@@ -40,7 +38,7 @@ export class AuthController extends BaseController {
     // ==============dev=============
 
     if (req.session.user) {
-      return res.redirect("/dashboard/device-control");
+      return res.redirect(`${env.REDIRECT_URL}`);
     } else {
       // req.session.user = {
       //   user_id: "u1",
@@ -78,7 +76,7 @@ export class AuthController extends BaseController {
             nickname: user.nickname,
             email: user.email,
           };
-          return res.redirect("/dashboard/device-control");
+          return res.redirect(`${env.REDIRECT_URL}`);
         }
       }
       return res.redirect(req.get("Referer") || "/fallback");

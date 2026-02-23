@@ -33,7 +33,7 @@ export class MqttService {
   handleTetelemetry = async (
     zoneId: string,
     deviceId: string,
-    value: string
+    value: string,
   ) => {
     const findDevice = await Device.findOne({ _id: deviceId })
       .populate("zone")
@@ -59,10 +59,13 @@ export class MqttService {
         const check = await this.processSensorValue(deviceId, valueInsert);
         // ========================
 
+        // console.log("------",deviceId, valueInsert, insert, check);
         this.socketService.sendIotDataTelemetry({
           id: deviceId,
           ts: ts,
           devices: valueInsert,
+          deviceModelName: (findDevice.deviceModel as unknown as IDeviceModel)
+            .name,
         });
       }
     }
@@ -73,14 +76,15 @@ export class MqttService {
     zoneId: string,
     deviceId: string,
     commandId: string,
-    value: string
+    value: string,
   ) => {
     const findDevice = await Device.findOne({ _id: deviceId })
       .populate("zone")
       .populate("group")
       .populate("deviceModel");
+    console.log("Response from device:", deviceId, "with value:", value);
     if (findDevice && findDevice.deviceModel) {
-      const arrStringValue = value.split(":");
+      const arrStringValue = value.split("|");
       const deviceModel = findDevice.deviceModel as unknown as IDeviceModel;
       const valueType = deviceModel.fields[0].valueType;
 
@@ -104,7 +108,7 @@ export class MqttService {
   };
   processSensorValue = async (
     deviceId: string,
-    data: SensorDataConditionProcesss[]
+    data: SensorDataConditionProcesss[],
   ) => {
     if (data.length > 0) {
       for (const item of data) {
@@ -129,27 +133,27 @@ export class MqttService {
           })
           .lean();
         const expected = findScene?.conditions.find(
-          (cond) => cond.key == item.key
+          (cond) => cond.key == item.key,
         );
         if (expected?.operator) {
           const check = await this.conditionService.evaluateCondition(
             item.value,
             expected?.operator,
             expected?.value,
-            DeviceFieldType.FLOAT
+            DeviceFieldType.FLOAT,
           );
           if (check) {
             await this.handleAction(findScene?.actions);
             if (findScene?.notifications) {
               const telegramIds =
                 findScene?.notifications.channels.telegram.map((item) =>
-                  String(item._id)
+                  String(item._id),
                 );
               const findTelegramAccount = await TelegramAccount.find({
                 _id: { $in: telegramIds },
               });
               const telegramAccountIds = findTelegramAccount.map(
-                (item) => item.telegramId
+                (item) => item.telegramId,
               );
               let message = findScene?.notifications?.message
                 ? findScene?.notifications?.message
@@ -159,7 +163,7 @@ export class MqttService {
 
               await telegramService.sendManyUserSequential(
                 telegramAccountIds,
-                message
+                message,
               );
             }
             return;
@@ -185,15 +189,11 @@ export class MqttService {
               String(step.deviceId),
               step.key,
               Number(step.value),
-              { commandId: "xxxId" }
+              { commandId: "xxxId" },
             );
           }
           if (step.deviceType == DeviceType.SENSOR) {
-            await handleWriteCommandGet(
-              String(step.deviceId),
-              step.key,
-              Number(step.value)
-            );
+            await handleWriteCommandGet(String(step.deviceId));
           }
         }
       }
@@ -208,10 +208,8 @@ const typeCast = (value: string, type: string) => {
       newValue = Boolean(Number(value));
       break;
     case DeviceFieldType.FLOAT:
-      newValue = float32(value);
-      break;
     case DeviceFieldType.INTEGER:
-      newValue = int32(value);
+      newValue = Number(value);
       break;
     case DeviceFieldType.STRING:
     default:

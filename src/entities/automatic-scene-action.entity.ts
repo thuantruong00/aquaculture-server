@@ -4,7 +4,7 @@ import { ActionStatus, DeviceType } from "~/utils/enum";
 export interface IActionStep {
   deviceId: Types.ObjectId;
   key: string;
-  value: string | number | boolean | object; // Mixed
+  value: string | number | boolean ; // Mixed
   deviceType: DeviceType;
   durationSeconds?: number;
   stopMethod?: "sensor" | "timer";

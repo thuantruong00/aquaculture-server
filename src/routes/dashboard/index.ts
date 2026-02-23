@@ -73,7 +73,6 @@ dashboardRouter.get(
   }),
   deviceController.handleDeviceControlManagementPage.bind(deviceController),
 );
-
 // ─── Automatic ────────────────────────────────────────────────
 dashboardRouter.get(
   "/automatic/",
@@ -229,7 +228,9 @@ dashboardRouter.get(
 dashboardRouter.get(
   "/device-setting/add",
   middleware.webPageMiddleware("deviceSettingAdd"),
-  deviceSettingController.handleAddDeviceSettingPage.bind(deviceSettingController),
+  deviceSettingController.handleAddDeviceSettingPage.bind(
+    deviceSettingController,
+  ),
 );
 dashboardRouter.get(
   "/device-setting/detail/:deviceId",
@@ -271,65 +272,89 @@ dashboardRouter.get(
 dashboardRouter.get(
   "/notification-setting",
   middleware.webPageMiddleware("notificationSetting"),
-  notificationSettingController.handleNotificationSettingPage.bind(notificationSettingController),
+  notificationSettingController.handleNotificationSettingPage.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/inactive-telegram",
   middleware.webPageMiddleware("notificationSettingActivateTelegram"),
-  notificationSettingController.handleActivateTelegramAccountPage.bind(notificationSettingController),
+  notificationSettingController.handleActivateTelegramAccountPage.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/activate-telegram/:id",
   middleware.webPageMiddleware("notificationSettingActivateTelegram"),
-  notificationSettingController.handleActivateTelegramAccountSubmitPage.bind(notificationSettingController),
+  notificationSettingController.handleActivateTelegramAccountSubmitPage.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/delete-telegram/:id",
   middleware.webPageMiddleware("notificationSettingActivateTelegram"),
-  notificationSettingController.handleDeleteTelegramAccountSubmitPage.bind(notificationSettingController),
+  notificationSettingController.handleDeleteTelegramAccountSubmitPage.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/detail-telegram/:id",
   middleware.webPageMiddleware("notificationSettingActivateTelegram"),
-  notificationSettingController.handleActivateTelegramAccountSubmitPage.bind(notificationSettingController),
+  notificationSettingController.handleActivateTelegramAccountSubmitPage.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/group",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleNotificationSettingGroupPage.bind(notificationSettingController),
+  notificationSettingController.handleNotificationSettingGroupPage.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/group-detail/:id",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleNotificationGroupDetailPage.bind(notificationSettingController),
+  notificationSettingController.handleNotificationGroupDetailPage.bind(
+    notificationSettingController,
+  ),
 );
 
 dashboardRouter.post(
   "/notification-setting/add-telegram-account-group",
   zodMultiValidator({ body: AddTelegramAccountGroupSchema }),
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleAddTelegramAccountPage.bind(notificationSettingController),
+  notificationSettingController.handleAddTelegramAccountPage.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/delete-group/:groupId",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleDeleteGroup.bind(notificationSettingController),
+  notificationSettingController.handleDeleteGroup.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/new-group/",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleNewGroup.bind(notificationSettingController),
+  notificationSettingController.handleNewGroup.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.get(
   "/notification-setting/remove-account-group/",
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleRemoveTelegramAccountPage.bind(notificationSettingController),
+  notificationSettingController.handleRemoveTelegramAccountPage.bind(
+    notificationSettingController,
+  ),
 );
 dashboardRouter.post(
   "/notification-setting/update-group/:groupId",
   zodMultiValidator({ body: UpdateGroupSchema }),
   middleware.webPageMiddleware("notificationGroup"),
-  notificationSettingController.handleUpdateGroup.bind(notificationSettingController),
+  notificationSettingController.handleUpdateGroup.bind(
+    notificationSettingController,
+  ),
 );
 
 // ─── History ───────────────────────────────────────────────────────
@@ -410,7 +435,9 @@ dashboardRouter.post(
   middleware.webPageMiddleware("deviceSettingAdd", {
     allowedRole: IsUserGroup,
   }),
-  deviceSettingController.handleCreatePairingOtpPage.bind(deviceSettingController),
+  deviceSettingController.handleCreatePairingOtpPage.bind(
+    deviceSettingController,
+  ),
 );
 
 // chua test dto
@@ -425,26 +452,34 @@ dashboardRouter.post(
   "/device-setting/update-status",
   zodMultiValidator({ body: UpdateDeviceStatusSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
-  deviceSettingController.handleApiUpdateDeviceStatus.bind(deviceSettingController),
+  deviceSettingController.handleApiUpdateDeviceStatus.bind(
+    deviceSettingController,
+  ),
 );
 
 dashboardRouter.post(
   "/device-setting/update-device-orders",
   zodMultiValidator({ body: UpdateDeviceOrdersSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
-  deviceSettingController.handleApiUpdateDeviceOrders.bind(deviceSettingController),
+  deviceSettingController.handleApiUpdateDeviceOrders.bind(
+    deviceSettingController,
+  ),
 );
 dashboardRouter.post(
   "/device-setting/create-field-config",
   zodMultiValidator({ body: CreateDeviceFieldConfigSchema }),
   middleware.webPageMiddleware("deviceSetting", { allowedRole: AllRoles }),
-  deviceSettingController.handleCreateDeviceFieldConfigPage.bind(deviceSettingController),
+  deviceSettingController.handleCreateDeviceFieldConfigPage.bind(
+    deviceSettingController,
+  ),
 );
 dashboardRouter.post(
   "/device-setting/update-field-config",
   zodMultiValidator({ body: UpdateDeviceFieldConfigSchema }),
   middleware.webPageMiddleware("deviceSetting", { allowedRole: AllRoles }),
-  deviceSettingController.handleUpdateDeviceFieldConfigPage.bind(deviceSettingController),
+  deviceSettingController.handleUpdateDeviceFieldConfigPage.bind(
+    deviceSettingController,
+  ),
 );
 dashboardRouter.post(
   "/api/device-setting/update-group",
@@ -457,7 +492,9 @@ dashboardRouter.post(
 dashboardRouter.post(
   "/api/device-models/create",
   middleware.APImiddleware("deviceSettingActivate"),
-  deviceSettingController.handleApiCreateDeviceModel.bind(deviceSettingController),
+  deviceSettingController.handleApiCreateDeviceModel.bind(
+    deviceSettingController,
+  ),
 );
 
 // dashboardRouter.post(
@@ -486,6 +523,14 @@ dashboardRouter.post(
     params: ApiDeviceControlParamsSchema,
   }),
   deviceController.handleApiControlDevice.bind(deviceController),
+);
+dashboardRouter.get(
+  "/api/device-control/:deviceId",
+  middleware.webPageMiddleware("deviceControl"),
+  zodMultiValidator({
+    params: ApiDeviceControlParamsSchema,
+  }),
+  deviceController.handleApiControlDeviceGet.bind(deviceController),
 );
 
 dashboardRouter.post(

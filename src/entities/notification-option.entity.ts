@@ -1,7 +1,7 @@
 // models/notification-option.model.ts
 import mongoose, { Schema, model, Types, Document } from "mongoose";
 import { NotificationSubscribedEvent } from "~/utils/enum";
-import { toSearchKey } from "~/utils/ultils";
+import { toSearchKey } from "~/utils/utils";
 import { ITelegramAccount } from "./telegram-account.entity";
 
 export interface INotificationOption extends Document {

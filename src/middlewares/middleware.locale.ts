@@ -1,6 +1,7 @@
 // middleware/locale.ts
 import { Request, Response, NextFunction } from "express";
 import { t as i18nT } from "~/utils/i18n/i18n";
+import { formatDate } from "~/utils/date.util";
 
 const DEFAULT_LOCALE = "vi" as const;
 type LocaleKey = "vi" | "en";
@@ -8,7 +9,7 @@ type LocaleKey = "vi" | "en";
 export function localeMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   // order of preference: query -> cookie -> accept-language header -> default
   const q = (req.query.lang || req.query.locale) as string | undefined;
@@ -34,7 +35,7 @@ export function localeMiddleware(
 
   // optional: expose a function to get raw dictionary value
   res.locals._tRaw = (key: string) => i18nT(key, undefined, locale);
-
+  res.locals.formatDate = formatDate;
 
   next();
 }

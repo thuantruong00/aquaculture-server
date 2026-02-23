@@ -4,33 +4,20 @@
     <div class="row align-items-center">
       <div class="col-md-3 text-center mb-3 mb-md-0">
         <div class="intro-logo">
-          <img
-            src="<%= intro?.logoUrl %>"
-            alt="<%= intro?.title %>"
-            style="max-width: 140px; width: 100%; height: auto;"
-          />
+          <img src="<%= intro?.logoUrl %>" alt="<%= intro?.title %>" style="max-width: 140px; width: 100%; height: auto;" />
         </div>
       </div>
       <div class="col-md-9">
         <h2 class="mb-2 intro-title"><%= intro?.title %></h2>
         <div class="gap-xs"></div>
         <p class="mb-2 intro-desc"><%= intro?.description %></p>
+        <div class="gap-xs"></div>
         <div class="intro-badges">
           <span class="intro-badge">Version: <%= intro?.version %></span>
           <span class="intro-badge">Build: <%= intro?.build %></span>
-          <span class="intro-badge">License: <%= intro?.license %></span>
         </div>
         <div class="gap-xs"></div>
-        <div class="row intro-meta">
-          <div class="col-sm-6 mb-2">
-            <div><strong>Version:</strong> <%= intro?.version %></div>
-            <div><strong>Build:</strong> <%= intro?.build %></div>
-          </div>
-          <div class="col-sm-6 mb-2">
-            <div><strong>License:</strong> <%= intro?.license %></div>
-            <div><strong>Copyright:</strong> <%= intro?.copyright %></div>
-          </div>
-        </div>
+        <p class="mb-2 intro-desc text-right" style="font-size: 13px;"><i>Powered by EdgeOn</i></p>
       </div>
     </div>
   </div>

@@ -28,3 +28,6 @@ tmp
 *.bak
 *.old
 *.orig
+data/fimwares
+data/siteMeta.sample.json
+docker-images

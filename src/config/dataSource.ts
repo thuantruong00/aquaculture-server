@@ -17,7 +17,7 @@ export const connectMongoDB = async () => {
       serverSelectionTimeoutMS: 10_000,
       socketTimeoutMS: 20_000,
       family: 4, // ép IPv4 nếu môi trường IPv6 gây trễ
-      dbName: env.DN_NAME,
+      dbName: env.DB_NAME,
     });
 
     mongoose.connection.on("connected", () =>

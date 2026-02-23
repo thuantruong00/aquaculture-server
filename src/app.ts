@@ -11,6 +11,17 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { siteMeta } from "./config/siteMeta";
 
+// import { execSync } from "child_process";
+// import packageJson from "../package.json";
+
+// const gitHash = execSync("git rev-parse --short HEAD")
+//   .toString()
+//   .trim();
+
+
+
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -19,6 +30,9 @@ const app: express.Application = express();
 
 // setting logger
 app.use(morgan("dev"));
+
+// app.locals.buildVersion = packageJson.version;
+// app.locals.gitHash = gitHash;
 
 // configure header information
 // allow request from any source
@@ -72,6 +86,8 @@ app.use((req, res, next) => {
   res.locals.meta = { ...siteMeta };
   next();
 });
+
+
 
 routes(app);
 app.get("/", function (req, res) {

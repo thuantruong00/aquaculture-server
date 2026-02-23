@@ -1,25 +1,14 @@
-﻿// import { Request, Response } from "express";
-import { DeviceControlControllerBase } from "./deviceControl.base";
-
-
+﻿import { DeviceControlControllerBase } from "./deviceControl.base";
 import { Request, Response } from "express";
-import { BaseController } from "../dashboard.base-controller";
 import { Device } from "~/entities/device.entity";
-import { DeviceStatus, ExecutionSource, ExecutionStatus } from "~/utils/enum";
+import { DeviceGroupStatus, DeviceStatus } from "~/utils/enum";
 import { DeviceGroup, IDeviceGroup } from "~/entities/device-group.entity";
-import {
-  IApiDeviceControlBodyDTO,
-  IApiDeviceControlParamsDTO,
-  IDeviceControlQueryDTO,
-} from "./deviceControl.dto";
+import { IDeviceControlQueryDTO } from "./deviceControl.dto";
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { ExecutionLog } from "~/entities/execution-log.entity";
 import { DeviceFieldConfig } from "~/entities/device-field-config.entity";
-import { handlePushLogs, handleWriteCommandSet } from "~/services";
 import { logger } from "~/utils/logger";
-import { DeviceMessageService } from "~/services/deviceMessage";
-import { signDecrypt, signEncrypt } from "~/utils/sign";
-import { env } from "~/utils";
+
 DeviceGroup;
 
 export class DeviceControlController extends DeviceControlControllerBase {
@@ -33,7 +22,7 @@ export class DeviceControlController extends DeviceControlControllerBase {
 
       const getGroup = await DeviceGroup.find({
         ...(deviceIds || groupIds ? { _id: { $in: groupIds ?? [] } } : {}),
-        status: { $ne: DeviceStatus.DELETED },
+        status: { $eq: DeviceGroupStatus.ACTIVE },
       }).sort({ order: 1 });
       const newGroupMap = getGroup.map((item) => item._id);
 
@@ -64,7 +53,7 @@ export class DeviceControlController extends DeviceControlControllerBase {
           },
         },
         {
-          $sort: { timestamp: -1 }, // Má»›i nháº¥t trÆ°á»›c
+          $sort: { timestamp: -1 },
         },
         {
           $group: {
@@ -125,10 +114,6 @@ export class DeviceControlController extends DeviceControlControllerBase {
           latestRecord: getRecord ? getRecord.latestRecord : undefined,
         };
       });
-      const withoutGroupDevice = getFromDeviceIds.map((item) => ({
-        ...item.toObject?.(),
-        fieldConfig: fieldConfigMap.get(String(item._id)),
-      }));
       const deviceByGroup = [];
       for (const group of getGroup) {
         const devices = deviceValues.filter((item) => {
@@ -144,7 +129,7 @@ export class DeviceControlController extends DeviceControlControllerBase {
         });
       }
       return this.renderWithSidebar(res, undefined, {
-        withoutGroupDevice: withoutGroupDevice,
+        withoutGroupDevice: [],
         deviceByGroup: deviceByGroup,
       });
     } catch (error) {
@@ -153,10 +138,3 @@ export class DeviceControlController extends DeviceControlControllerBase {
     }
   }
 }
-
-
-
-
-
-
-

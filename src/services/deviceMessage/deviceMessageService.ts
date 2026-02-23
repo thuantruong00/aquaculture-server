@@ -33,7 +33,7 @@ export class DeviceMessageService {
   handleTetelemetry = async (
     zoneId: string,
     deviceId: string,
-    value: string
+    value: string,
   ) => {
     const findDevice = await Device.findOne({ _id: deviceId })
       .populate("zone")
@@ -72,7 +72,7 @@ export class DeviceMessageService {
     zoneId: string,
     deviceId: string,
     commandId: string,
-    value: string
+    value: string,
   ) => {
     const findDevice = await Device.findOne({ _id: deviceId })
       .populate("zone")
@@ -103,7 +103,7 @@ export class DeviceMessageService {
   };
   processSensorValue = async (
     deviceId: string,
-    data: SensorDataConditionProcesss[]
+    data: SensorDataConditionProcesss[],
   ) => {
     if (data.length > 0) {
       for (const item of data) {
@@ -128,27 +128,27 @@ export class DeviceMessageService {
           })
           .lean();
         const expected = findScene?.conditions.find(
-          (cond) => cond.key == item.key
+          (cond) => cond.key == item.key,
         );
         if (expected?.operator) {
           const check = await this.conditionService.evaluateCondition(
             item.value,
             expected?.operator,
             expected?.value,
-            DeviceFieldType.FLOAT
+            DeviceFieldType.FLOAT,
           );
           if (check) {
             await this.handleAction(findScene?.actions);
             if (findScene?.notifications) {
               const telegramIds =
                 findScene?.notifications.channels.telegram.map((item) =>
-                  String(item._id)
+                  String(item._id),
                 );
               const findTelegramAccount = await TelegramAccount.find({
                 _id: { $in: telegramIds },
               });
               const telegramAccountIds = findTelegramAccount.map(
-                (item) => item.telegramId
+                (item) => item.telegramId,
               );
               let message = findScene?.notifications?.message
                 ? findScene?.notifications?.message
@@ -158,7 +158,7 @@ export class DeviceMessageService {
 
               await telegramService.sendManyUserSequential(
                 telegramAccountIds,
-                message
+                message,
               );
             }
             return;
@@ -184,15 +184,11 @@ export class DeviceMessageService {
               String(step.deviceId),
               step.key,
               Number(step.value),
-              { commandId: "xxxId" }
+              { commandId: "xxxId" },
             );
           }
           if (step.deviceType == DeviceType.SENSOR) {
-            await handleWriteCommandGet(
-              String(step.deviceId),
-              step.key,
-              Number(step.value)
-            );
+            await handleWriteCommandGet(String(step.deviceId));
           }
         }
       }

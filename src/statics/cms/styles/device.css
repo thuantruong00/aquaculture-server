@@ -91,18 +91,54 @@
     border: 1px solid #c0acac;
 }
 
-.wrap-ledbar-control{
+.wrap-ledbar-control {
     width: 60%;
 }
 
-.ledbox-wrapper .color-label{
+.ledbox-wrapper .color-label {
     height: 12px;
     width: 12px;
     border-radius: 50%;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0, 0, 0, 0.2);
     display: block;
     position: absolute;
     left: -24px;
     bottom: 10px;
-    border: 1px solid rgba(0,0,0,0.7);
+    border: 1px solid rgba(0, 0, 0, 0.7);
+}
+
+
+.overview-device-item .color-label {
+    left: 0;
+    top: 7px;
+}
+
+.overview-device-item .value-style {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    color: #0f172a;
+}
+
+.device-refresh-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.device-refresh-button button {
+    transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+}
+
+.device-refresh-button button img {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 4px;
+    border: none;
+    background-color: #f0f0f0;
 }

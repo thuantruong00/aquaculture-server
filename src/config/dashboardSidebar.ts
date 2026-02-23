@@ -1,188 +1,215 @@
-export const sidebarData = [
-  {
-    page_id: "deviceControl",
-    title: "Bảng điều khiển",
-    href: "/dashboard/device-control",
-    page_name: "page/dashboard/device-control",
-    child: [
-      {
-        page_id: "deviceControl",
-        title: "Bảng điều khiển",
-        href: "/dashboard/device-control",
-        page_name: "page/dashboard/device-control",
-        child: [],
-      },
-      {
-        page_id: "deviceControlManagement",
-        title: "Quản lý bảng điều khiển",
-        href: "/dashboard/device-control/management",
-        page_name: "page/dashboard/device-control-management",
-        child: [],
-      },
-    ],
-  },
-  {
-    page_id: "history",
-    title: "Lịch sử",
-    href: "/dashboard/history",
-    page_name: "page/dashboard/history",
-    child: [
-      {
-        page_id: "history",
-        title: "Lịch sử",
-        href: "/dashboard/history",
-        page_name: "page/dashboard/history",
-        child: [],
-      },
-      {
-        page_id: "chart",
-        title: "Biểu đồ",
-        href: "/dashboard/chart",
-        page_name: "page/dashboard/history-chart",
-        child: [],
-      },
-    ],
-  },
-  {
-    page_id: "automatic",
-    title: "Kịch bản tự động",
-    href: "/dashboard/automatic",
-    page_name: "page/dashboard/automatic-scene",
-    child: [
-      {
-        page_id: "automatic",
-        title: "Danh sách kịch bản tự động",
-        href: "/dashboard/automatic/",
-        page_name: "page/dashboard/automatic-scene",
-        child: [],
-      },
-      {
-        page_id: "automaticSceneCreate",
-        title: "Tạo kịch bản",
-        href: "/dashboard/automatic/scene-create",
-        page_name: "page/dashboard/automatic-scene-create",
-        child: [],
-      },
-      {
-        page_id: "automaticTimer",
-        title: "Hẹn giờ",
-        href: "/dashboard/automatic/timer",
-        page_name: "page/dashboard/timer",
-        child: [],
-      },
-      {
-        page_id: "automaticAction",
-        title: "Danh sách hành động",
-        href: "/dashboard/automatic/actions",
-        page_name: "page/dashboard/automatic-actions",
-        child: [],
-      },
-    ],
-  },
-  {
-    page_id: "customUi",
-    title: "Chỉnh sửa giao diện",
-    href: "/dashboard/custom-ui",
-    page_name: "page/dashboard/custom-ui",
-    child: [
-      {
-        page_id: "customUi",
-        title: "Chỉnh sửa giao diện",
-        href: "/dashboard/custom-ui",
-        page_name: "page/dashboard/custom-ui",
-        child: [],
-      },
-      {
-        page_id: "deviceGroup",
-        title: "Tạo nhóm thiết bị",
-        href: "/dashboard/custom-ui/device-group",
-        page_name: "page/dashboard/device-group",
-        child: [],
-      },
-    ],
-  },
-  {
-    page_id: "deviceSetting",
-    title: "Chỉnh sửa thiết bị",
-    href: "/dashboard/device-setting",
-    page_name: "page/dashboard/device-setting",
-    child: [
-      {
-        page_id: "deviceSetting",
-        title: "Chỉnh sửa thiết bị",
-        href: "/dashboard/device-setting",
-        page_name: "page/dashboard/device-setting",
-        child: [],
-      },
-      {
-        page_id: "deviceSettingAdd",
-        title: "Thêm mới",
-        href: "/dashboard/device-setting/add",
-        page_name: "page/dashboard/add-device",
-        child: [],
-      },
-    ],
-  },
-  {
-    page_id: "notificationGroup",
-    title: "Cài đặt thông báo",
-    href: "/dashboard/notification-setting/group",
-    page_name: "page/dashboard/notification-group",
-    child: [
-      {
-        page_id: "notificationGroup",
-        title: "Danh sách nhóm",
-        href: "/dashboard/notification-setting/group",
-        page_name: "page/dashboard/notification-group",
-        child: [],
-      },
-      {
-        page_id: "notificationSetting",
-        title: "Danh sách tài khoản",
-        href: "/dashboard/notification-setting",
-        page_name: "page/dashboard/notification-setting",
-        child: [],
-      },
-      {
-        page_id: "notificationSettingActivateTelegram",
-        title: "Kích hoạt tài khoản Telegram",
-        href: "/dashboard/notification-setting/inactive-telegram",
-        page_name: "page/dashboard/notification-activate-telegram",
-        child: [],
-      },
-    ],
-  },
+import fs from "fs";
+import path from "path";
 
-  {
-    page_id: "account",
-    title: "Tài khoản",
-    href: "/dashboard/account",
-    page_name: "page/dashboard/account",
-    child: [
-      {
-        page_id: "account",
-        title: "Danh sách tài khoản",
-        href: "/dashboard/account",
-        page_name: "page/dashboard/account",
-        child: [],
-      },
-      {
-        page_id: "accountAdd",
-        title: "Thêm mới tài khoản",
-        href: "/dashboard/account/create",
-        page_name: "page/dashboard/account-add",
-        child: [],
-      },
-    ],
-  },
-  {
-    page_id: "introduction",
-    title: "Giới thiệu",
-    href: "/dashboard/introduction",
-    page_name: "page/dashboard/introduction",
-    child: [],
-  },
-];
+const sidebarDataPath = path.resolve(
+  process.cwd(),
+  "data",
+  "dashboardSidebar.json"
+);
+
+function readSidebarFromDataFile(): unknown {
+  try {
+    if (!fs.existsSync(sidebarDataPath)) return null;
+    const raw = fs.readFileSync(sidebarDataPath, "utf-8");
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+const sidebarDataJson = readSidebarFromDataFile();
+let sidebarData = [];
+if (sidebarDataJson && Array.isArray(sidebarDataJson)) {
+  sidebarData = sidebarDataJson;
+} else {
+  sidebarData = [
+    {
+      page_id: "deviceControl",
+      title: "Bảng điều khiển",
+      href: "/dashboard/device-control",
+      page_name: "page/dashboard/device-control",
+      child: [
+        {
+          page_id: "deviceControl",
+          title: "Bảng điều khiển",
+          href: "/dashboard/device-control",
+          page_name: "page/dashboard/device-control",
+          child: [],
+        },
+        {
+          page_id: "deviceControlManagement",
+          title: "Quản lý bảng điều khiển",
+          href: "/dashboard/device-control/management",
+          page_name: "page/dashboard/device-control-management",
+          child: [],
+        },
+      ],
+    },
+    {
+      page_id: "history",
+      title: "Lịch sử",
+      href: "/dashboard/history",
+      page_name: "page/dashboard/history",
+      child: [
+        {
+          page_id: "history",
+          title: "Lịch sử",
+          href: "/dashboard/history",
+          page_name: "page/dashboard/history",
+          child: [],
+        },
+        {
+          page_id: "chart",
+          title: "Biểu đồ",
+          href: "/dashboard/chart",
+          page_name: "page/dashboard/history-chart",
+          child: [],
+        },
+      ],
+    },
+    {
+      page_id: "automatic",
+      title: "Kịch bản tự động",
+      href: "/dashboard/automatic",
+      page_name: "page/dashboard/automatic-scene",
+      child: [
+        {
+          page_id: "automatic",
+          title: "Danh sách kịch bản tự động",
+          href: "/dashboard/automatic/",
+          page_name: "page/dashboard/automatic-scene",
+          child: [],
+        },
+        {
+          page_id: "automaticSceneCreate",
+          title: "Tạo kịch bản",
+          href: "/dashboard/automatic/scene-create",
+          page_name: "page/dashboard/automatic-scene-create",
+          child: [],
+        },
+        {
+          page_id: "automaticTimer",
+          title: "Hẹn giờ",
+          href: "/dashboard/automatic/timer",
+          page_name: "page/dashboard/timer",
+          child: [],
+        },
+        {
+          page_id: "automaticAction",
+          title: "Danh sách hành động",
+          href: "/dashboard/automatic/actions",
+          page_name: "page/dashboard/automatic-actions",
+          child: [],
+        },
+      ],
+    },
+    {
+      page_id: "customUi",
+      title: "Chỉnh sửa giao diện",
+      href: "/dashboard/custom-ui",
+      page_name: "page/dashboard/custom-ui",
+      child: [
+        {
+          page_id: "customUi",
+          title: "Chỉnh sửa giao diện",
+          href: "/dashboard/custom-ui",
+          page_name: "page/dashboard/custom-ui",
+          child: [],
+        },
+        {
+          page_id: "deviceGroup",
+          title: "Tạo nhóm thiết bị",
+          href: "/dashboard/custom-ui/device-group",
+          page_name: "page/dashboard/device-group",
+          child: [],
+        },
+      ],
+    },
+    {
+      page_id: "deviceSetting",
+      title: "Chỉnh sửa thiết bị",
+      href: "/dashboard/device-setting",
+      page_name: "page/dashboard/device-setting",
+      child: [
+        {
+          page_id: "deviceSetting",
+          title: "Chỉnh sửa thiết bị",
+          href: "/dashboard/device-setting",
+          page_name: "page/dashboard/device-setting",
+          child: [],
+        },
+        {
+          page_id: "deviceSettingAdd",
+          title: "Thêm mới",
+          href: "/dashboard/device-setting/add",
+          page_name: "page/dashboard/add-device",
+          child: [],
+        },
+      ],
+    },
+    {
+      page_id: "notificationGroup",
+      title: "Cài đặt thông báo",
+      href: "/dashboard/notification-setting/group",
+      page_name: "page/dashboard/notification-group",
+      child: [
+        {
+          page_id: "notificationGroup",
+          title: "Danh sách nhóm",
+          href: "/dashboard/notification-setting/group",
+          page_name: "page/dashboard/notification-group",
+          child: [],
+        },
+        {
+          page_id: "notificationSetting",
+          title: "Danh sách tài khoản",
+          href: "/dashboard/notification-setting",
+          page_name: "page/dashboard/notification-setting",
+          child: [],
+        },
+        {
+          page_id: "notificationSettingActivateTelegram",
+          title: "Kích hoạt tài khoản Telegram",
+          href: "/dashboard/notification-setting/inactive-telegram",
+          page_name: "page/dashboard/notification-activate-telegram",
+          child: [],
+        },
+      ],
+    },
+
+    {
+      page_id: "account",
+      title: "Tài khoản",
+      href: "/dashboard/account",
+      page_name: "page/dashboard/account",
+      child: [
+        {
+          page_id: "account",
+          title: "Danh sách tài khoản",
+          href: "/dashboard/account",
+          page_name: "page/dashboard/account",
+          child: [],
+        },
+        {
+          page_id: "accountAdd",
+          title: "Thêm mới tài khoản",
+          href: "/dashboard/account/create",
+          page_name: "page/dashboard/account-add",
+          child: [],
+        },
+      ],
+    },
+    {
+      page_id: "introduction",
+      title: "Tổng quan",
+      href: "/dashboard/introduction",
+      page_name: "page/dashboard/introduction",
+      child: [],
+    },
+  ];
+}
+
+export { sidebarData };
 
 export const mobileMenuData = [
   {

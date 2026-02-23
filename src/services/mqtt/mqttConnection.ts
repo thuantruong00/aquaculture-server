@@ -136,8 +136,6 @@ export const handleWriteCommandSet = async (
 };
 export const handleWriteCommandGet = async (
   deviceId: string,
-  key: string,
-  value: string | number | boolean,
   opts?: { commandId?: string },
 ) => {
   const topic =
@@ -145,8 +143,7 @@ export const handleWriteCommandGet = async (
     "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
     deviceId +
     "/command/get";
-  const data = key + ":" + value;
-  mqttClient.publish(topic, data);
+  mqttClient.publish(topic, "");
   return;
 };
 

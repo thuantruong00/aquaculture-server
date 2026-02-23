@@ -36,3 +36,6 @@ cms-project
 ├── package.json            // node module dependencies
 ├── README.md               // simple readme file
 └── *
+
+docker save -o docker-images/iot-platform-1.0.3 iot-platform:1.0.3
+docker load -i docker-images/iot-platform-1.0.3.tar
