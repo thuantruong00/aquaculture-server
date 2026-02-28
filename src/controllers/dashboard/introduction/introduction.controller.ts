@@ -3,6 +3,8 @@ import "express-session";
 import { logger } from "~/utils/logger";
 import { siteMeta } from "~/config/siteMeta";
 import { IntroductionControllerBase } from "./introduction.base.controller";
+import fs from "fs";
+import path from "path";
 import {
   Device,
   DeviceFieldConfig,
@@ -19,13 +21,15 @@ export class IntroductionController extends IntroductionControllerBase {
   }
   async handleIntroductionPage(req: Request, res: Response) {
     try {
+      const packageJson = JSON.parse(
+        fs.readFileSync(path.join(process.cwd(), "package.json"), "utf8"),
+      );
       const intro = {
         title: siteMeta.title,
         description: siteMeta.description,
-        version: siteMeta.version || "v1.0.0",
-        build: siteMeta.build || "2026.01.01-00",
-        license: "Proprietary",
+        version: packageJson.version || "1.0.0",
         logoUrl: siteMeta.image,
+        name: packageJson.name,
         copyright:
           siteMeta.copyright ||
           `© ${new Date().getFullYear()} ${siteMeta.siteName}`,

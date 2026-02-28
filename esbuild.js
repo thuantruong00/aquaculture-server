@@ -1,6 +1,10 @@
-const esbuild = require("esbuild");
-const fs = require("fs");
-const path = require("path");
+import esbuild from "esbuild";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // define paths for statics directory and its contents
 const staticsSrcPath = path.join(__dirname, "src/statics");
@@ -10,16 +14,25 @@ const staticsDestPath = path.join(__dirname, "dist/statics");
 const viewsSrcPath = path.join(__dirname, "src/views");
 const viewsDestPath = path.join(__dirname, "dist/views");
 
+
 esbuild
   .build({
     entryPoints: ["./src/index.ts"],
     bundle: true,
     platform: "node",
+    format: "esm",
     target: "esnext",
     outfile: "./dist/index.js",
+    packages: "external",
     external: ["express", "ejs"],
     minify: false,
     sourcemap: true,
+    banner: {
+      js: [
+        'import { createRequire } from "module";',
+        'const require = createRequire(import.meta.url);',
+      ].join(" "),
+    },
   })
   .then(() => {
     // check if the statics directory exists
@@ -38,6 +51,13 @@ esbuild
     } else {
       console.log("no view files to copy.");
     }
+
+    const distDataPath = path.join(__dirname, "dist/data");
+    if (fs.existsSync(distDataPath)) {
+      fs.rmSync(distDataPath, { recursive: true, force: true });
+      console.log("removed dist/data.");
+    }
+
   })
   .catch((error) => {
     console.error("build failed:", error);

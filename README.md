@@ -39,3 +39,22 @@ cms-project
 
 docker save -o docker-images/iot-platform-1.0.3 iot-platform:1.0.3
 docker load -i docker-images/iot-platform-1.0.3.tar
+
+docker build -f Dockerfile.prod -t edgeon:prod .
+
+Commands (simple)
+1. Build dist (TypeScript -> dist):
+   npm run build
+
+2. Run app from dist (local):
+   npm run start
+
+3. Build Docker dev image (runs tsx):
+   docker build -f Dockerfile -t edgeon:dev .
+
+4. Build Docker prod image (uses dist + data):
+   docker build -f Dockerfile.prod -t edgeon:prod .
+
+Notes
+- Dockerfile.prod expects prebuilt dist and copies data/ into the image.
+- Runtime reads data from /app/data in the container.

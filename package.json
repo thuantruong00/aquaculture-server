@@ -1,6 +1,6 @@
 {
-  "name": "edgeon",
-  "version": "1.0.1",
+  "name": "EdgeOn",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,6 +8,7 @@
     "build": "node esbuild.js",
     "build:prod": "npm version patch --no-git-tag-version && tsc",
     "start": "node dist/index.js",
+    "docker:prod": "docker build -f Dockerfile.prod -t edgeon:1.0.1 .",
     "dell": "nodemon --watch . --exec ts-node app.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

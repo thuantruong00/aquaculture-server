@@ -1,0 +1,27 @@
+# Use Node 20 Alpine
+FROM node:20-alpine
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+# 1. Copy package.json and package-lock.json to install deps
+COPY package*.json ./
+
+# Install prod deps only
+RUN npm install --omit=dev
+
+# 2. Copy prebuilt dist
+COPY dist ./dist
+
+# 3. Copy runtime data
+COPY data ./data
+
+# 3. Append build timestamp to version (image-only)
+RUN node -e 'const fs=require("fs");const p=JSON.parse(fs.readFileSync("package.json","utf8"));const base=p.version.split("+")[0];const ts=String(Math.floor(Date.now()/1000)).padStart(10,"0");p.version=base+"+"+ts;fs.writeFileSync("package.json", JSON.stringify(p,null,2));'
+
+# 4. Expose app port
+ENV PORT=8002
+EXPOSE 8002
+
+# 5. Run app from dist
+CMD ["node", "dist/index.js"]

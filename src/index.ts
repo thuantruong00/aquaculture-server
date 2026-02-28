@@ -2,7 +2,7 @@ import app from "./app";
 import "./entities";
 import { SocketService } from "./services";
 import { connectMongoDB } from "./config/dataSource";
-const { initialService } = await import("./services/initial/initial.service");
+import { initialService } from "./services/initial/initial.service";
 const port = process.env.PORT || 8002;
 
 //test
