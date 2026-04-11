@@ -1,0 +1,47 @@
+<div class="gap-xs"></div>
+<div class="container">
+  <div class="wrap-box p-3 intro-card">
+    <div class="row align-items-center">
+      <div class="col-md-3 text-center mb-3 mb-md-0">
+        <div class="intro-logo">
+          <img src="<%= intro?.logoUrl %>" alt="<%= intro?.title %>" style="max-width: 100px; width: 100%; height: auto;" />
+        </div>
+      </div>
+      <div class="col-md-9">
+        <h2 class="mb-2 intro-title"><%= intro?.title %></h2>
+        <div class="gap-xs"></div>
+        <p class="mb-2 intro-desc"><%= intro?.description %></p>
+        <div class="intro-badges">
+          <span class="intro-badge">Version: <%= intro?.version %></span>
+        </div>
+        <p class="mb-2 intro-desc text-right" style="font-size: 13px;"><i>Powered by <%= intro?.name %></i></p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="gap-xs"></div>
+<div class="container modal-id">
+  <div class="control-devices-list pt-2">
+    <div class="wrap-box">
+      <div class="row">
+
+
+        <% if(deviceByGroup.length > 0) { %>
+        <% for(const group of deviceByGroup) { %>
+        <%- include(`./group-full-column-body.ejs`, {group: group, setting:false}) %>
+        <% } %>
+        <% } %>
+
+        <!--  -->
+      </div>
+      <div class="row without-group-device">
+        <% if(withoutGroupDevice.length>0){ 
+        for(const item of withoutGroupDevice){ 
+          if(item.deviceModel?.template){ %>
+        <%- include(`../../partials/overview-device-templates/${item.deviceModel.template}.ejs`,{device:item, setting:false}) %>
+
+        <% } } } %>
+      </div>
+    </div>
+  </div>
+</div>

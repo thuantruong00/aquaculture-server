@@ -119,10 +119,13 @@
     letter-spacing: 0.2px;
     color: #0f172a;
 }
+.wrap-device-item {
+    position: relative;
+}
 
 .device-refresh-button {
     position: absolute;
-    top: 10px;
+    top: 8px;
     right: 10px;
 }
 
@@ -135,10 +138,14 @@
 }
 
 .device-refresh-button button img {
-    width: 30px;
-    height: 30px;
+    width: 16px;
+    height: 16px;
     padding: 0;
     border-radius: 4px;
     border: none;
     background-color: #f0f0f0;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
 }

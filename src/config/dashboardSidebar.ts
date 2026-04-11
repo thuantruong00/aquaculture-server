@@ -4,7 +4,7 @@ import path from "path";
 const sidebarDataPath = path.resolve(
   process.cwd(),
   "data",
-  "dashboardSidebar.json"
+  "dashboardSidebar.json",
 );
 
 function readSidebarFromDataFile(): unknown {
@@ -176,7 +176,13 @@ if (sidebarDataJson && Array.isArray(sidebarDataJson)) {
         },
       ],
     },
-
+    {
+      page_id: "firmwareVersion",
+      title: "Phiên bản thiết bị",
+      href: "/dashboard/firmware-version",
+      page_name: "page/dashboard/firmware-version",
+      child: [],
+    },
     {
       page_id: "account",
       title: "Tài khoản",

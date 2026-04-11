@@ -23,10 +23,12 @@ export const VI = {
     share_phone: "Chia sẻ số điện thoại",
   },
   sensors: {
-    temperature: "nhiệt độ",
-    TemperatureWater: "nhiệt độ nước",
-    do: "oxy hòa tan",
-    DO: "oxy hòa tan",
+    temperature: "Nhiệt độ",
+    TemperatureWater: "Nhiệt độ nước",
+    Temperature: "Nhiệt độ",
+    Humidity: "Độ ẩm",
+    do: "Oxy hòa tan",
+    DO: "Oxy hòa tan",
   },
   logicOperator: {
     and: "Và",

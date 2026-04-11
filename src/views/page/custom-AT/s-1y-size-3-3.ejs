@@ -1,8 +1,6 @@
-<div class="col-6 my-2 x-item-<%= device._id %>">
+<div class="col-3 my-2 x-item-<%= device._id %>">
   <div class="device-item">
     <div class="wrap-device-item">
-      <%- include('../cms/reload-device-button.ejs',{deviceId:device._id}) %>
-      <%- include('../cms/setting.ejs',{id:device._id,type:"device", setting:setting}) %>
       <a href="#" class="wrap-name">
         <h6 class="name link-icon"><%= device.name %></h6>
       </a>
@@ -10,18 +8,20 @@
       <%
       if(device.deviceModel.fields.length>0){
         for(const item of device.deviceModel.fields){ %>
-      <div class="device-key-label"><%= t("sensors."+item.key)%> :</div>
-      <div class="sensor-value x-key-<%= item.key %>"><span class="value">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="overview-device-key-label"><%= t("sensors."+item.key)%> :</div>
+        <div class="sensor-value x-key-<%= item.key %>"><span class="value">
 
 
-          <%= device?.latestRecord 
+            <%= device?.latestRecord 
         ? (device.latestRecord.values.find(value => value.key == item.key)?.value ?? "-") 
         : "-" 
           %>
 
 
 
-        </span><span class="unit"><%=item.unit %></span></div>
+          </span><span class="unit"><%=item.unit %></span></div>
+      </div>
       <%
         }
       }

@@ -18,6 +18,9 @@
           <li class="nav-item" role="presentation">
             <a class="nav-link" id="device-bottom-extra-tab" data-toggle="tab" href="#device-bottom-extra" role="tab" aria-controls="device-bottom-extra" aria-selected="false">Thuộc tính</a>
           </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link" id="device-version-tab" data-toggle="tab" href="#device-version" role="tab" aria-controls="device-version" aria-selected="false">Phiên bản</a>
+          </li>
         </ul>
         <div class="tab-content pt-3" id="deviceDetailBottomTabsContent">
           <div class="tab-pane fade show active" id="device-bottom-info" role="tabpanel" aria-labelledby="device-bottom-info-tab">
@@ -99,66 +102,73 @@
                   <button type="submit" class="px-5 py-1"><strong>Lưu</strong></button>
                 </div>
                 <div class="wrap-box">
-                <ul>
-                  <li class="d-flex w-100 justify-content-start align-items-center header-row">
-                    <span class="text-center">STT</span>
-                    <span class="text-center">Field</span>
-                    <span class="text-center">Thuộc tính</span>
-                  </li>
-                  <% const modelFields = (device.deviceModel && device.deviceModel.fields) ? device.deviceModel.fields : []; %>
+                  <ul>
+                    <li class="d-flex w-100 justify-content-start align-items-center header-row">
+                      <span class="text-center">STT</span>
+                      <span class="text-center">Field</span>
+                      <span class="text-center">Thuộc tính</span>
+                    </li>
+                    <% const modelFields = (device.deviceModel && device.deviceModel.fields) ? device.deviceModel.fields : []; %>
 
-                  <% for (let index = 0; index < fieldConfig.fields.length; index++) { %>
-                  <% const field = fieldConfig.fields[index]; %>
-                  <% const attrsEntries = (field.attrs instanceof Map) ? Array.from(field.attrs.entries()) : Object.entries(field.attrs || {}); %>
-                  <% const modelField = modelFields.find((mf) => mf.key === field.key) || {}; %>
-                  <% const modelConfig = modelField.config || {}; %>
-                  <li class="d-flex w-100 justify-content-start align-items-center">
-                    <span><%= index + 1 %></span>
-                    <span>
-                      <input type="hidden" name="fieldKey_<%= index %>" value="<%= field.key %>">
-                      <%= field.key %>
-                    </span>
-                    <span>
-                      <% if (attrsEntries.length === 0) { %>
-                      <em>Trá»‘ng</em>
-                      <% } else { %>
-                      <% for (const [k, v] of attrsEntries) { %>
-                      <div class="mb-3">
-                        <div class="text-left mb-2">
-                          <strong><%= k %>:</strong>
-                        </div>
-                        <% const cfgVal = modelConfig[k]; %>
-                        <% if (Array.isArray(cfgVal)) { %>
-                        <% if (k === "color") { %>
-                        <div class="d-flex align-items-center">
-                          <% for (const opt of cfgVal) { %>
-                          <label class="d-flex align-items-center mr-5" style="cursor:pointer;">
-                            <input type="radio" name="attr_<%= index %>_<%= k %>" value="<%= opt %>" <%= String(opt) === String(v) ? "checked" : "" %>>
-                            <span style="margin-left:4px;display:inline-block;width:18px;height:18px;border-radius:50%;border:1px solid #ccc;background-color:<%= opt %>;"></span>
-                          </label>
+                    <% for (let index = 0; index < fieldConfig.fields.length; index++) { %>
+                    <% const field = fieldConfig.fields[index]; %>
+                    <% const attrsEntries = (field.attrs instanceof Map) ? Array.from(field.attrs.entries()) : Object.entries(field.attrs || {}); %>
+                    <% const modelField = modelFields.find((mf) => mf.key === field.key) || {}; %>
+                    <% const modelConfig = modelField.config || {}; %>
+                    <li class="d-flex w-100 justify-content-start align-items-center">
+                      <span><%= index + 1 %></span>
+                      <span>
+                        <input type="hidden" name="fieldKey_<%= index %>" value="<%= field.key %>">
+                        <%= field.key %>
+                      </span>
+                      <span>
+                        <% if (attrsEntries.length === 0) { %>
+                        <em>Trá»‘ng</em>
+                        <% } else { %>
+                        <% for (const [k, v] of attrsEntries) { %>
+                        <div class="mb-3">
+                          <div class="text-left mb-2">
+                            <strong><%= k %>:</strong>
+                          </div>
+                          <% const cfgVal = modelConfig[k]; %>
+                          <% if (Array.isArray(cfgVal)) { %>
+                          <% if (k === "color") { %>
+                          <div class="d-flex align-items-center">
+                            <% for (const opt of cfgVal) { %>
+                            <label class="d-flex align-items-center mr-5" style="cursor:pointer;">
+                              <input type="radio" name="attr_<%= index %>_<%= k %>" value="<%= opt %>" <%= String(opt) === String(v) ? "checked" : "" %>>
+                              <span style="margin-left:4px;display:inline-block;width:18px;height:18px;border-radius:50%;border:1px solid #ccc;background-color:<%= opt %>;"></span>
+                            </label>
+                            <% } %>
+                          </div>
+                          <% } else { %>
+                          <select class="w-50" name="attr_<%= index %>_<%= k %>">
+                            <% for (const opt of cfgVal) { %>
+                            <option value="<%= opt %>" <%= String(opt) === String(v) ? "selected" : "" %>><%= opt %></option>
+                            <% } %>
+                          </select>
+                          <% } %>
+                          <% } else { %>
+                          <input type="text" class="w-100" name="attr_<%= index %>_<%= k %>" value="<%= v %>">
                           <% } %>
                         </div>
-                        <% } else { %>
-                        <select class="w-50" name="attr_<%= index %>_<%= k %>">
-                          <% for (const opt of cfgVal) { %>
-                          <option value="<%= opt %>" <%= String(opt) === String(v) ? "selected" : "" %>><%= opt %></option>
-                          <% } %>
-                        </select>
                         <% } %>
-                        <% } else { %>
-                        <input type="text" class="w-100" name="attr_<%= index %>_<%= k %>" value="<%= v %>">
                         <% } %>
-                      </div>
-                      <% } %>
-                      <% } %>
-                    </span>
-                  </li>
-                  <% } %>
-                </ul>
+                      </span>
+                    </li>
+                    <% } %>
+                  </ul>
                 </div>
               </form>
             </div>
             <% } %>
+          </div>
+          <div class="tab-pane fade" id="device-version" role="tabpanel" aria-labelledby="device-version-tab">
+            <div class="base-list device-field-list">
+              <div class="wrap-box">
+                Phiên bản
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -166,10 +176,3 @@
   </div>
 </div>
 <div class="gap-lg"></div>
-
-
-
-
-
-
-

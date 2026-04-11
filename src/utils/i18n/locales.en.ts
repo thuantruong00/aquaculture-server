@@ -24,6 +24,9 @@ export const EN = {
   },
   sensors: {
     temperature: "temperature",
+    TemperatureWater: "Temperature Water",
+    Temperature: "Temperature",
+    Humidity: "Humidity",
     do: "DO",
   },
   logicOperator: {

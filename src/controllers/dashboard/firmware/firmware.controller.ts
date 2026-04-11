@@ -7,8 +7,17 @@ const __dirname = path.dirname(__filename);
 
 import { BaseController } from "../dashboard.base-controller";
 import { logger } from "~/utils/logger";
+import tr from "zod/v4/locales/tr.cjs";
 
 export class FirmwareController extends BaseController {
+  handleManageFirmwarePage = async (req: Request, res: Response) => {
+    try {
+      return this.renderWithSidebar(res, undefined, {});
+    } catch (error) {
+      logger.error("Err handleManageFirmwarePage", error);
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
   handleServeFirmware = async (req: Request, res: Response) => {
     try {
       const { filename } = req.params as { filename: string };
@@ -23,13 +32,13 @@ export class FirmwareController extends BaseController {
       const filePath = path.resolve(
         __dirname,
         "../../../../data/firmwares",
-        filename
+        filename,
       );
 
       // 3. Đảm bảo filePath vẫn nằm trong thư mục firmwares (ngăn path traversal)
       const firmwaresDir = path.resolve(
         __dirname,
-        "../../../../data/firmwares"
+        "../../../../data/firmwares",
       );
       if (!filePath.startsWith(firmwaresDir)) {
         return res.status(400).json({ error: "Access denied" });

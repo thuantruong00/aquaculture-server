@@ -406,6 +406,11 @@ dashboardRouter.get("/auth/sign-out", authController.handleSignOutPage);
 // dashboardRouter.post("/auth/login", accountController.handleAccountAddPage);
 
 // ─── OTA ───────────────────────────────────────────────────────
+dashboardRouter.get(
+  "/firmware-version",
+  middleware.webPageMiddleware("firmwareVersion", { allowedRole: IsUserGroup }),
+  firmwareController.handleManageFirmwarePage,
+);
 
 dashboardRouter.get(
   "/firmware/files/:filename",
