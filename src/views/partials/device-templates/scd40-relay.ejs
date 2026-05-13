@@ -17,7 +17,7 @@
       const relayValue = relayField
         ? latestValues.find(value => value.key == relayField.key)?.value
         : null;
-      const isRelayOn = Boolean(relayValue);
+      const isRelayOn = relayValue === true || relayValue === 1 || relayValue === "1" || relayValue === "true";
       %>
 
       <div class="box">
