@@ -6,6 +6,7 @@ import {
   ICreateDeviceModelDTO,
   ICreateDeviceFieldConfigDTO,
   IDeviceConnectDTO,
+  IGetDeviceConnectionLogsQueryDTO,
   IGetListDeviceQueryDTO,
   IUpdateDeviceDTO,
   IUpdateDeviceFieldConfigDTO,
@@ -28,6 +29,7 @@ import {
   DeviceFieldConfig,
   IDeviceFieldItem,
 } from "~/entities/device-field-config.entity";
+import { DeviceConnectionLog } from "~/entities/device-connection-log.entity";
 import { Types } from "mongoose";
 import { ObjectId } from "typeorm";
 import { Zone } from "~/entities/zone.entity";
@@ -180,6 +182,27 @@ export class DeviceSettingController extends BaseController {
       return this.renderWithSidebar(res, "page/error");
     } catch (error) {
       logger.error("Err handleCreatePairingOtpPage", error);
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
+
+  handleDeviceConnectionLogsPage = async (req: Request, res: Response) => {
+    try {
+      const { offset, limit } =
+        req.query as unknown as IGetDeviceConnectionLogsQueryDTO;
+
+      const logs = await DeviceConnectionLog.find({})
+        .sort({ receivedAt: -1, createdAt: -1 })
+        .skip(offset)
+        .limit(limit);
+
+      return this.renderWithSidebar(res, undefined, {
+        logs,
+        offset,
+        limit,
+      });
+    } catch (error) {
+      logger.error("Err handleDeviceConnectionLogsPage", error);
       return this.renderWithSidebar(res, "page/error");
     }
   };

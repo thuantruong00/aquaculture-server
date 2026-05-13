@@ -29,6 +29,8 @@ export const VI = {
     Humidity: "Độ ẩm",
     do: "Oxy hòa tan",
     DO: "Oxy hòa tan",
+    Switch: "Công tắc",
+    CO2: "CO2",
   },
   logicOperator: {
     and: "Và",

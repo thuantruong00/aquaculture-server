@@ -2,6 +2,7 @@
 // all mongoose models are registered before any populate/usage.
 
 export { Device } from "./device.entity";
+export { DeviceConnectionLog } from "./device-connection-log.entity";
 export { DeviceGroup } from "./device-group.entity";
 export { DeviceModel } from "./device-model.entity";
 export { DeviceRecord } from "./device-record.entity";

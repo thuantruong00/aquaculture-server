@@ -145,6 +145,13 @@ if (sidebarDataJson && Array.isArray(sidebarDataJson)) {
           page_name: "page/dashboard/add-device",
           child: [],
         },
+        {
+          page_id: "deviceSettingConnectionLogs",
+          title: "Lịch sử kết nối",
+          href: "/dashboard/device-setting/connection-logs",
+          page_name: "page/dashboard/device-setting-connection-logs",
+          child: [],
+        },
       ],
     },
     {
@@ -181,7 +188,22 @@ if (sidebarDataJson && Array.isArray(sidebarDataJson)) {
       title: "Phiên bản thiết bị",
       href: "/dashboard/firmware-version",
       page_name: "page/dashboard/firmware-version",
-      child: [],
+      child: [
+        {
+          page_id: "firmwareVersion",
+          title: "Phiên bản thiết bị",
+          href: "/dashboard/firmware-version",
+          page_name: "page/dashboard/firmware-version",
+          child: [],
+        },
+        {
+          page_id: "firmwareOTA",
+          title: "Cập nhật firmware",
+          href: "/dashboard/firmware-version/ota",
+          page_name: "page/dashboard/firmware-OTA",
+          child: [],
+        },
+      ],
     },
     {
       page_id: "account",

@@ -37,10 +37,10 @@ cms-project
 ├── README.md               // simple readme file
 └── *
 
-docker save -o docker-images/iot-platform-1.0.3 iot-platform:1.0.3
-docker load -i docker-images/iot-platform-1.0.3.tar
+docker save -o docker-images/edgeon-1.0.3 edgeon:1.0.3
+docker load -i docker-images/edgeon-1.0.3.tar
 
-docker build -f Dockerfile.prod -t edgeon:prod .
+docker build -f Dockerfile.prod -t edgeon:1.0.18 .
 
 Commands (simple)
 1. Build dist (TypeScript -> dist):
@@ -53,8 +53,9 @@ Commands (simple)
    docker build -f Dockerfile -t edgeon:dev .
 
 4. Build Docker prod image (uses dist + data):
-   docker build -f Dockerfile.prod -t edgeon:prod .
+   docker build -f Dockerfile.prod -t edgeon:1.0.1 .
 
 Notes
 - Dockerfile.prod expects prebuilt dist and copies data/ into the image.
 - Runtime reads data from /app/data in the container.
+

@@ -1,1 +1,59 @@
-phiên bản
+<div class="main">
+  <div class="container modal-id ">
+    <div class="gap-sm"></div>
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="wrap-title">
+          <div class="title">Danh sách firmware</div>
+        </div>
+        <div class="wrap-box p-3 mb-3">
+          <form action="/dashboard/firmware/upload" method="post" enctype="multipart/form-data">
+            <div class="d-flex align-items-center">
+              <input type="file" name="firmware" accept=".bin" required>
+              <button type="submit" class="primary-btn ml-2 p-1">Upload</button>
+            </div>
+          </form>
+        </div>
+        <div class="base-list user-table overflow-y-scroll">
+          <div class="wrap-box">
+            <ul class="sticky-header">
+              <li class="d-flex header-row">
+                <span>Stt</span>
+                <span class="device-name">Tên file</span>
+                <span>Kích thước</span>
+                <span>Cập nhật</span>
+                <span class="action">Hành động</span>
+              </li>
+            </ul>
+            <ul>
+              <% if (firmwareFiles && firmwareFiles.length > 0) { %>
+              <% for (const index in firmwareFiles) { %>
+              <% const item = firmwareFiles[index]; %>
+              <li class="d-flex">
+                <span><%= Number(index) + 1 %></span>
+                <span class="device-name short-text" title="<%= item.name %>"><%= item.name %></span>
+                <span><%= item.size %></span>
+                <span><%= item.updatedAt.toLocaleString("vi-VN") %></span>
+                <span class="action">
+                  <div class="wrap-action-btn">
+                    <a href="<%= item.downloadUrl %>" class="primary-btn">Tải file</a>
+                  </div>
+                  <div class="wrap-action-btn">
+                    <form action="/dashboard/firmware/files/<%= encodeURIComponent(item.name) %>/delete" method="post" onsubmit="return confirm('Xoa file firmware nay?')">
+                      <button type="submit" class="primary-btn">Xoá</button>
+                    </form>
+                  </div>
+                </span>
+              </li>
+              <% } %>
+              <% } else { %>
+              <p>Chua co file firmware nao.</p>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="gap-md"></div>
+  </div>
+</div>

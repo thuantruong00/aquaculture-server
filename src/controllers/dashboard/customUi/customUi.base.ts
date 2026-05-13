@@ -39,9 +39,10 @@ export class CustomUiControllerBase extends BaseController {
     }
   };
   handleDetailDeviceGroupPage = async (req: Request, res: Response) => {
-    const templatesDir = path.resolve(
-      process.cwd(),
-      "src/views/partials/group-templates"
+    const templatesDir = path.join(
+      res.app.get("views"),
+      "partials",
+      "group-templates"
     );
     try {
       const { groupId } = req.params as unknown as any;
@@ -106,9 +107,10 @@ export class CustomUiControllerBase extends BaseController {
     }
   };
   handleDeviceGroupPage = async (req: Request, res: Response) => {
-    const templatesDir = path.resolve(
-      process.cwd(),
-      "src/views/partials/group-templates"
+    const templatesDir = path.join(
+      res.app.get("views"),
+      "partials",
+      "group-templates"
     );
     try {
       const files = fs.readdirSync(templatesDir);

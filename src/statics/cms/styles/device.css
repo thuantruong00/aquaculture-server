@@ -92,7 +92,7 @@
 }
 
 .wrap-ledbar-control {
-    width: 60%;
+    width: 50%;
 }
 
 .ledbox-wrapper .color-label {
@@ -148,4 +148,7 @@
     -moz-border-radius: 4px;
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
+}
+.overview-device-key-label{
+    font-size: 14px;
 }

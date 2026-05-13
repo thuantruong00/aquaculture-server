@@ -1,3 +1,49 @@
+<%
+const ledBarFields = Array.isArray(device?.deviceModel?.fields)
+  ? device.deviceModel.fields
+  : [];
+const dht22Devices = Array.isArray(dht22?.devices) ? dht22.devices : [];
+const totalChannels = 16;
+const channelsPerGroup = 2;
+const totalGroups = totalChannels / channelsPerGroup;
+
+const getSensorGroupIndex = (sensorDevice) => {
+  const sensorName = sensorDevice?.name || "";
+  const match = sensorName.match(/<id-(\d+)>/i) || sensorName.match(/id-(\d+)/i);
+  if (!match) return null;
+
+  const groupIndex = Number(match[1]);
+  return Number.isInteger(groupIndex) && groupIndex > 0 ? groupIndex : null;
+};
+
+const dht22ByGroup = new Map();
+for (const sensorDevice of dht22Devices) {
+  const groupIndex = getSensorGroupIndex(sensorDevice);
+  if (!groupIndex || dht22ByGroup.has(groupIndex)) continue;
+  dht22ByGroup.set(groupIndex, sensorDevice);
+}
+
+const ledBarGroups = Array.from({ length: totalGroups }, (_, index) => {
+  const groupIndex = index + 1;
+  const fieldStartIndex = index * channelsPerGroup;
+  const channelFields = ledBarFields.slice(
+    fieldStartIndex,
+    fieldStartIndex + channelsPerGroup
+  );
+  const sensorDevice = dht22ByGroup.get(groupIndex) || null;
+
+  return {
+    groupIndex,
+    channels: [fieldStartIndex + 1, fieldStartIndex + 2],
+    channelFields,
+    sensorType: "dht22",
+    sensorDevice,
+    sensorValues: sensorDevice?.latestRecord?.values || [],
+    isMapped: Boolean(sensorDevice),
+  };
+});
+%>
+
 <div class="col-12 my-2 x-item-<%= device._id %>">
   <div class="device-item overview-device-item relative">
     <div class="wrap-device-item">
@@ -27,6 +73,10 @@
           return field.attrs.name || fallback;
         };
         for(let item = 0; item < device.deviceModel.fields.length ; item+=2){ 
+          const currentGroupIndex = Math.floor(item / channelsPerGroup) + 1;
+          const currentLedBarGroup = ledBarGroups.find((group) => {
+            return group.groupIndex === currentGroupIndex;
+          });
           const xKey1 = device.deviceModel.fields[item].key;  
           const xKey2 = device.deviceModel.fields[item+1].key;  
           const xColor1 = getFieldColor(xKey1);
@@ -35,12 +85,12 @@
           const valueKey2 = device.latestRecord?.values.find(v => v.key === xKey2)?.value || 0;
         %>
         <div class="col-3">
+
           <div class="ledbox-wrapper my-2 py-1 px-3">
             <div class="x-key-<%= xKey1 %>">
-              <div class="device-key-label border-0"><%= getFieldName(xKey1, t("sensors." + device.deviceModel.fields[item].key)) %> :</div>
-
               <div class="d-flex justify-content-between align-items-end">
-                <div class="wrap-ledbar-control text-center relative">
+                <div class="device-key-label border-0"><%= getFieldName(xKey1, t("sensors." + device.deviceModel.fields[item].key)) %> :</div>
+                <div class="wrap-ledbar-control text-right relative">
                   <span class="value"><%= valueKey1 %></span><span class="value-style"> / 100</span>
                   <div class="color-label" style="background-color: <%= xColor1 %>;"></div>
                   <input key="<%=xKey1 %>" class="d-none form-range w-100" style="<%= xColor1 ? `--range-color: ${xColor1};` : '' %>" type="range" name="" id="" min="0" max="100" value="<%= valueKey1 %>" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey1 %>')">
@@ -49,14 +99,20 @@
             </div>
 
             <div class="x-key-<%= xKey2 %>">
-              <div class="device-key-label border-0"><%= getFieldName(xKey2, t("sensors." + device.deviceModel.fields[item].key)) %> :</div>
               <div class="d-flex justify-content-between align-items-end">
-                <div class="wrap-ledbar-control text-center relative">
+                <div class="device-key-label border-0"><%= getFieldName(xKey2, t("sensors." + device.deviceModel.fields[item].key)) %> :</div>
+                <div class="wrap-ledbar-control text-right relative">
                   <span class="value"><%= valueKey2 %></span><span class="value-style"> / 100</span>
                   <div class="color-label" style="background-color: <%= xColor2 %>;"></div>
                   <input key="<%=xKey2 %>" class="d-none form-range w-100" style="<%= xColor2 ? `--range-color: ${xColor2};` : '' %>" type="range" name="" id="" min="0" max="100" value="<%= valueKey2 %>" onchange="handleLedBarDrag('<%= device._id%>', '<%= xKey2 %>')">
                 </div>
               </div>
+            </div>
+            <div class="gap-xs"></div>
+            <div class="dht22-sensor-wrapper">
+              <%- include(`./simple-list.ejs`, {
+                device: currentLedBarGroup.sensorDevice
+              }) %>
             </div>
             <div class="gap-xs"></div>
           </div>

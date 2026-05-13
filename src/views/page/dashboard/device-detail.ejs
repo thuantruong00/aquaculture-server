@@ -30,7 +30,7 @@
                   <label for="">Tên thiết bị</label>
                   <div class="gap-xs"></div>
                   <div class="wrap-input required">
-                    <input type="text" name="name" required placeholder="TÃªn thiáº¿t bá»‹" class="w-100" value="<%=device.name %>">
+                    <input type="text" name="name" required placeholder="Tên thiết bị" class="w-100" value="<%=device.name %>">
                   </div>
 
                   <label for="">Trạng thái</label>
@@ -166,7 +166,31 @@
           <div class="tab-pane fade" id="device-version" role="tabpanel" aria-labelledby="device-version-tab">
             <div class="base-list device-field-list">
               <div class="wrap-box">
-                Phiên bản
+                <div class="wrap-get-device">
+                  <button class="p-2" onclick="getDeviceVersion('<%= device._id %>')">Get Device</button>
+                </div>
+                <div class="gap-sm"></div>
+                <div class="wrap-version firmware-id-<%= device._id %>" id="wrap-version">
+                  <div class="wrap-box">
+                    <ul>
+                      <li class="d-flex w-100 justify-content-start align-items-center header-row">
+                        <span class="text-center w-50 ">Key</span>
+                        <span class="text-center">Value</span>
+                      </li>
+                      <li class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="text-center w-50">ID:</span>
+                        <span class="text-center device-id"><%= device._id %></span>
+                      </li>
+                      <li class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="text-center w-50">SSID:</span>
+                        <span class="text-center device-ssid">--/--</span>
+                      </li>
+                      <li class="d-flex w-100 justify-content-start align-items-center">
+                        <span class="text-center w-50">Version:</span>
+                        <span class="text-center device-fwVersion">--/--</span>
+                      </li>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

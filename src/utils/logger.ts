@@ -2,12 +2,16 @@ import { createLogger, format, transports } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 import path from "path";
 
-const { combine, timestamp, errors, printf, colorize, uncolorize } = format;
+const { combine, timestamp, errors, printf, colorize, uncolorize, splat } =
+  format;
 
 const isDevelopment = process.env.NODE_ENV !== "production";
 
-const logFormat = printf(({ level, message, timestamp, stack }) => {
-  return `${timestamp} [${level}]: ${stack || message}`;
+const logFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
+  const metaString =
+    meta && Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : "";
+
+  return `${timestamp} [${level}]: ${stack || message}${metaString}`;
 });
 
 const logDirectory = path.join("logs");
@@ -26,13 +30,14 @@ export const logger = createLogger({
   format: combine(
     timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     errors({ stack: true }),
+    splat(),
     isDevelopment ? colorize() : uncolorize(),
     logFormat
   ),
   transports: [
-    ...(isDevelopment
-      ? [new transports.Console()]
-      : [
+    new transports.Console(),
+    ...(!isDevelopment
+      ? [
           dailyRotateTransport,
           new DailyRotateFile({
             filename: path.join(logDirectory, "combined-%DATE%.log"),
@@ -41,7 +46,8 @@ export const logger = createLogger({
             maxSize: "10m",
             maxFiles: "12m",
           }),
-        ]),
+        ]
+      : []),
   ],
 });
 

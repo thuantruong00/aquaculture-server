@@ -256,3 +256,22 @@ function getRecordsData(formSelector) {
     // redirect
     window.location.href = url;
 }
+
+
+// =============== device version
+function getDeviceVersion(deviceId) {
+    const url = `${baseUrl}/dashboard/firmware/device-version?deviceId=${encodeURIComponent(deviceId)}`;
+    const get = $.ajax({
+        type: "get",
+        url: url,
+        contentType: "application/json",
+        dataType: "json",
+        success: function (response) {
+            showToast('Thành công.', 'success')
+            console.log(response)
+        },
+        error: function (xhr, status, error) {
+            showToast('Thất bại.', 'failure')
+        }
+    })
+}

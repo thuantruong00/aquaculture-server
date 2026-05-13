@@ -3,7 +3,13 @@ export const RoleAccess: IRoleAccess = {
     root: [],
     admin: [],
     user: ["deviceSetting", "notificationSetting", "customUi"],
-    guest: ["deviceSetting", "notificationGroup", "account", "customUi"],
+    guest: [
+      "deviceSetting",
+      "notificationGroup",
+      "account",
+      "customUi",
+      "firmwareVersion",
+    ],
   },
 };
 

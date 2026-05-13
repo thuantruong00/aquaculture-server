@@ -8,17 +8,46 @@ var socket = io(`${webSocketUrl}`, {
 // Listen for 'chat message' event
 
 // ==============================
+function handleTelemetryStatus(deviceId, key, value) {
+  const $status = $(`.x-item-${deviceId} .x-key-${key}.device-status`);
+  if ($status.length === 0) {
+    return;
+  }
+
+  const normalizedValue =
+    value === true ||
+    value === 1 ||
+    value === "1" ||
+    value === "true";
+
+  $status.removeClass("device-status-online");
+  $status.removeClass("device-status-offline");
+  $status.removeClass("device-status-error");
+  $status.addClass(
+    normalizedValue ? "device-status-online" : "device-status-offline",
+  );
+}
+
 socket.on("iotDataTelemetry", function (data) {
   const { devices, id, ts, deviceModelName } = data
+  console.log("iotDataTelemetry:", data);
   updateLastUpdateTime(id, ts);
 
   if (!devices || devices.length === 0) return;
   for (const item of devices) {
     $(`.x-item-${id} .x-key-${item.key} span.value`).text(item.value)
+    handleTelemetryStatus(id, item.key, item.value);
     if (deviceModelName && deviceModelName == "led-bar-2-line-AT") {
       handleLedBarTelemetry(id, item.key, item.value);
     }
   }
+});
+
+socket.on("deviceSettingInfo", function (data) {
+  console.log("deviceSettingInfo:", data);
+  const { id, setting:{ ip, ssid, fwVersion } } = data
+  updateFirmwareInfo(id, ip, ssid, fwVersion);
+  return;
 });
 
 // socket.on("iotDataResponse", function (data) {
@@ -118,6 +147,12 @@ function updateLastUpdateTime(deviceId, timestamp, isDisplayDate = false) {
     $(`.x-item-${deviceId} .updated-at i`)
       .text(`${hours}:${minutes}:${seconds}`);
   }
+}
+
+function updateFirmwareInfo(id, ip, ssid, fwVersion) {
+  $(`.firmware-id-${id} .device-ssid`).text(ssid);
+  $(`.firmware-id-${id} .device-fwVersion`).text(fwVersion); 
+  return;
 }
 
 const defaultDelay = 300; // 500ms

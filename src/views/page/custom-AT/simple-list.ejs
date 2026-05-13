@@ -1,0 +1,32 @@
+<% if (!device) { %>
+<div class="simple-list-empty">--/--</div>
+<% } else { %>
+<div class="x-item-<%= device._id %>" title="<%= device?.latestRecord ? new Date(device.latestRecord.timestamp).toLocaleString('en-GB') :"--/--" %>">
+  <div class="device-item">
+    <div class="wrap-device-item p-0" style="background: none;">
+      <a href="#" class="wrap-name d-none">
+        <h6 class="name link-icon"><%= device.name %></h6>
+      </a>
+
+      <%
+      if(device.deviceModel.fields.length>0){
+        for(const item of device.deviceModel.fields){ %>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="overview-device-key-label"><%= t("sensors."+item.key)%> :</div>
+        <div class="sensor-value x-key-<%= item.key %>"><span class="value">
+            <%= device?.latestRecord 
+        ? (device.latestRecord.values.find(value => value.key == item.key)?.value ?? "-") 
+        : "-" 
+          %>
+          </span><span class="unit"><%=item.unit %></span></div>
+      </div>
+      <%
+        }
+      }
+      %>
+
+      <div class="updated-at d-none"><small><i><%= device?.latestRecord ? new Date(device.latestRecord.timestamp).toLocaleString('en-GB') :"--/--" %></i></small></div>
+    </div>
+  </div>
+</div>
+<% } %>

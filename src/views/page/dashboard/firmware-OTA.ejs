@@ -1,0 +1,216 @@
+<div class="main">
+  <div class="container modal-id ">
+    <div class="gap-sm"></div>
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="wrap-title">
+          <div class="title">Cập nhật firmware OTA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-xs"></div>
+
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="wrap-box p-3 mb-3">
+          <label for="ota-firmware-select"><strong>Danh sách firmware</strong></label>
+          <div class="gap-xs"></div>
+          <div class="d-flex align-items-center">
+            <div class="wrap-input required w-50">
+              <select id="ota-firmware-select" class="w-100">
+                <option value="">Chọn firmware</option>
+                <% if (firmwareFiles && firmwareFiles.length > 0) { %>
+                <% for (const firmware of firmwareFiles) { %>
+                <option value="<%= firmware.name %>" data-size="<%= firmware.size %>">
+                  <%= firmware.name %> - <%= firmware.size %>
+                </option>
+                <% } %>
+                <% } %>
+              </select>
+            </div>
+          </div>
+          <div class="gap-sm"></div>
+          <div class="row">
+            <div class="col-lg-5 col-12">
+              <div class="wrap-box p-3">
+                <div><strong>Firmware đã chọn</strong></div>
+                <div class="gap-xs"></div>
+                <div>Tên file: <span id="selected-firmware-name">--/--</span></div>
+                <div>Kích thước: <span id="selected-firmware-size">--/--</span></div>
+              </div>
+            </div>
+            <div class="col-lg-7 col-12 mt-3 mt-lg-0">
+              <div class="wrap-box p-3">
+                <div><strong>Thiết bị sẽ được OTA</strong></div>
+                <div class="gap-xs"></div>
+                <ul id="ota-selected-devices" class="mb-0">
+                  <li id="ota-empty-state">Chưa thiết bị nào được chọn.</li>
+                </ul>
+                <div class="gap-xs"></div>
+                <button type="button" id="ota-upload-btn" class="primary-btn p-2">Upload</button>
+                <div class="gap-xs"></div>
+                <div id="ota-upload-result">Trống.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="base-list device-groups-list">
+          <div class="wrap-box">
+            <ul class="sticky-header">
+              <li class="d-flex header-row">
+                <span>Stt</span>
+                <span class="device-name">Tên thiết bị</span>
+                <span>Nhóm</span>
+                <span>Model</span>
+                <span>Version</span>
+                <span class="action">Hành động</span>
+              </li>
+            </ul>
+            <ul>
+              <% if (devices && devices.length > 0) { %>
+              <% for (const index in devices) { %>
+              <% const item = devices[index]; %>
+              <li class="d-flex item-<%= item._id %>  firmware-id-<%= item._id %>">
+                <span><%= Number(index) + 1 %></span>
+                <span class="device-name short-text" title="_id=<%= item._id %>"><%= item.name %></span>
+                <span class="short-text"><%= item.group ? item.group.name : "Trong" %></span>
+                <span class="short-text"><%= item.deviceModel ? item.deviceModel.name : "Trong" %></span>
+                <span class="short-text device-fwVersion">--/--</span>
+                <span class="action">
+                  <div class="wrap-action-btn">
+                    <button type="button" class="primary-btn" onclick="getDeviceVersion('<%= item._id %>')">Version</button>
+                  </div>
+                  <div class="wrap-action-btn">
+                    <button
+                      type="button"
+                      class="primary-btn"
+                      onclick="selectOtaDevice('<%= item._id %>', '<%= item.name %>')"
+                    >
+                      Chọn
+                    </button>
+                  </div>
+                </span>
+              </li>
+              <% } %>
+              <% } else { %>
+              <p>Chưa có thiết bị nào để cập nhật.</p>
+              <% } %>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gap-md"></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const firmwareSelect = document.getElementById("ota-firmware-select");
+    const firmwareName = document.getElementById("selected-firmware-name");
+    const firmwareSize = document.getElementById("selected-firmware-size");
+    const selectedDevicesList = document.getElementById("ota-selected-devices");
+    const emptyState = document.getElementById("ota-empty-state");
+    const uploadBtn = document.getElementById("ota-upload-btn");
+    const uploadResult = document.getElementById("ota-upload-result");
+    const selectedDeviceMap = new Map();
+
+    function updateSelectedFirmwareSummary() {
+      const option = firmwareSelect.options[firmwareSelect.selectedIndex];
+      const value = option ? option.value : "";
+
+      if (!value) {
+        firmwareName.textContent = "--/--";
+        firmwareSize.textContent = "--/--";
+        return;
+      }
+
+      firmwareName.textContent = value;
+      firmwareSize.textContent = option.getAttribute("data-size") || "--/--";
+    }
+
+    function renderSelectedDevices() {
+      const items = Array.from(selectedDevicesList.querySelectorAll("li[data-device-id]"));
+      for (const item of items) {
+        item.remove();
+      }
+
+      if (selectedDeviceMap.size === 0) {
+        emptyState.style.display = "";
+        return;
+      }
+
+      emptyState.style.display = "none";
+      selectedDeviceMap.forEach((device) => {
+        const li = document.createElement("li");
+        li.setAttribute("data-device-id", device.id);
+        li.innerHTML = `<strong>${device.name}</strong><br><span>deviceId: ${device.id}</span>`;
+        selectedDevicesList.appendChild(li);
+      });
+    }
+
+    firmwareSelect.addEventListener("change", function () {
+      updateSelectedFirmwareSummary();
+      renderSelectedDevices();
+    });
+
+    window.selectOtaDevice = function (id, name) {
+      if (!firmwareSelect.value) {
+        alert("Hay chon firmware truoc.");
+        return;
+      }
+
+      selectedDeviceMap.set(id, { id, name });
+      renderSelectedDevices();
+    };
+
+    uploadBtn.addEventListener("click", async function () {
+      if (!firmwareSelect.value) {
+        alert("Hay chon firmware truoc.");
+        return;
+      }
+
+      if (selectedDeviceMap.size === 0) {
+        alert("Hay chon it nhat mot thiet bi.");
+        return;
+      }
+
+      const payload = {
+        targetFile: firmwareSelect.value,
+        deviceIds: Array.from(selectedDeviceMap.keys()),
+      };
+
+      try {
+        const response = await fetch("/dashboard/firmware/ota/upload", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json();
+
+        uploadResult.innerHTML = `
+          <div><strong>Target file:</strong> ${result.payload?.targetFile || "--/--"}</div>
+          <div><strong>Target file URL:</strong> ${result.payload?.targetFileUrl || "--/--"}</div>
+          <div><strong>Device IDs:</strong></div>
+          <div>${(result.payload?.deviceIds || []).join("<br>") || "--/--"}</div>
+          <div class="gap-xs"></div>
+          <div><strong>MQTT publish:</strong></div>
+          <div>${(result.payload?.otaMessages || []).map((item) => `${item.deviceName} | ${item.topic} | ${item.payload?.targetFile || "--/--"}`).join("<br>") || "--/--"}</div>
+        `;
+      } catch (error) {
+        uploadResult.textContent = "Gui payload that bai.";
+      }
+    });
+
+    updateSelectedFirmwareSummary();
+  })();
+</script>

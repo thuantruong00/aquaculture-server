@@ -16,6 +16,30 @@ import { MqttDeviceFunction } from "~/utils/enum";
 // }
 const mqttService = new MqttService();
 
+type MqttScalarValue = string | number | boolean;
+
+const serializeMqttValue = (value: MqttScalarValue) => {
+  if (typeof value === "boolean") {
+    return value ? "1" : "0";
+  }
+
+  return String(value);
+};
+
+export const serializeMqttKeyValuePayload = (
+  payload:
+    | Record<string, MqttScalarValue>
+    | Array<{ key: string; value: MqttScalarValue }>,
+) => {
+  const entries = Array.isArray(payload)
+    ? payload
+    : Object.entries(payload).map(([key, value]) => ({ key, value }));
+
+  return entries
+    .map(({ key, value }) => `${key}:${serializeMqttValue(value)}`)
+    .join("|");
+};
+
 export const mqttClient: MqttClient = mqtt.connect(
   process.env.MQTT_HOST || "",
   {
@@ -69,6 +93,14 @@ mqttClient.on("message", async (topic: string, message: Buffer) => {
         mqttService.handleTetelemetry(arrTopic[1], arrTopic[2], msg);
         break;
       case MqttDeviceFunction.RESPONSE:
+        if (arrTopic[4] === "setting-get") {
+          mqttService.handleSettingGetResponse(arrTopic[1], arrTopic[2], msg);
+          break;
+        }
+        if (arrTopic[4] === MqttDeviceFunction.CONNECTION_LOG) {
+          mqttService.handleDeviceConnectionLog(arrTopic[1], arrTopic[2], msg);
+          break;
+        }
         mqttService.handlResponse(arrTopic[1], arrTopic[2], arrTopic[4], msg);
         break;
 
@@ -81,7 +113,7 @@ mqttClient.on("message", async (topic: string, message: Buffer) => {
 export const handleWriteCommandSet = async (
   deviceId: string,
   key: string,
-  value: string | number | boolean,
+  value: MqttScalarValue,
   opts: { commandId: string },
 ) => {
   const topic =
@@ -89,9 +121,9 @@ export const handleWriteCommandSet = async (
     "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
     deviceId +
     "/command/set";
-  const data = { key, value };
-  console.log("Publishing to topic:", topic, "with data:", data);
-  mqttClient.publish(topic, JSON.stringify(data));
+  const payload = serializeMqttKeyValuePayload([{ key, value }]);
+  console.log("Publishing to topic:", topic, "with data:", payload);
+  mqttClient.publish(topic, payload);
   return;
 };
 export const handleWriteCommandGet = async (
@@ -105,6 +137,39 @@ export const handleWriteCommandGet = async (
     "/command/get";
   mqttClient.publish(topic, "");
   return;
+};
+
+export const handleWriteSettingGet = async (
+  deviceId: string,
+  opts?: { commandId?: string },
+) => {
+  const topic =
+    env.MQTT_PREFIX_TOPIC +
+    "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
+    deviceId +
+    "/setting/get";
+  mqttClient.publish(topic, "");
+  return;
+};
+
+export const handleWriteOtaUpload = async (
+  zoneKey: string,
+  deviceId: string,
+  targetFile: string,
+  secretKey: string,
+) => {
+  const topic =
+    env.MQTT_PREFIX_TOPIC + "/" + zoneKey + "/" + deviceId + "/ota";
+  const data = {
+    targetFile,
+    secretKey,
+  };
+
+  mqttClient.publish(topic, JSON.stringify(data));
+  return {
+    topic,
+    payload: data,
+  };
 };
 
 export const handlePushLogs = async (deviceId: string, msg: string) => {

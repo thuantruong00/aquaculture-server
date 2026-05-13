@@ -30,6 +30,9 @@ export class SocketService {
   public sendIotDataResponse(data: any) {
     io.emit("iotDataResponse", data);
   }
+  public sendDeviceSettingInfo(data: any) {
+    io.emit("deviceSettingInfo", data);
+  }
 
   public sendValueTemp(data: any) {
     io.emit("temp", data);

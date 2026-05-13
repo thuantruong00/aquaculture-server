@@ -1,4 +1,7 @@
 import { query, Router } from "express";
+import multer from "multer";
+import path from "path";
+import is from "zod/v4/locales/is.cjs";
 
 import {
   AccountController,
@@ -13,11 +16,14 @@ import {
   DeviceControlController,
   DeviceControlQuerySchema,
   DeviceSettingController,
+  FirmwareGetInfoSchema,
+  GetDeviceConnectionLogsQuerySchema,
   GetListDeviceGroupQuerySchema,
   GetListRecordSchema,
   HistoryController,
   NotificationSettingController,
   FirmwareController,
+  FirmwareOtaUploadSchema,
   UpdateDeviceGroupInfoSchema,
   UpdateDeviceGroupSchema,
   UpdateDeviceOrdersSchema,
@@ -47,6 +53,35 @@ import { AllRoles, IsUserGroup } from "~/utils/const";
 import { UserRole } from "~/utils/enum";
 
 export const dashboardRouter = Router();
+
+const firmwareStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, path.resolve(process.cwd(), "data/firmwares"));
+  },
+  filename: (_req, file, cb) => {
+    const filename = path.basename(file.originalname);
+    const safePattern = /^[a-zA-Z0-9._-]+\.bin$/;
+
+    if (!safePattern.test(filename)) {
+      cb(new Error("Invalid firmware filename"), filename);
+      return;
+    }
+
+    cb(null, filename);
+  },
+});
+
+const firmwareUpload = multer({
+  storage: firmwareStorage,
+  fileFilter: (_req, file, cb) => {
+    if (!file.originalname.toLowerCase().endsWith(".bin")) {
+      cb(new Error("Only .bin files are allowed"));
+      return;
+    }
+
+    cb(null, true);
+  },
+});
 
 // ─── Device Control ────────────────────────────────────────────────
 const middleware = new Middleware();
@@ -413,9 +448,32 @@ dashboardRouter.get(
 );
 
 dashboardRouter.get(
+  "/firmware-version/ota",
+  middleware.webPageMiddleware("firmwareOTA", { allowedRole: IsUserGroup }),
+  firmwareController.handleManageFirmwareOTAPage,
+);
+
+dashboardRouter.get(
   "/firmware/files/:filename",
   middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
   firmwareController.handleServeFirmware,
+);
+dashboardRouter.post(
+  "/firmware/files/:filename/delete",
+  middleware.webPageMiddleware("firmwareVersion", { allowedRole: IsUserGroup }),
+  firmwareController.handleDeleteFirmware,
+);
+dashboardRouter.post(
+  "/firmware/upload",
+  middleware.webPageMiddleware("firmwareVersion", { allowedRole: IsUserGroup }),
+  firmwareUpload.single("firmware"),
+  firmwareController.handleUploadFirmware,
+);
+dashboardRouter.post(
+  "/firmware/ota/upload",
+  zodMultiValidator({ body: FirmwareOtaUploadSchema }),
+  middleware.APImiddleware("firmwareOTA", { allowedRole: IsUserGroup }),
+  firmwareController.handleApiUploadOta,
 );
 // ─── Introduction ───────────────────────────────────────────────────────
 
@@ -429,6 +487,13 @@ dashboardRouter.get(
 // ___API___
 //###############################################
 // chua test dto
+dashboardRouter.get(
+  "/firmware/device-version",
+  zodMultiValidator({ query: FirmwareGetInfoSchema }),
+  middleware.APImiddleware("firmwareVersion", { allowedRole: AllRoles }),
+  firmwareController.handleApiGetDeviceInfo,
+);
+
 dashboardRouter.post(
   "/device-setting/connect",
   zodMultiValidator({ body: DeviceConnectSchema }),
@@ -491,6 +556,17 @@ dashboardRouter.post(
   zodMultiValidator({ body: UpdateDeviceGroupSchema }),
   middleware.APImiddleware("deviceSettingActivate"),
   deviceSettingController.handleApiUpdateGroup.bind(deviceSettingController),
+);
+
+dashboardRouter.get(
+  "/device-setting/connection-logs",
+  middleware.webPageMiddleware("deviceSettingConnectionLogs", {
+    allowedRole: IsUserGroup,
+  }),
+  zodMultiValidator({ query: GetDeviceConnectionLogsQuerySchema }),
+  deviceSettingController.handleDeviceConnectionLogsPage.bind(
+    deviceSettingController,
+  ),
 );
 
 // cheat

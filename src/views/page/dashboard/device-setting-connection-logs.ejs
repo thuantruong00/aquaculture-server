@@ -1,0 +1,96 @@
+<%
+  const connectionLogs = Array.isArray(logs) ? logs : [];
+  const currentOffset = Number(offset || 0);
+  const currentLimit = Number(limit || 50);
+  const prevOffset = Math.max(currentOffset - currentLimit, 0);
+  const nextOffset = currentOffset + currentLimit;
+  const hasPrev = currentOffset > 0;
+  const hasNext = connectionLogs.length >= currentLimit;
+%>
+
+<div class="container modal-id">
+  <div class="gap-xs"></div>
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="wrap-title">
+        <div class="title">Lịch sử kết nối</div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="wrap-box p-3 mb-3">
+        <form action="/dashboard/device-setting/connection-logs" method="get">
+          <div class="row align-items-end">
+            <div class="col-lg-3 col-md-4 col-12">
+              <label for="connection-log-limit">Số lượng hiển thị</label>
+              <div class="gap-xs"></div>
+              <div class="wrap-input">
+                <select id="connection-log-limit" name="limit" class="w-100">
+                  <% for (const item of [10, 20, 50]) { %>
+                  <option value="<%= item %>" <%= currentLimit === item ? "selected" : "" %>><%= item %></option>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+            <input type="hidden" name="offset" value="0">
+            <div class="col-lg-2 col-md-3 col-12">
+              <div class="gap-xs d-md-block d-none"></div>
+              <div class="submit">
+                <button type="submit" class="submit-btn">Xem</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="base-list user-table overflow-y-scroll">
+        <div class="wrap-box">
+          <ul class="sticky-header">
+            <li class="d-flex header-row">
+              <span>Stt</span>
+              <span class="device-name">Thời gian</span>
+              <span class="device-name">Device ID</span>
+              <span>Model</span>
+              <span>Firmware</span>
+              <span>IP</span>
+            </li>
+          </ul>
+          <ul>
+            <% if (connectionLogs.length > 0) { %>
+            <% for (const index in connectionLogs) { %>
+            <% const item = connectionLogs[index]; %>
+            <li class="d-flex">
+              <span><%= currentOffset + Number(index) + 1 %></span>
+              <span class="device-name short-text" title="<%= item.receivedAt ? new Date(item.receivedAt).toISOString() : "" %>">
+                <%= item.receivedAt ? new Date(item.receivedAt).toLocaleString("vi-VN") : "" %>
+              </span>
+              <span class="device-name short-text" title="<%= item.deviceId || "" %>"><%= item.deviceId || "" %></span>
+              <span class="short-text" title="<%= item.deviceModel || "" %>"><%= item.deviceModel || "" %></span>
+              <span class="short-text" title="<%= item.firmware || "" %>"><%= item.firmware || "-" %></span>
+              <span class="short-text" title="<%= item.ip || "" %>"><%= item.ip || "-" %></span>
+            </li>
+            <% } %>
+            <% } else { %>
+            <p>Danh sách trống</p>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          <span>Đang hiển thị từ <%= currentOffset + 1 %> đến <%= currentOffset + connectionLogs.length %></span>
+        </div>
+        <div class="d-flex">
+          <% if (hasPrev) { %>
+          <a class="primary-btn mr-2" href="/dashboard/device-setting/connection-logs?offset=<%= prevOffset %>&limit=<%= currentLimit %>">Truoc</a>
+          <% } %>
+          <% if (hasNext) { %>
+          <a class="primary-btn" href="/dashboard/device-setting/connection-logs?offset=<%= nextOffset %>&limit=<%= currentLimit %>">Sau</a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gap-md"></div>
+</div>

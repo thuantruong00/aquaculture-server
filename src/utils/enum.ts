@@ -151,6 +151,7 @@ export enum MqttDeviceFunction {
   RESPONSE = "response",
   SETTING = "setting",
   PING = "ping",
+  CONNECTION_LOG = "connection-log",
 }
 
 export enum OtpTarget {

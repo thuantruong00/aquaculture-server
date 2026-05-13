@@ -18,11 +18,32 @@ import { telegramService } from "..";
 import { INotificationOption } from "~/entities/notification-option.entity";
 import { TelegramAccount } from "~/entities/telegram-account.entity";
 import { t } from "~/utils/i18n/i18n";
+import { DeviceConnectionLog } from "~/entities/device-connection-log.entity";
+import { env } from "~/utils";
+import { logger } from "~/utils/logger";
+import { Types } from "mongoose";
 
 export interface SensorDataConditionProcesss {
   key: string;
   value: string | number | boolean;
 }
+
+export interface DeviceSettingInfoResponse {
+  deviceId: string;
+  ip: string;
+  ssid: string;
+  password: string;
+  fwVersion: string;
+}
+
+export interface DeviceConnectionLogMessage {
+  deviceId: string;
+  secret: string;
+  deviceModel: string;
+  firmware?: string;
+  ip?: string;
+}
+
 export class MqttService {
   private socketService: SocketService;
   private conditionService: ConditionService;
@@ -35,6 +56,14 @@ export class MqttService {
     deviceId: string,
     value: string,
   ) => {
+    if (!Types.ObjectId.isValid(deviceId)) {
+      logger.warn("Skip telemetry for invalid device ObjectId", {
+        zoneId,
+        deviceId,
+      });
+      return;
+    }
+
     const findDevice = await Device.findOne({ _id: deviceId })
       .populate("zone")
       .populate("group")
@@ -78,6 +107,15 @@ export class MqttService {
     commandId: string,
     value: string,
   ) => {
+    if (!Types.ObjectId.isValid(deviceId)) {
+      logger.warn("Skip response for invalid device ObjectId", {
+        zoneId,
+        deviceId,
+        commandId,
+      });
+      return;
+    }
+
     const findDevice = await Device.findOne({ _id: deviceId })
       .populate("zone")
       .populate("group")
@@ -106,6 +144,81 @@ export class MqttService {
     }
     return;
   };
+
+  handleSettingGetResponse = async (
+    zoneId: string,
+    deviceId: string,
+    value: string,
+  ) => {
+    if (!Types.ObjectId.isValid(deviceId)) {
+      logger.warn("Skip setting response for invalid device ObjectId", {
+        zoneId,
+        deviceId,
+      });
+      return;
+    }
+
+    const findDevice = await Device.findOne({ _id: deviceId })
+      .populate("zone")
+      .populate("group")
+      .populate("deviceModel");
+
+    if (!findDevice || !findDevice.deviceModel) {
+      return;
+    }
+
+    const parsed = JSON.parse(value) as DeviceSettingInfoResponse;
+    const ts = Date.now().valueOf();
+
+    this.socketService.sendDeviceSettingInfo({
+      id: deviceId,
+      ts,
+      setting: {
+        deviceId: parsed.deviceId,
+        ssid: parsed.ssid,
+        fwVersion: parsed.fwVersion,
+      },
+    });
+
+    return;
+  };
+
+  handleDeviceConnectionLog = async (
+    zoneId: string,
+    deviceId: string,
+    value: string,
+  ) => {
+    try {
+      const parsed = JSON.parse(value) as DeviceConnectionLogMessage;
+
+      if (parsed.secret !== env.DEVICE_SECRET_KEY) {
+        logger.warn("Invalid device connection log secret", {
+          zoneId,
+          deviceId,
+        });
+        return;
+      }
+
+      if (!parsed.deviceModel || typeof parsed.deviceModel !== "string") {
+        logger.warn("Invalid device connection log payload", {
+          zoneId,
+          deviceId,
+        });
+        return;
+      }
+
+      await DeviceConnectionLog.create({
+        deviceId: parsed.deviceId || deviceId,
+        deviceModel: parsed.deviceModel,
+        firmware: parsed.firmware,
+        ip: parsed.ip,
+        receivedAt: new Date(),
+      });
+    } catch (error) {
+      logger.error("Err handleDeviceConnectionLog", error);
+    }
+  };
+
   processSensorValue = async (
     deviceId: string,
     data: SensorDataConditionProcesss[],

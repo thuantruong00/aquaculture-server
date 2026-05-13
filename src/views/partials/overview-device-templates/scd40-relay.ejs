@@ -1,0 +1,32 @@
+<div class="col-12 my-2 x-item-<%= device._id %>">
+  <div class="device-item">
+    <div class="wrap-device-item">
+      <%- include('../cms/setting.ejs', {id:device._id,type:"device", setting:setting}) %>
+      <a href="#" class="wrap-name">
+        <h6 class="name link-icon"><%= device.name %></h6>
+      </a>
+      <%
+      let isExistedLatestRecord = false;
+      let isOnlineStatus = false;
+      if(device?.latestRecord 
+      && device.latestRecord.values.length>0
+      
+      ){
+        isExistedLatestRecord = true
+        isOnlineStatus = Boolean(device.latestRecord.values[0].value)
+      }
+      %>
+      <div class="box">
+        <div class="device-status <%=  isOnlineStatus ? 'device-status-online' : 'device-status-offline' %>  x-key-<%= device.deviceModel.fields[0].key %> ">
+          <div class="text online">Đang hoạt động</div>
+          <div class="text offline">Đã dừng</div>
+          <div class="text error">Bị lỗi</div>
+        </div>
+        <div class="updated-at"><small><i><%= isExistedLatestRecord ? new Date(device.latestRecord.executedAt).toLocaleString('en-GB') :"--/--" %></i></small></div>
+        <br>
+        <Button onclick="controlDevice('<%= device._id %>', '<%= device.deviceModel.fields[0].key %>', 0)" class="control-device">Tắt</Button>
+        <Button onclick="controlDevice('<%= device._id %>', '<%= device.deviceModel.fields[0].key %>', 1)" class="control-device">Mở</Button>
+      </div>
+    </div>
+  </div>
+</div>

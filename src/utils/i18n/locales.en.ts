@@ -28,6 +28,8 @@ export const EN = {
     Temperature: "Temperature",
     Humidity: "Humidity",
     do: "DO",
+    Switch: "Switch",
+    CO2: "CO2",
   },
   logicOperator: {
     and: "and",

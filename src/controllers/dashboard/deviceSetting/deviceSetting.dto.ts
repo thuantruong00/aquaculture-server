@@ -24,6 +24,26 @@ export const GetListDeviceQuerySchema = z.object({
 
 export type IGetListDeviceQueryDTO = z.infer<typeof GetListDeviceQuerySchema>;
 
+export const GetDeviceConnectionLogsQuerySchema = z.object({
+  offset: z
+    .preprocess(
+      (val) => (val === undefined || val === "" ? undefined : Number(val)),
+      z.number().int().min(0).default(PagiOffset),
+    )
+    .transform(Number),
+
+  limit: z
+    .preprocess(
+      (val) => (val === undefined || val === "" ? undefined : Number(val)),
+      z.number().int().min(1).max(50).default(PagiLimit),
+    )
+    .transform(Number),
+});
+
+export type IGetDeviceConnectionLogsQueryDTO = z.infer<
+  typeof GetDeviceConnectionLogsQuerySchema
+>;
+
 const DeviceOrderItemSchema = z.object({
   index: z.preprocess(
     (val) => (val === "" ? undefined : Number(val)),
