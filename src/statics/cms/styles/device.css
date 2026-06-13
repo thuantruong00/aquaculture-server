@@ -119,6 +119,7 @@
     letter-spacing: 0.2px;
     color: #0f172a;
 }
+
 .wrap-device-item {
     position: relative;
 }
@@ -149,6 +150,30 @@
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
 }
-.overview-device-key-label{
+
+.overview-device-key-label {
     font-size: 14px;
+}
+
+.horizontal-control .control-device {
+    position: relative;
+    background: #367FB2;
+    border: none;
+    padding: 10px 28px;
+    font-size: 14px;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 32px;
+    transition: all 0.2s;
+    background: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.7);
+    margin: 6px 0px;
+}
+
+.horizontal-control .device-status {
+    border-radius: 50%;
+    /* font-size: 14px; */
+    height: 100px;
+    width: 100px;
+    margin: 0;
 }

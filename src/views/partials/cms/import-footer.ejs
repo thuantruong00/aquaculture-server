@@ -16,6 +16,9 @@
 
 <script>
   window.__ENV = <%- JSON.stringify(publicEnv || {}) %>;
+  window.__I18N = {
+    locale: <%- JSON.stringify(locale || "en") %>,
+  };
 </script>
 
 <script src="/assets/function.js"></script>

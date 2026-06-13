@@ -37,7 +37,7 @@ cms-project
 ├── README.md               // simple readme file
 └── *
 
-docker save -o docker-images/edgeon-1.0.3 edgeon:1.0.3
+docker save -o docker-images/edgeon-1.0.3.tar edgeon:1.0.3
 docker load -i docker-images/edgeon-1.0.3.tar
 
 docker build -f Dockerfile.prod -t edgeon:1.0.18 .

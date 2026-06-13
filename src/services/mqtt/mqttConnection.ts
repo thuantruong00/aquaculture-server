@@ -17,6 +17,9 @@ import { MqttDeviceFunction } from "~/utils/enum";
 const mqttService = new MqttService();
 
 type MqttScalarValue = string | number | boolean;
+type MqttCommandPayload =
+  | Record<string, MqttScalarValue>
+  | Array<{ key: string; value: MqttScalarValue }>;
 
 const serializeMqttValue = (value: MqttScalarValue) => {
   if (typeof value === "boolean") {
@@ -27,9 +30,7 @@ const serializeMqttValue = (value: MqttScalarValue) => {
 };
 
 export const serializeMqttKeyValuePayload = (
-  payload:
-    | Record<string, MqttScalarValue>
-    | Array<{ key: string; value: MqttScalarValue }>,
+  payload: MqttCommandPayload,
 ) => {
   const entries = Array.isArray(payload)
     ? payload
@@ -62,7 +63,7 @@ mqttClient.on("connect", () => {
       console.error("❌ Failed to subscribe to 'temp':", err.message);
     }
   });
-  mqttClient.subscribe("platform/+/+/telemetry", (err) => {
+  mqttClient.subscribe("platform/+/+/telemetry/#", (err) => {
     if (err) {
       console.error("❌ Failed to subscribe to 'temp':", err.message);
     }
@@ -90,7 +91,12 @@ mqttClient.on("message", async (topic: string, message: Buffer) => {
   if (isMatchZone && isMatchZone.status) {
     switch (arrTopic[3]) {
       case MqttDeviceFunction.TELEMETRY:
-        mqttService.handleTetelemetry(arrTopic[1], arrTopic[2], msg);
+        mqttService.handleTetelemetry(
+          arrTopic[1],
+          arrTopic[2],
+          msg,
+          arrTopic[4],
+        );
         break;
       case MqttDeviceFunction.RESPONSE:
         if (arrTopic[4] === "setting-get") {
@@ -114,14 +120,44 @@ export const handleWriteCommandSet = async (
   deviceId: string,
   key: string,
   value: MqttScalarValue,
-  opts: { commandId: string },
+  opts: { commandId: string; topicSuffix?: "set" | "action" },
 ) => {
+  return handleWriteCommandPayload(
+    deviceId,
+    [{ key, value }],
+    opts,
+  );
+};
+
+export const handleWriteCommandPayload = async (
+  deviceId: string,
+  payloadInput: MqttCommandPayload,
+  opts: { commandId: string; topicSuffix?: "set" | "action" },
+) => {
+  const topicSuffix = opts.topicSuffix || "set";
   const topic =
     env.MQTT_PREFIX_TOPIC +
     "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
     deviceId +
-    "/command/set";
-  const payload = serializeMqttKeyValuePayload([{ key, value }]);
+    `/command/${topicSuffix}`;
+  const payload = serializeMqttKeyValuePayload(payloadInput);
+  console.log("Publishing to topic:", topic, "with data:", payload);
+  mqttClient.publish(topic, payload);
+  return;
+};
+
+export const handleWriteCommandJson = async (
+  deviceId: string,
+  payloadInput: Record<string, unknown>,
+  opts: { commandId: string; topicSuffix?: "set" | "action" },
+) => {
+  const topicSuffix = opts.topicSuffix || "set";
+  const topic =
+    env.MQTT_PREFIX_TOPIC +
+    "/Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1/" +
+    deviceId +
+    `/command/${topicSuffix}`;
+  const payload = JSON.stringify(payloadInput);
   console.log("Publishing to topic:", topic, "with data:", payload);
   mqttClient.publish(topic, payload);
   return;

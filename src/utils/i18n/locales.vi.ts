@@ -32,6 +32,12 @@ export const VI = {
     Switch: "Công tắc",
     CO2: "CO2",
   },
+  deviceStatus: {
+    on: "Mở",
+    off: "Tắt",
+    0: "Tắt",
+    1: "Mở",
+  },
   logicOperator: {
     and: "Và",
     or: "Hoặc",

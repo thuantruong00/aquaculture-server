@@ -13,7 +13,11 @@ import { DeviceModel, IDeviceModel } from "~/entities/device-model.entity";
 import { ConditionService } from "../condition";
 import { Action, IAction } from "~/entities/automatic-scene-action.entity";
 import { AutomationScene } from "~/entities/automatic-scene.entity";
-import { handleWriteCommandGet, handleWriteCommandSet } from "./mqttConnection";
+import {
+  handleWriteCommandGet,
+  handleWriteCommandJson,
+  handleWriteCommandSet,
+} from "./mqttConnection";
 import { telegramService } from "..";
 import { INotificationOption } from "~/entities/notification-option.entity";
 import { TelegramAccount } from "~/entities/telegram-account.entity";
@@ -44,6 +48,11 @@ export interface DeviceConnectionLogMessage {
   ip?: string;
 }
 
+export type PairingBridgeCommand =
+  | "pairing.sync"
+  | "pairing.reset"
+  | "pairing.reconnectMQTT";
+
 export class MqttService {
   private socketService: SocketService;
   private conditionService: ConditionService;
@@ -55,6 +64,7 @@ export class MqttService {
     zoneId: string,
     deviceId: string,
     value: string,
+    telemetrySuffix?: string,
   ) => {
     if (!Types.ObjectId.isValid(deviceId)) {
       logger.warn("Skip telemetry for invalid device ObjectId", {
@@ -71,7 +81,7 @@ export class MqttService {
     if (findDevice && findDevice.deviceModel) {
       const arrStringValue = value.split("|");
       if (arrStringValue.length > 0) {
-        const valueInsert = [];
+        const valueInsert: SensorDataConditionProcesss[] = [];
         for (const item of arrStringValue) {
           const arrKeyValue = item.split(":");
           valueInsert.push({
@@ -85,7 +95,9 @@ export class MqttService {
           deviceId: deviceId,
           values: valueInsert,
         });
-        const check = await this.processSensorValue(deviceId, valueInsert);
+        if (telemetrySuffix === "action") {
+          await this.processSensorValue(deviceId, valueInsert);
+        }
         // ========================
 
         // console.log("------",deviceId, valueInsert, insert, check);
@@ -219,6 +231,20 @@ export class MqttService {
     }
   };
 
+  publishPairingBridgeCommand = async (
+    deviceId: string,
+    command: PairingBridgeCommand,
+  ) => {
+    await handleWriteCommandJson(
+      deviceId,
+      { event: command },
+      {
+        commandId: `${deviceId}:${command}:${Date.now()}`,
+        topicSuffix: "set",
+      },
+    );
+  };
+
   processSensorValue = async (
     deviceId: string,
     data: SensorDataConditionProcesss[],
@@ -287,13 +313,19 @@ export class MqttService {
 
     return false;
   };
-  processByActionId = async (actionId: string) => {
+  processByActionId = async (
+    actionId: string,
+    commandTopicSuffix: "set" | "action" = "set",
+  ) => {
     const action = await Action.findOne({ _id: actionId }).lean<IAction>();
     if (!action) throw new Error("Action not found");
-    await this.handleAction([action]);
+    await this.handleAction([action], commandTopicSuffix);
   };
 
-  handleAction = async (actions: IAction[] | undefined | null) => {
+  handleAction = async (
+    actions: IAction[] | undefined | null,
+    commandTopicSuffix: "set" | "action" = "set",
+  ) => {
     if (actions && actions.length > 0) {
       for (const action of actions) {
         for (const step of action.steps) {
@@ -302,7 +334,7 @@ export class MqttService {
               String(step.deviceId),
               step.key,
               Number(step.value),
-              { commandId: "xxxId" },
+              { commandId: "xxxId", topicSuffix: commandTopicSuffix },
             );
           }
           if (step.deviceType == DeviceType.SENSOR) {

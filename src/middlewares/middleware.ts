@@ -50,12 +50,12 @@ export class Middleware {
           if (!access.allowed) {
             if (access.reason === "unauthenticated") {
               return res.redirect(
-                `/dashboard/auth/sign-in?redirect=${encodeURIComponent(req.originalUrl)}`
+                `/dashboard/auth/sign-in?redirect=${encodeURIComponent(req.originalUrl)}`,
               );
             }
 
             return res.status(403).render("errors/403", {
-              message: "Bạn không có quyền truy cập trang này.",
+              message: "Báº¡n khÃ´ng cÃ³ quyá»n truy cáº­p trang nÃ y.",
             });
           }
         }
@@ -79,33 +79,33 @@ export class Middleware {
     opts?: {
       allowedRole?: UserRole[];
       bypass?: boolean;
-      authMethods?: AuthMethod[]; // 👈 mặc định ["session"]
-    }
+      authMethods?: AuthMethod[];
+    },
   ) {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         if (opts?.bypass) return next();
 
-        const auth = await resolveApiAuth(
-          req,
-          opts?.authMethods ?? ["session"]
-        );
+        const auth = await resolveApiAuth(req, opts?.authMethods ?? ["session"]);
         const currentRole = auth.success ? auth.role : UserRole.GUEST;
-        const currentUser = auth.success ? auth.user : null;
 
         const access = checkAccess({
           role: currentRole,
           pageCode,
-          allowedRole: opts?.allowedRole,
+          allowedRole: opts?.allowedRole ?? [
+            UserRole.USER,
+            UserRole.ADMIN,
+            UserRole.ROOT,
+          ],
         });
-        // console.log(access);
+
         if (!access.allowed) {
           if (!auth.success) {
             return res.status(401).json({ message: "Unauthenticated." });
           }
           return res.status(403).json({ message: "Access denied." });
         }
-        // Attach user nếu có
+
         if (auth.success) {
           req.user = auth.user;
         }
@@ -124,28 +124,35 @@ export function checkAccess(options: {
   allowedRole?: UserRole[];
 }): { allowed: boolean; reason?: "unauthenticated" | "unauthorized" } {
   const { role, pageCode, allowedRole } = options;
-  // console.log("currentRole", role);
-  // console.log("pageCode", pageCode);
-  // console.log("allowedRole", allowedRole);
-  // Nếu có cấu hình allowedRole tại route, ưu tiên sử dụng
-  if (allowedRole && allowedRole.length > 0) {
-    const isAllowed = allowedRole.includes(role);
-    console.log(isAllowed);
-    if (!isAllowed) {
-      return {
-        allowed: false,
-        reason: role === UserRole.GUEST ? "unauthenticated" : "unauthorized",
-      };
-    }
-    return { allowed: true };
-  }
-  // Nếu không truyền allowedRole, fallback dùng RoleAccess.block
-  const isBlocked = RoleAccess.block[role]?.includes(pageCode) ?? false;
+  const denyReason =
+    role === UserRole.GUEST ? "unauthenticated" : "unauthorized";
 
-  if (isBlocked) {
+  const routerBaseAllowed =
+    !allowedRole || allowedRole.length === 0
+      ? true
+      : allowedRole.includes(role);
+
+  const allowList = RoleAccess.allow?.[role] ?? [];
+  const blockList = RoleAccess.block?.[role] ?? [];
+
+  const hasCustomAllow = allowList.includes(pageCode);
+  const hasCustomBlock = blockList.includes(pageCode);
+
+  if (hasCustomBlock) {
     return {
       allowed: false,
-      reason: role === UserRole.GUEST ? "unauthenticated" : "unauthorized",
+      reason: denyReason,
+    };
+  }
+
+  if (hasCustomAllow) {
+    return { allowed: true };
+  }
+
+  if (!routerBaseAllowed) {
+    return {
+      allowed: false,
+      reason: denyReason,
     };
   }
 
@@ -160,7 +167,7 @@ type AuthMethod = "session" | "basic" | "apiKey" | "bearer";
 
 export async function resolveApiAuth(
   req: Request,
-  methods: AuthMethod[] = ["session"]
+  methods: AuthMethod[] = ["session"],
 ): Promise<AuthResult> {
   for (const method of methods) {
     switch (method) {
@@ -218,7 +225,7 @@ export async function resolveApiAuth(
       //   if (auth?.startsWith("Bearer ")) {
       //     const token = auth.split(" ")[1];
       //     try {
-      //       const payload = await jwtVerifyToken(token); // bạn cần định nghĩa
+      //       const payload = await jwtVerifyToken(token);
       //       return {
       //         success: true,
       //         method: "bearer",
@@ -226,7 +233,6 @@ export async function resolveApiAuth(
       //         user: payload,
       //       };
       //     } catch (e) {
-      //       // continue thử các method khác
       //     }
       //   }
       //   break;
@@ -234,7 +240,6 @@ export async function resolveApiAuth(
     }
   }
 
-  // ✅ Return mặc định nếu không xác thực được
   return {
     success: false,
     reason: "unauthenticated",

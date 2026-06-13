@@ -2,12 +2,12 @@
   <div class="wrap-device-group">
     <%
     const groupDevices = group?.devices || [];
-    const dht22Sensors = groupDevices.filter((device) => {
-      return device?.deviceModel?.name === "dht22-sensor";
+    const scd40Sensors = groupDevices.filter((device) => {
+      return device?.deviceModel?.name === "scd40-relay-wifi";
     });
-    const dht22 = {
-      modelName: "dht22-sensor",
-      devices: dht22Sensors,
+    const scd40 = {
+      modelName: "scd40-relay-wifi",
+      devices: scd40Sensors,
     };
     %>
     <div class="row custom-at-workspace">
@@ -17,7 +17,7 @@
         <%- include(`./${device.deviceModel.template}.ejs`, {
           device: device,
           setting:false,
-          dht22: dht22
+          scd40: scd40,
         }) %>
         <% } %>
 

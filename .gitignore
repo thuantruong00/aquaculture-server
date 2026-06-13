@@ -21,6 +21,8 @@ out
 *.local
 *.tsbuildinfo
 /data/siteMeta.json
-/data/fimwares
+/data/firmwares/
 /data/dashboardSidebar.json
+/data/roleAccess.json
 docker-images
+.codex

@@ -10,17 +10,28 @@
 
       <%
       if(device.deviceModel.fields.length>0){
-        for(const item of device.deviceModel.fields){ %>
+        for(const item of device.deviceModel.fields){
+          const rawValue = device?.latestRecord
+            ? (device.latestRecord.values.find(value => value.key == item.key)?.value ?? "-")
+            : "-";
+          const isActuatorSwitch = item.key === "Switch" || item.deviceType === "actuator";
+          const isSwitchOn = rawValue === true || rawValue === 1 || rawValue === "1" || rawValue === "true";
+          const switchStatusKey = isSwitchOn ? "1" : "0";
+          if (isActuatorSwitch) { %>
       <div class="d-flex justify-content-between align-items-center">
         <div class="overview-device-key-label"><%= t("sensors."+item.key)%> :</div>
-        <div class="sensor-value x-key-<%= item.key %>"><span class="value">
-            <%= device?.latestRecord 
-        ? (device.latestRecord.values.find(value => value.key == item.key)?.value ?? "-") 
-        : "-" 
-          %>
-          </span><span class="unit"><%=item.unit %></span></div>
+        <div class="sensor-value x-key-<%= item.key %>">
+          <span class="value"><%=t("deviceStatus." + switchStatusKey)%></span>
+        </div>
       </div>
       <%
+          } else { %>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="overview-device-key-label"><%= t("sensors."+item.key)%> :</div>
+        <div class="sensor-value x-key-<%= item.key %>"><span class="value"><%=rawValue%></span><span class="unit"><%=item.unit %></span></div>
+      </div>
+      <%
+          }
         }
       }
       %>

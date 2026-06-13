@@ -58,3 +58,15 @@ export const ApiTelemetryBodySchema = z.object({
 });
 
 export type IApiTelemetryBodyDTO = z.infer<typeof ApiTelemetryBodySchema>;
+
+export const DeviceControlConnectionCommandSchema = z.object({
+  command: z.enum([
+    "pairing.sync",
+    "pairing.reset",
+    "pairing.reconnectMQTT",
+  ]),
+});
+
+export type IDeviceControlConnectionCommandDTO = z.infer<
+  typeof DeviceControlConnectionCommandSchema
+>;

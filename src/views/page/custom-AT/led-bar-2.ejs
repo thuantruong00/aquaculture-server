@@ -2,7 +2,7 @@
 const ledBarFields = Array.isArray(device?.deviceModel?.fields)
   ? device.deviceModel.fields
   : [];
-const dht22Devices = Array.isArray(dht22?.devices) ? dht22.devices : [];
+const scd40Devices = Array.isArray(scd40?.devices) ? scd40.devices : [];
 const totalChannels = 16;
 const channelsPerGroup = 2;
 const totalGroups = totalChannels / channelsPerGroup;
@@ -16,11 +16,11 @@ const getSensorGroupIndex = (sensorDevice) => {
   return Number.isInteger(groupIndex) && groupIndex > 0 ? groupIndex : null;
 };
 
-const dht22ByGroup = new Map();
-for (const sensorDevice of dht22Devices) {
+const scd40ByGroup = new Map();
+for (const sensorDevice of scd40Devices) {
   const groupIndex = getSensorGroupIndex(sensorDevice);
-  if (!groupIndex || dht22ByGroup.has(groupIndex)) continue;
-  dht22ByGroup.set(groupIndex, sensorDevice);
+  if (!groupIndex || scd40ByGroup.has(groupIndex)) continue;
+  scd40ByGroup.set(groupIndex, sensorDevice);
 }
 
 const ledBarGroups = Array.from({ length: totalGroups }, (_, index) => {
@@ -30,13 +30,13 @@ const ledBarGroups = Array.from({ length: totalGroups }, (_, index) => {
     fieldStartIndex,
     fieldStartIndex + channelsPerGroup
   );
-  const sensorDevice = dht22ByGroup.get(groupIndex) || null;
+  const sensorDevice = scd40ByGroup.get(groupIndex) || null;
 
   return {
     groupIndex,
     channels: [fieldStartIndex + 1, fieldStartIndex + 2],
     channelFields,
-    sensorType: "dht22",
+    sensorType: "scd40",
     sensorDevice,
     sensorValues: sensorDevice?.latestRecord?.values || [],
     isMapped: Boolean(sensorDevice),
@@ -109,7 +109,7 @@ const ledBarGroups = Array.from({ length: totalGroups }, (_, index) => {
               </div>
             </div>
             <div class="gap-xs"></div>
-            <div class="dht22-sensor-wrapper">
+            <div class="scd40-sensor-wrapper">
               <%- include(`./simple-list.ejs`, {
                 device: currentLedBarGroup.sensorDevice
               }) %>

@@ -31,6 +31,12 @@ export const EN = {
     Switch: "Switch",
     CO2: "CO2",
   },
+  deviceStatus: {
+    on: "On",
+    off: "Off",
+    0: "Off",
+    1: "On",
+  },
   logicOperator: {
     and: "and",
     or: "or",

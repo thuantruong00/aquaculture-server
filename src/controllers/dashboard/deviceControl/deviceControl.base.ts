@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import { BaseController } from "../dashboard.base-controller";
 import { Device } from "~/entities/device.entity";
+import { DeviceModel } from "~/entities/device-model.entity";
 import { DeviceStatus, ExecutionSource, ExecutionStatus } from "~/utils/enum";
 import { DeviceGroup, IDeviceGroup } from "~/entities/device-group.entity";
 import {
   IApiDeviceControlBodyDTO,
   IApiDeviceControlParamsDTO,
+  IDeviceControlConnectionCommandDTO,
   IDeviceControlQueryDTO,
+  DeviceControlConnectionCommandSchema,
 } from "./deviceControl.dto";
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { ExecutionLog } from "~/entities/execution-log.entity";
@@ -15,17 +18,22 @@ import {
   handleWriteCommandGet,
   handleWriteCommandSet,
 } from "~/services";
+import { MqttService } from "~/services/mqtt";
 import { logger } from "~/utils/logger";
 import { DeviceMessageService } from "~/services/deviceMessage";
 import { signDecrypt, signEncrypt } from "~/utils/sign";
 import { env } from "~/utils";
 DeviceGroup;
 
+const PAIRING_BRIDGE_MODEL_NAME = "pairing-tool";
+
 export class DeviceControlControllerBase extends BaseController {
   private deviceMessageService: DeviceMessageService;
+  private mqttService: MqttService;
   constructor() {
     super();
     this.deviceMessageService = new DeviceMessageService();
+    this.mqttService = new MqttService();
   }
   async handleDeviceControlPage(req: Request, res: Response) {
     try {
@@ -166,6 +174,68 @@ export class DeviceControlControllerBase extends BaseController {
     } catch (error) {
       logger.error("Err handleDeviceControlManagementPage", error);
       return this.renderWithSidebar(res, "page/error");
+    }
+  }
+  async handleDeviceControlConnectionPage(req: Request, res: Response) {
+    try {
+      return this.renderWithSidebar(res, undefined, {});
+    } catch (error) {
+      logger.error("Err handleDeviceControlConnectionPage", error);
+      return this.renderWithSidebar(res, "page/error");
+    }
+  }
+
+  async handleDeviceControlConnectionCommandPage(req: Request, res: Response) {
+    const redirectUrl =
+      req.get("Referer") || "/dashboard/device-control/connection";
+
+    try {
+      const parsedBody = DeviceControlConnectionCommandSchema.safeParse(
+        req.body,
+      );
+
+      if (!parsedBody.success) {
+        return res.redirect(redirectUrl);
+      }
+
+      const { command } =
+        parsedBody.data as IDeviceControlConnectionCommandDTO;
+
+      logger.info("Device control connection command received", { command });
+      const pairingBridgeModel = await DeviceModel.findOne({
+        name: PAIRING_BRIDGE_MODEL_NAME,
+      }).select("_id");
+
+      if (!pairingBridgeModel) {
+        logger.warn("Pairing bridge model not found", {
+          command,
+          modelName: PAIRING_BRIDGE_MODEL_NAME,
+        });
+        return res.redirect(redirectUrl);
+      }
+
+      const pairingBridgeDevice = await Device.findOne({
+        status: { $eq: DeviceStatus.ACTIVE },
+        deviceModel: pairingBridgeModel._id,
+      }).select("_id");
+
+      if (!pairingBridgeDevice) {
+        logger.warn("Pairing bridge virtual device not found", {
+          command,
+          modelName: PAIRING_BRIDGE_MODEL_NAME,
+        });
+        return res.redirect(redirectUrl);
+      }
+
+      await this.mqttService.publishPairingBridgeCommand(
+        String(pairingBridgeDevice._id),
+        command,
+      );
+
+      return res.redirect(redirectUrl);
+    } catch (error) {
+      logger.error("Err handleDeviceControlConnectionCommandPage", error);
+      return res.redirect(redirectUrl);
     }
   }
 

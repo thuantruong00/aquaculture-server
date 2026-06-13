@@ -37,6 +37,13 @@ if (sidebarDataJson && Array.isArray(sidebarDataJson)) {
           child: [],
         },
         {
+          page_id: "deviceControlConnection",
+          title: "Kết nối thiết bị",
+          href: "/dashboard/device-control/connection",
+          page_name: "page/dashboard/device-control-connection",
+          child: [],
+        },
+        {
           page_id: "deviceControlManagement",
           title: "Quản lý bảng điều khiển",
           href: "/dashboard/device-control/management",

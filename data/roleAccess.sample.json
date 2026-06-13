@@ -1,0 +1,21 @@
+{
+    "block": {
+        "root": [],
+        "admin": [],
+        "user": [
+            "deviceSetting",
+            "notificationSetting",
+            "customUi"
+        ],
+        "guest": [
+            "deviceControl",
+            "history",
+            "automatic",
+            "deviceSetting",
+            "notificationGroup",
+            "account",
+            "customUi",
+            "firmwareVersion"
+        ]
+    }
+}

@@ -274,7 +274,7 @@ export class AutomaticController extends BaseController {
           actions: action ? [action] : [],
           logic,
           conditions: condition,
-          notifications: notiGroup,
+          notifications: notiGroupValue,
         }
       );
 

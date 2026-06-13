@@ -1,0 +1,54 @@
+<div class="col-3 my-2 x-item-<%= device._id %>">
+  <div class="device-item">
+    <div class="wrap-device-item">
+      <%- include('../cms/reload-device-button.ejs',{deviceId:device._id}) %>
+      <%- include('../cms/setting.ejs', {id:device._id,type:"device", setting:setting}) %>
+      <a href="#" class="wrap-name">
+        <h6 class="name link-icon"><%= device.name %></h6>
+      </a>
+
+      <%
+      const fields = device?.deviceModel?.fields || [];
+      const sensorFields = fields.filter(item => item.deviceType === "sensor");
+      const relayField = fields.find(item => item.deviceType === "actuator");
+      const latestRecord = device?.latestRecord;
+      const latestValues = latestRecord?.values || [];
+      const isExistedLatestRecord = Boolean(latestRecord && latestValues.length > 0);
+      const relayValue = relayField
+        ? latestValues.find(value => value.key == relayField.key)?.value
+        : null;
+      const isRelayOn = relayValue === true || relayValue === 1 || relayValue === "1" || relayValue === "true";
+      %>
+
+      <div class="box">
+        <% if (sensorFields.length > 0) { %>
+          <% for (const item of sensorFields) { %>
+            <div class="device-key-label" style="text-align: left;"><%= t("sensors."+item.key) %> :</div>
+            <div class="sensor-value x-key-<%= item.key %>" style="text-align: left;">
+              <span class="value">
+                <%= latestRecord
+                  ? (latestValues.find(value => value.key == item.key)?.value ?? "-")
+                  : "-" %>
+              </span>
+              <span class="unit"><%= item.unit %></span>
+            </div>
+          <% } %>
+        <% } %>
+
+        <% if (relayField) { %>
+          <div class="device-key-label"><%= t("sensors."+relayField.key) %> :</div>
+          <div class="device-status <%= isRelayOn ? 'device-status-online' : 'device-status-offline' %> x-key-<%= relayField.key %> ">
+            <span class="value d-none"><%= relayValue ?? 0 %></span>
+            <div class="text online">Đang hoạt động</div>
+            <div class="text offline">Đã dừng</div>
+            <div class="text error">Bị lỗi</div>
+          </div>
+          <Button onclick="controlDevice('<%= device._id %>', '<%= relayField.key %>', 0)" class="control-device">Tắt</Button>
+          <Button onclick="controlDevice('<%= device._id %>', '<%= relayField.key %>', 1)" class="control-device">Mở</Button>
+        <% } %>
+
+        <div class="updated-at"><small><i><%= isExistedLatestRecord ? new Date(latestRecord.executedAt || latestRecord.timestamp).toLocaleString('en-GB') :"--/--" %></i></small></div>
+      </div>
+    </div>
+  </div>
+</div>

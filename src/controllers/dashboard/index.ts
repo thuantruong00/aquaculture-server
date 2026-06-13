@@ -1,4 +1,5 @@
 export * from "./account";
+export * from "./appSetting";
 export * from "./deviceControl";
 export * from "./deviceSetting";
 export * from "./history";

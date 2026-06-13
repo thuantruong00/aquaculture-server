@@ -10,10 +10,7 @@ import { BaseController } from "../dashboard.base-controller";
 import { logger } from "~/utils/logger";
 import { Device } from "~/entities/device.entity";
 import { handleWriteOtaUpload, handleWriteSettingGet } from "~/services";
-import {
-  IFirmwareGetInfoDTO,
-  IFirmwareOtaUploadDTO,
-} from "./firmware.dto";
+import { IFirmwareGetInfoDTO, IFirmwareOtaUploadDTO } from "./firmware.dto";
 import { DeviceStatus } from "~/utils/enum";
 import { env } from "~/utils";
 import { IZone } from "~/entities/zone.entity";
@@ -83,17 +80,10 @@ export class FirmwareController extends BaseController {
       }
 
       // 2. Xác định đường dẫn tuyệt đối
-      const filePath = path.resolve(
-        __dirname,
-        "../../../../data/firmwares",
-        filename,
-      );
+      const filePath = path.resolve(getFirmwaresDir(), filename);
 
       // 3. Đảm bảo filePath vẫn nằm trong thư mục firmwares (ngăn path traversal)
-      const firmwaresDir = path.resolve(
-        __dirname,
-        "../../../../data/firmwares",
-      );
+      const firmwaresDir = getFirmwaresDir();
       if (!filePath.startsWith(firmwaresDir)) {
         return res.status(400).json({ error: "Access denied" });
       }
@@ -153,13 +143,10 @@ export class FirmwareController extends BaseController {
 
       const otaMessages = [];
       for (const device of devices) {
-        const zone = device.zone as unknown as IZone | null;
-        if (!zone?.mqttZone) {
-          continue;
-        }
+        let zone = env.CUSTOM_MQTT_ZONE;
 
         const published = await handleWriteOtaUpload(
-          zone.mqttZone,
+          zone,
           String(device._id),
           targetFileUrl,
           env.DEVICE_SECRET_KEY,
@@ -215,28 +202,38 @@ const formatFileSize = (bytes: number) => {
 };
 
 const getFirmwareFiles = async () => {
-  const firmwaresDir = path.resolve(__dirname, "../../../../data/firmwares");
-  const entries = await readdir(firmwaresDir, { withFileTypes: true });
-  const firmwareFiles = await Promise.all(
-    entries
-      .filter(
-        (entry) => entry.isFile() && entry.name.toLowerCase().endsWith(".bin"),
-      )
-      .map(async (entry) => {
-        const filePath = path.join(firmwaresDir, entry.name);
-        const fileStat = await stat(filePath);
+  const firmwaresDir = getFirmwaresDir();
+  try {
+    const entries = await readdir(firmwaresDir, { withFileTypes: true });
+    const firmwareFiles = await Promise.all(
+      entries
+        .filter(
+          (entry) =>
+            entry.isFile() && entry.name.toLowerCase().endsWith(".bin"),
+        )
+        .map(async (entry) => {
+          const filePath = path.join(firmwaresDir, entry.name);
+          const fileStat = await stat(filePath);
 
-        return {
-          name: entry.name,
-          size: formatFileSize(fileStat.size),
-          updatedAt: fileStat.mtime,
-          downloadUrl: `/dashboard/firmware/files/${encodeURIComponent(entry.name)}`,
-        };
-      }),
-  );
+          return {
+            name: entry.name,
+            size: formatFileSize(fileStat.size),
+            updatedAt: fileStat.mtime,
+            downloadUrl: `/dashboard/firmware/files/${encodeURIComponent(entry.name)}`,
+          };
+        }),
+    );
 
-  firmwareFiles.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
-  return firmwareFiles;
+    firmwareFiles.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+    return firmwareFiles;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      logger.warn("Firmware directory does not exist", { firmwaresDir });
+      return [];
+    }
+
+    throw error;
+  }
 };
 
 const resolveFirmwareFilePath = (filename: string) => {
@@ -245,7 +242,7 @@ const resolveFirmwareFilePath = (filename: string) => {
     throw new Error("Invalid filename");
   }
 
-  const firmwaresDir = path.resolve(__dirname, "../../../../data/firmwares");
+  const firmwaresDir = getFirmwaresDir();
   const filePath = path.resolve(firmwaresDir, filename);
 
   if (!filePath.startsWith(firmwaresDir)) {
@@ -254,6 +251,8 @@ const resolveFirmwareFilePath = (filename: string) => {
 
   return filePath;
 };
+
+const getFirmwaresDir = () => path.resolve(env.FIRMWARES_DIR);
 
 const buildOtaFirmwareUrl = (filename: string) => {
   const baseUrl = env.OTA_FIRMWARE_PUBLIC_BASE_URL.trim().replace(/\/+$/, "");

@@ -1,0 +1,83 @@
+<div class="container modal-id">
+  <div class="gap-xs"></div>
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="wrap-title">
+        <div class="title">Kết nối thiết bị</div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="wrap-box p-3 mb-3">
+        <div class="mb-2">
+          Trang này dùng để gửi command xuống pairing bridge qua MQTT.
+        </div>
+        <div>
+          Phạm vi hiện tại chỉ gồm 3 command tổng quát, không gửi theo IP cụ thể.
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 col-12 mb-3">
+          <div class="wrap-box p-3 h-100 d-flex flex-column">
+            <div class="wrap-title mb-2">
+              <div class="title">Pairing Sync</div>
+            </div>
+            <div class="mb-3 flex-grow-1">
+              Gửi event <code>pairing.sync</code> để bridge quét thiết bị open và đồng bộ pairing.
+            </div>
+            <form action="/dashboard/device-control/connection/command" method="post">
+              <input type="hidden" name="command" value="pairing.sync">
+              <div class="submit">
+                <button type="submit" class="submit-btn w-100">
+                  Gửi pairing.sync
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-12 mb-3">
+          <div class="wrap-box p-3 h-100 d-flex flex-column">
+            <div class="wrap-title mb-2">
+              <div class="title">Pairing Reset</div>
+            </div>
+            <div class="mb-3 flex-grow-1">
+              Gửi event <code>pairing.reset</code> để reset các thiết bị đang mở kết nối.
+            </div>
+            <form action="/dashboard/device-control/connection/command" method="post">
+              <input type="hidden" name="command" value="pairing.reset">
+              <div class="submit">
+                <button type="submit" class="submit-btn w-100">
+                  Gửi pairing.reset
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-12 mb-3">
+          <div class="wrap-box p-3 h-100 d-flex flex-column">
+            <div class="wrap-title mb-2">
+              <div class="title">Reconnect MQTT</div>
+            </div>
+            <div class="mb-3 flex-grow-1">
+              Gửi event <code>pairing.reconnectMQTT</code> để yêu cầu thiết bị kết nối lại MQTT.
+            </div>
+            <form action="/dashboard/device-control/connection/command" method="post">
+              <input type="hidden" name="command" value="pairing.reconnectMQTT">
+              <div class="submit">
+                <button type="submit" class="submit-btn w-100">
+                  Gửi pairing.reconnectMQTT
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="gap-md"></div>
+</div>

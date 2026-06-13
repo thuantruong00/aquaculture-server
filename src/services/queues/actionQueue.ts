@@ -20,7 +20,7 @@ async function worker(task: ActionTask): Promise<void> {
   // await actionService.processTask(task);
   if (task.topic === "action" && task.payload.refId) {
     logger.info(`topic : ${task.topic} - id : ${task.payload.refId}`);
-    mqttService.processByActionId(task.payload.refId);
+    await mqttService.processByActionId(task.payload.refId, "action");
   }
 
   return;

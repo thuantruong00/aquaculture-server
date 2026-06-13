@@ -1,3 +1,5 @@
+import path from "path";
+
 export const env = {
   DB_CONNECT_STRING: process.env.DB_CONNECT_STRING || "",
   DB_NAME: process.env.DB_NAME || "aquadb",
@@ -16,9 +18,12 @@ export const env = {
   NODE_ENV: process.env.NODE_ENV || "production",
   SECRET_KEY_INTERNAL: process.env.SECRET_KEY_INTERNAL || "pl12hs228as",
   DEVICE_SECRET_KEY: process.env.DEVICE_SECRET_KEY || "123456",
-  OTA_FIRMWARE_PUBLIC_BASE_URL:
-    process.env.OTA_FIRMWARE_PUBLIC_BASE_URL || "",
+  OTA_FIRMWARE_PUBLIC_BASE_URL: process.env.OTA_FIRMWARE_PUBLIC_BASE_URL || "",
   KEY_SIGN: process.env.KEY_SIGN || "",
   SECRET_KEY_SIGN: process.env.SECRET_KEY_SIGN || "",
   REDIRECT_URL: process.env.REDIRECT_URL || "/dashboard/device-control",
+  FIRMWARES_DIR:
+    process.env.FIRMWARES_DIR || path.resolve(process.cwd(), "data/firmwares"),
+  CUSTOM_MQTT_ZONE:
+    process.env.CUSTOM_MQTT_ZONE || "Nzj9gp3RYJjNQ1NDdlYWM2Y2Y3ZWZjZ1",
 };

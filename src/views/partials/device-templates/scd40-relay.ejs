@@ -22,31 +22,41 @@
 
       <div class="box">
         <% if (sensorFields.length > 0) { %>
-          <% for (const item of sensorFields) { %>
-            <div class="device-key-label" style="text-align: left;"><%= t("sensors."+item.key) %> :</div>
-            <div class="sensor-value x-key-<%= item.key %>" style="text-align: left;">
-              <span class="value">
-                <%= latestRecord
+        <% for (const item of sensorFields) { %>
+        <div class="device-key-label" style="text-align: left;"><%= t("sensors."+item.key) %> :</div>
+        <div class="sensor-value x-key-<%= item.key %>" style="text-align: left;">
+          <span class="value">
+            <%= latestRecord
                   ? (latestValues.find(value => value.key == item.key)?.value ?? "-")
                   : "-" %>
-              </span>
-              <span class="unit"><%= item.unit %></span>
+          </span>
+          <span class="unit"><%= item.unit %></span>
+        </div>
+        <% } %>
+        <% } %>
+
+        <div class="wrap-control-device horizontal-control">
+          <% if (relayField) { %>
+          <div class="device-key-label text-left"><%= t("sensors."+relayField.key) %> :</div>
+          <div class="gap-xs"></div>
+          <div class="d-flex align-items-center">
+            <div style="width: 60%; text-align: center;">
+              <div class="device-status <%= isRelayOn ? 'device-status-online' : 'device-status-offline' %> x-key-<%= relayField.key %> m-0">
+                <span class="value d-none"><%= relayValue ?? 0 %></span>
+                <div class="text online">Đang hoạt động</div>
+                <div class="text offline">Đã dừng</div>
+                <div class="text error">Bị lỗi</div>
+              </div>
             </div>
-          <% } %>
-        <% } %>
-
-        <% if (relayField) { %>
-          <div class="device-key-label"><%= t("sensors."+relayField.key) %> :</div>
-          <div class="device-status <%= isRelayOn ? 'device-status-online' : 'device-status-offline' %> x-key-<%= relayField.key %> ">
-            <span class="value d-none"><%= relayValue ?? 0 %></span>
-            <div class="text online">Đang hoạt động</div>
-            <div class="text offline">Đã dừng</div>
-            <div class="text error">Bị lỗi</div>
+            <div class="control-device-button">
+              <Button onclick="controlDevice('<%= device._id %>', '<%= relayField.key %>', 0)" class="control-device">Tắt</Button>
+              <Button onclick="controlDevice('<%= device._id %>', '<%= relayField.key %>', 1)" class="control-device">Mở</Button>
+            </div>
           </div>
-          <Button onclick="controlDevice('<%= device._id %>', '<%= relayField.key %>', 0)" class="control-device">Tắt</Button>
-          <Button onclick="controlDevice('<%= device._id %>', '<%= relayField.key %>', 1)" class="control-device">Mở</Button>
-        <% } %>
+          <div class="gap-xs"></div>
 
+          <% } %>
+        </div>
         <div class="updated-at"><small><i><%= isExistedLatestRecord ? new Date(latestRecord.executedAt || latestRecord.timestamp).toLocaleString('en-GB') :"--/--" %></i></small></div>
       </div>
     </div>

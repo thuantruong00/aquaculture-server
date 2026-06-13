@@ -1,10 +1,12 @@
 import { query, Router } from "express";
+import { mkdirSync } from "fs";
 import multer from "multer";
 import path from "path";
 import is from "zod/v4/locales/is.cjs";
 
 import {
   AccountController,
+  AppSettingController,
   ActivateDeviceSchema,
   ApiDeviceControlBodySchema,
   ApiDeviceControlParamsSchema,
@@ -50,13 +52,16 @@ import {
 } from "~/controllers/dashboard/notificationSetting/notificationSetting.dto";
 import { Middleware, zodMultiValidator } from "~/middlewares";
 import { AllRoles, IsUserGroup } from "~/utils/const";
+import { env } from "~/utils";
 import { UserRole } from "~/utils/enum";
 
 export const dashboardRouter = Router();
 
 const firmwareStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, path.resolve(process.cwd(), "data/firmwares"));
+    const firmwaresDir = path.resolve(env.FIRMWARES_DIR);
+    mkdirSync(firmwaresDir, { recursive: true });
+    cb(null, firmwaresDir);
   },
   filename: (_req, file, cb) => {
     const filename = path.basename(file.originalname);
@@ -88,6 +93,7 @@ const middleware = new Middleware();
 const deviceController = new DeviceControlController();
 const authController = new AuthController();
 const accountController = new AccountController();
+const appSettingController = new AppSettingController();
 const deviceSettingController = new DeviceSettingController();
 const historyController = new HistoryController();
 const notificationSettingController = new NotificationSettingController();
@@ -97,33 +103,50 @@ const firmwareController = new FirmwareController();
 const introductionController = new IntroductionController();
 dashboardRouter.get(
   "/device-control",
-  middleware.webPageMiddleware("deviceControl", { allowedRole: AllRoles }),
+  middleware.webPageMiddleware("deviceControl", { allowedRole: IsUserGroup }),
   zodMultiValidator({ query: DeviceControlQuerySchema }),
   deviceController.handleDeviceControlPage.bind(deviceController),
 );
 dashboardRouter.get(
   "/device-control/management",
   middleware.webPageMiddleware("deviceControlManagement", {
-    allowedRole: AllRoles,
+    allowedRole: IsUserGroup,
   }),
   deviceController.handleDeviceControlManagementPage.bind(deviceController),
 );
+
+dashboardRouter.get(
+  "/device-control/connection",
+  middleware.webPageMiddleware("deviceControlConnection", {
+    allowedRole: IsUserGroup,
+  }),
+  deviceController.handleDeviceControlConnectionPage.bind(deviceController),
+);
+
+dashboardRouter.post(
+  "/device-control/connection/command",
+  middleware.webPageMiddleware("deviceControlConnection", {
+    allowedRole: IsUserGroup,
+  }),
+  deviceController.handleDeviceControlConnectionCommandPage.bind(deviceController),
+);
+
 // ─── Automatic ────────────────────────────────────────────────
 dashboardRouter.get(
   "/automatic/",
-  middleware.webPageMiddleware("automatic", { allowedRole: AllRoles }),
+  middleware.webPageMiddleware("automatic", { allowedRole: IsUserGroup }),
   automaticController.handleAutomaticPage.bind(automaticController),
 );
 dashboardRouter.get(
   "/automatic/scene-create",
   middleware.webPageMiddleware("automaticSceneCreate", {
-    allowedRole: AllRoles,
+    allowedRole: IsUserGroup,
   }),
   automaticController.handleAutomaticSceneCreatePage.bind(automaticController),
 );
 dashboardRouter.get(
   "/automatic/scene-detail/:sceneId",
-  middleware.webPageMiddleware("automatic", { allowedRole: AllRoles }),
+  middleware.webPageMiddleware("automatic", { allowedRole: IsUserGroup }),
   automaticController.handleAutomaticSceneDetailPage.bind(automaticController),
 );
 
@@ -135,7 +158,7 @@ dashboardRouter.get(
 
 dashboardRouter.get(
   "/automatic/action-detail/:actionId",
-  middleware.webPageMiddleware("automaticAction", { allowedRole: AllRoles }),
+  middleware.webPageMiddleware("automaticAction", { allowedRole: IsUserGroup }),
   automaticController.handleAutomaticActionDetailPage.bind(automaticController),
 );
 
@@ -172,7 +195,7 @@ dashboardRouter.get(
 
 dashboardRouter.get(
   "/automatic/timer",
-  middleware.webPageMiddleware("automaticTimer", { allowedRole: AllRoles }),
+  middleware.webPageMiddleware("automaticTimer", { allowedRole: IsUserGroup }),
   automaticController.handleAutomaticTimerPage.bind(automaticController),
 );
 dashboardRouter.post(
@@ -184,7 +207,7 @@ dashboardRouter.post(
 
 dashboardRouter.get(
   "/automatic/timer-control/start/:timerJobId",
-  middleware.webPageMiddleware("automaticTimer", { allowedRole: AllRoles }),
+  middleware.webPageMiddleware("automaticTimer", { allowedRole: IsUserGroup }),
   automaticController.handleAutomaticTimerStart.bind(automaticController),
 );
 dashboardRouter.get(
@@ -195,7 +218,7 @@ dashboardRouter.get(
 
 dashboardRouter.get(
   "/automatic/actions",
-  middleware.webPageMiddleware("automaticAction", { allowedRole: AllRoles }),
+  middleware.webPageMiddleware("automaticAction", { allowedRole: IsUserGroup }),
   automaticController.handleAutomaticActionPage.bind(automaticController),
 );
 
@@ -292,15 +315,20 @@ dashboardRouter.get(
 
 dashboardRouter.post(
   "/device-setting/server-ip",
-  middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
+  middleware.APImiddleware("appSetting", { allowedRole: AllRoles }),
   zodMultiValidator({ body: UpdateIpSchema }),
   deviceSettingController.handleApiUpdateIp.bind(deviceSettingController),
 );
 
 dashboardRouter.get(
   "/device-setting/server-ip",
-  middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
+  middleware.APImiddleware("appSetting", { allowedRole: AllRoles }),
   deviceSettingController.handleApiGetIp.bind(deviceSettingController),
+);
+dashboardRouter.get(
+  "/app-setting/locales",
+  middleware.APImiddleware("appSetting", { allowedRole: AllRoles }),
+  appSettingController.handleApiGetLocales.bind(appSettingController),
 );
 
 // ─── Notification Setting ──────────────────────────────────────────
@@ -455,7 +483,7 @@ dashboardRouter.get(
 
 dashboardRouter.get(
   "/firmware/files/:filename",
-  middleware.APImiddleware("deviceSetting", { allowedRole: AllRoles }),
+  middleware.APImiddleware("appSetting", { allowedRole: AllRoles }),
   firmwareController.handleServeFirmware,
 );
 dashboardRouter.post(
@@ -497,7 +525,7 @@ dashboardRouter.get(
 dashboardRouter.post(
   "/device-setting/connect",
   zodMultiValidator({ body: DeviceConnectSchema }),
-  middleware.APImiddleware("deviceSettingAdd"),
+  middleware.APImiddleware("deviceSettingAdd", { allowedRole: AllRoles }),
   deviceSettingController.handleApiDeviceConnect.bind(deviceSettingController),
 );
 dashboardRouter.post(
@@ -572,7 +600,9 @@ dashboardRouter.get(
 // cheat
 dashboardRouter.post(
   "/api/device-models/create",
-  middleware.APImiddleware("deviceSettingActivate"),
+  middleware.APImiddleware("deviceSettingActivate", {
+    allowedRole: AllRoles,
+  }),
   deviceSettingController.handleApiCreateDeviceModel.bind(
     deviceSettingController,
   ),

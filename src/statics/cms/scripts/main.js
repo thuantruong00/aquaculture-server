@@ -8,17 +8,76 @@ var socket = io(`${webSocketUrl}`, {
 // Listen for 'chat message' event
 
 // ==============================
+async function loadAppLocales() {
+  try {
+    const currentLocale = window.__I18N?.locale || "en";
+    const response = await fetch(
+      `${baseUrl}/dashboard/app-setting/locales?locale=${encodeURIComponent(currentLocale)}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      },
+    );
+
+    if (!response.ok) {
+      return;
+    }
+
+    const result = await response.json();
+    if (!result?.success || !result?.payload?.messages) {
+      return;
+    }
+
+    window.__I18N = {
+      ...(window.__I18N || {}),
+      locale: result.payload.locale || currentLocale,
+      ...result.payload.messages,
+    };
+  } catch (error) {
+    console.warn("loadAppLocales failed", error);
+  }
+}
+
+loadAppLocales();
+
+function isTruthyDeviceValue(value) {
+  return (
+    value === true ||
+    value === 1 ||
+    value === "1" ||
+    value === "true"
+  );
+}
+
+function getDeviceStatusLabel(value) {
+  const normalizedValue = isTruthyDeviceValue(value) ? "1" : "0";
+  const translations = window.__I18N?.deviceStatus || {};
+  return translations[normalizedValue] || "";
+}
+
+function handleTelemetryValue(deviceId, key, value) {
+  const $value = $(`.x-item-${deviceId} .x-key-${key} span.value`);
+  if ($value.length === 0) {
+    return;
+  }
+
+  if (key === "Switch") {
+    $value.text(getDeviceStatusLabel(value));
+    return;
+  }
+
+  $value.text(value);
+}
+
 function handleTelemetryStatus(deviceId, key, value) {
   const $status = $(`.x-item-${deviceId} .x-key-${key}.device-status`);
   if ($status.length === 0) {
     return;
   }
 
-  const normalizedValue =
-    value === true ||
-    value === 1 ||
-    value === "1" ||
-    value === "true";
+  const normalizedValue = isTruthyDeviceValue(value);
 
   $status.removeClass("device-status-online");
   $status.removeClass("device-status-offline");
@@ -35,7 +94,7 @@ socket.on("iotDataTelemetry", function (data) {
 
   if (!devices || devices.length === 0) return;
   for (const item of devices) {
-    $(`.x-item-${id} .x-key-${item.key} span.value`).text(item.value)
+    handleTelemetryValue(id, item.key, item.value);
     handleTelemetryStatus(id, item.key, item.value);
     if (deviceModelName && deviceModelName == "led-bar-2-line-AT") {
       handleLedBarTelemetry(id, item.key, item.value);
