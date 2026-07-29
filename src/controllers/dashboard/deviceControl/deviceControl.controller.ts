@@ -1,13 +1,20 @@
 ﻿import { DeviceControlControllerBase } from "./deviceControl.base";
 import { Request, Response } from "express";
 import { Device } from "~/entities/device.entity";
-import { DeviceGroupStatus, DeviceStatus } from "~/utils/enum";
+import {
+  DeviceGroupStatus,
+  DeviceStatus,
+  UserDeviceGroupPermissionAction,
+  UserDeviceGroupPermissionStatus,
+  UserRole,
+} from "~/utils/enum";
 import { DeviceGroup, IDeviceGroup } from "~/entities/device-group.entity";
 import { IDeviceControlQueryDTO } from "./deviceControl.dto";
 import { DeviceRecord } from "~/entities/device-record.entity";
 import { ExecutionLog } from "~/entities/execution-log.entity";
 import { DeviceFieldConfig } from "~/entities/device-field-config.entity";
 import { logger } from "~/utils/logger";
+import { UserDeviceGroupPermission } from "~/entities/user-device-group-permission.entity";
 
 DeviceGroup;
 
@@ -19,9 +26,32 @@ export class DeviceControlController extends DeviceControlControllerBase {
     try {
       const { deviceIds, groupIds } =
         req.query as unknown as IDeviceControlQueryDTO;
+      const sessionUser = req.session.user;
+      const currentRole = sessionUser?.role as UserRole | undefined;
+      let allowedGroupIds: string[] | undefined;
+
+      if (currentRole === UserRole.USER && sessionUser?.user_id) {
+        const permissions = await UserDeviceGroupPermission.find({
+          userId: sessionUser.user_id,
+          status: { $eq: UserDeviceGroupPermissionStatus.ACTIVE },
+          permissions: { $in: [UserDeviceGroupPermissionAction.VIEW] },
+        }).select("deviceGroupId");
+
+        allowedGroupIds = permissions.map((item) => String(item.deviceGroupId));
+      }
+
+      const requestedGroupIds = groupIds ?? [];
+      const effectiveGroupIds =
+        allowedGroupIds === undefined
+          ? requestedGroupIds
+          : requestedGroupIds.length > 0
+            ? requestedGroupIds.filter((id) => allowedGroupIds.includes(String(id)))
+            : allowedGroupIds;
 
       const getGroup = await DeviceGroup.find({
-        ...(deviceIds || groupIds ? { _id: { $in: groupIds ?? [] } } : {}),
+        ...(deviceIds || groupIds || allowedGroupIds !== undefined
+          ? { _id: { $in: effectiveGroupIds } }
+          : {}),
         status: { $eq: DeviceGroupStatus.ACTIVE },
       }).sort({ order: 1 });
       const newGroupMap = getGroup.map((item) => item._id);

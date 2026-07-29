@@ -27,6 +27,7 @@ import {
   FirmwareController,
   FirmwareOtaUploadSchema,
   UpdateDeviceGroupInfoSchema,
+  UpdateUserDeviceGroupPermissionBodySchema,
   UpdateDeviceGroupSchema,
   UpdateDeviceOrdersSchema,
   UpdateDeviceSchema,
@@ -277,7 +278,15 @@ dashboardRouter.post(
   customUiController.handleRemoveDevicePage.bind(customUiController),
 );
 
+
+
 // ─── Device Setting ────────────────────────────────────────────────
+dashboardRouter.post(
+  "/custom-ui/user-device-group-permission/:groupId",
+  zodMultiValidator({ body: UpdateUserDeviceGroupPermissionBodySchema }),
+  middleware.webPageMiddleware("deviceGroup"),
+  customUiController.handleUpdateUserDeviceGroupPermissionPage.bind(customUiController),
+);
 dashboardRouter.get(
   "/device-setting",
   middleware.webPageMiddleware("deviceSetting"),

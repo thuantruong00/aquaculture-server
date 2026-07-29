@@ -22,6 +22,17 @@ export enum UserStatus {
   DELETED = "deleted",
 }
 
+export enum UserDeviceGroupPermissionStatus {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+  DELETED = "deleted",
+}
+
+export enum UserDeviceGroupPermissionAction {
+  VIEW = "view",
+  CONTROL = "control",
+}
+
 export enum NotiAccountStatus {
   ACTIVE = "active",
   INACTIVE = "inactive",

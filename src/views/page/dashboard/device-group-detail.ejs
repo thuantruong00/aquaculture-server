@@ -1,5 +1,8 @@
 <% 
 const formId="change-order-1"
+const permissionRowsData = Array.isArray(typeof permissionRows !== "undefined" ? permissionRows : undefined)
+  ? permissionRows
+  : [];
 %>
 <div class="container modal-id ">
   <div class="gap-sm"></div>
@@ -132,6 +135,66 @@ const formId="change-order-1"
           </form>
         </div>
       </div>
+    </div>
+    <div class="col-6">
+      <div class="gap-md"></div>
+      <div class="gap-md"></div>
+      <div class="wrap-title">
+        <div class="title">Phân quyền user theo nhóm</div>
+      </div>
+      <form action="/dashboard/custom-ui/user-device-group-permission/<%=groupId %>" method="post">
+      <div class="base-list user-table overflow-y-scroll">
+        <div class="wrap-box">
+          <ul class="sticky-header">
+            <li class="d-flex header-row">
+              <span>Stt</span>
+              <span class="device-name">Tài khoản</span>
+              <span>View</span>
+              <span>Control</span>
+            </li>
+          </ul>
+          <ul>
+            <% if(permissionRowsData.length>0){ %>
+              <% for(const index in permissionRowsData){ %>
+                <% const row = permissionRowsData[index]; %>
+                <% const hasView = row.permissions.includes("view"); %>
+                <% const hasControl = row.permissions.includes("control"); %>
+                <li class="d-flex">
+                  <input type="hidden" name="userIds" value="<%= row.user._id %>">
+                  <span><%= Number(index) + 1 %></span>
+                  <span class="device-name short-text"><%= row.user.username %></span>
+                  <span>
+                    <label class="mb-0">
+                      <input type="checkbox" name="viewUserIds" value="<%= row.user._id %>" <%= hasView ? "checked" : "" %>>
+                    </label>
+                  </span>
+                  <span>
+                    <label class="mb-0">
+                      <input type="checkbox" name="controlUserIds" value="<%= row.user._id %>" <%= hasControl ? "checked" : "" %>>
+                    </label>
+                  </span>
+                </li>
+              <% } %>
+            <% } else { %>
+              <li class="d-flex">
+                <span class="w-100" style="max-width:none;">Chưa có user role `user` để gán quyền.</span>
+              </li>
+            <% } %>
+          </ul>
+        </div>
+      </div>
+      <div class="gap-xs"></div>
+      <div class="my-form">
+        <div class="wrap-my-form">
+          <div class="wrap-input">
+            <input type="text" value="<%= currentGroup.name %>" disabled class="w-100">
+          </div>
+          <div class="submit">
+            <button class="submit-btn">Lưu phân quyền</button>
+          </div>
+        </div>
+      </div>
+      </form>
     </div>
   </div>
   <div class="gap-md"></div>

@@ -129,7 +129,7 @@ if (sidebarDataJson && Array.isArray(sidebarDataJson)) {
           href: "/dashboard/custom-ui/device-group",
           page_name: "page/dashboard/device-group",
           child: [],
-        },
+        }
       ],
     },
     {

@@ -10,6 +10,7 @@ export { DeviceFieldConfig } from "./device-field-config.entity";
 export { ExecutionLog } from "./execution-log.entity";
 export { TimerJob } from "./timer-job.entity";
 export { User } from "./user.entity";
+export { UserDeviceGroupPermission } from "./user-device-group-permission.entity";
 export { Zone } from "./zone.entity";
 export { Otp } from "./otp.entity";
 export { NotificationOption } from "./notification-option.entity";

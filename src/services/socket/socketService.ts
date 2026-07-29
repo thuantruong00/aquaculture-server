@@ -1,10 +1,11 @@
 import { Server, Socket } from "socket.io";
 import { createServer, Server as HTTPServer } from "http";
 import express, { Express } from "express";
+import { env } from "~/utils";
 
 const socketApp = express();
 const server = createServer(socketApp);
-server.listen(8000);
+server.listen(Number(env.SOCKET_PORT));
 export const io = new Server(server, {
   cors: {
     origin: "*", // Allow all origins

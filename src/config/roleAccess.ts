@@ -20,8 +20,15 @@ const defaultRoleAccess: IRoleAccess = {
   block: {
     root: [],
     admin: [],
-    user: ["deviceSetting", "notificationSetting", "customUi"],
+    user: [
+      "deviceSetting",
+      "notificationSetting",
+      "customUi",
+      "account",
+      "firmwareVersion",
+    ],
     guest: [
+      "account",
       "deviceSetting",
       "notificationGroup",
       "account",
@@ -31,7 +38,11 @@ const defaultRoleAccess: IRoleAccess = {
   },
 };
 
-const roleAccessDataPath = path.resolve(process.cwd(), "data", "roleAccess.json");
+const roleAccessDataPath = path.resolve(
+  process.cwd(),
+  "data",
+  "roleAccess.json",
+);
 
 function isValidRoleAccess(data: unknown): data is IRoleAccess {
   if (!data || typeof data !== "object") return false;

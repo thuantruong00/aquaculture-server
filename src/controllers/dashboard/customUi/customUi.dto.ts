@@ -94,3 +94,20 @@ export const UpdateDeviceGroupInfoSchema = z.object({
 export type IUpdateDeviceGroupInfoDTO = z.infer<
   typeof UpdateDeviceGroupInfoSchema
 >;
+
+const objectIdRegex = /^[0-9a-fA-F]{24}$/;
+
+const objectIdArrayField = z.preprocess((val) => {
+  if (val === undefined || val === null || val === "") return [];
+  return Array.isArray(val) ? val : [val];
+}, z.array(z.string().regex(objectIdRegex)));
+
+export const UpdateUserDeviceGroupPermissionBodySchema = z.object({
+  userIds: objectIdArrayField,
+  viewUserIds: objectIdArrayField.optional().default([]),
+  controlUserIds: objectIdArrayField.optional().default([]),
+});
+
+export type IUpdateUserDeviceGroupPermissionBodyDTO = z.infer<
+  typeof UpdateUserDeviceGroupPermissionBodySchema
+>;

@@ -3,17 +3,27 @@ import fs from "fs";
 import path from "path";
 import { BaseController } from "../dashboard.base-controller";
 import { Device, IDevice } from "~/entities/device.entity";
-import { DeviceGroupStatus, DeviceStatus, DeviceZone } from "~/utils/enum";
+import {
+  DeviceGroupStatus,
+  DeviceStatus,
+  DeviceZone,
+  UserDeviceGroupPermissionStatus,
+  UserRole,
+  UserStatus,
+} from "~/utils/enum";
 import { DeviceGroup } from "~/entities/device-group.entity";
 import {
   ICreateDeviceGroupDTO,
   IGetListDeviceGroupQueryDTO,
   IUpdateDeviceGroupInfoDTO,
+  IUpdateUserDeviceGroupPermissionBodyDTO,
 } from "./customUi.dto";
 import { Zone } from "~/entities/zone.entity";
 import { Types } from "mongoose";
 import { IUpdateDeviceGroupDTO } from "../deviceSetting";
 import { logger } from "~/utils/logger";
+import { User } from "~/entities/user.entity";
+import { UserDeviceGroupPermission } from "~/entities/user-device-group-permission.entity";
 DeviceGroup;
 
 export class CustomUiControllerBase extends BaseController {
@@ -42,7 +52,7 @@ export class CustomUiControllerBase extends BaseController {
     const templatesDir = path.join(
       res.app.get("views"),
       "partials",
-      "group-templates"
+      "group-templates",
     );
     try {
       const { groupId } = req.params as unknown as any;
@@ -68,12 +78,31 @@ export class CustomUiControllerBase extends BaseController {
       const templates = files
         .filter((file) => file.endsWith(".ejs"))
         .map((file) => path.basename(file, ".ejs"));
+      const permissionUsers = await User.find({
+        status: { $eq: UserStatus.ACTIVE },
+        role: { $eq: UserRole.USER },
+      }).sort({ username: 1 });
+      const groupPermissions = await UserDeviceGroupPermission.find({
+        deviceGroupId: groupId,
+        status: { $eq: UserDeviceGroupPermissionStatus.ACTIVE },
+      });
+      const permissionMap = new Map(
+        groupPermissions.map((item) => [String(item.userId), item.permissions]),
+      );
+      const permissionRows = permissionUsers.map((user) => {
+        const permissions = permissionMap.get(String(user._id)) ?? [];
+        return {
+          user,
+          permissions,
+        };
+      });
       return this.renderWithSidebar(res, "page/dashboard/device-group-detail", {
         devices: getDevices,
         activeDevices: getListOfActiveDevice,
         groupId: groupId,
         currentGroup: findGroup,
         templates: templates,
+        permissionRows,
       });
     } catch (error) {
       logger.error("Err handleDetailDeviceGroupPage", error);
@@ -93,7 +122,7 @@ export class CustomUiControllerBase extends BaseController {
         if (findDeviceInGroup.length < 1) {
           const udpate = await DeviceGroup.updateOne(
             { _id: groupId },
-            { status: DeviceGroupStatus.DELETED }
+            { status: DeviceGroupStatus.DELETED },
           );
           return res.redirect(req.get("Referer") || "/fallback");
         }
@@ -110,7 +139,7 @@ export class CustomUiControllerBase extends BaseController {
     const templatesDir = path.join(
       res.app.get("views"),
       "partials",
-      "group-templates"
+      "group-templates",
     );
     try {
       const files = fs.readdirSync(templatesDir);
@@ -165,7 +194,7 @@ export class CustomUiControllerBase extends BaseController {
             template: template,
             order: order,
             zone: { _id: zoneId },
-          }
+          },
         );
         // return this.renderWithSidebar(res, "page/error");
         if (update) {
@@ -186,7 +215,7 @@ export class CustomUiControllerBase extends BaseController {
       if (findDevice && findGroup) {
         const udpate = await Device.updateOne(
           { _id: deviceId },
-          { group: { _id: findGroup._id } }
+          { group: { _id: findGroup._id } },
         );
         return res.redirect(req.get("Referer") || "/fallback");
       }
@@ -217,6 +246,89 @@ export class CustomUiControllerBase extends BaseController {
       return this.renderWithSidebar(res, "page/error");
     }
   };
+
+  handleUpdateUserDeviceGroupPermissionPage = async (
+    req: Request,
+    res: Response,
+  ) => {
+    try {
+      const { groupId } = req.params as { groupId: string };
+      const { userIds, viewUserIds, controlUserIds } =
+        req.body as IUpdateUserDeviceGroupPermissionBodyDTO;
+
+      const findGroup = await DeviceGroup.findOne({
+        _id: { $eq: groupId },
+        status: { $ne: DeviceGroupStatus.DELETED },
+      }).select("_id");
+
+      if (!findGroup) {
+        res.statusCode = 404;
+        return this.renderWithSidebar(res, "page/error");
+      }
+
+      const validUsers = await User.find({
+        _id: { $in: userIds },
+        role: { $eq: UserRole.USER },
+        status: { $eq: UserStatus.ACTIVE },
+      }).select("_id");
+
+      const validUserIdSet = new Set(validUsers.map((item) => String(item._id)));
+      const viewSet = new Set(viewUserIds.map(String));
+      const controlSet = new Set(controlUserIds.map(String));
+      const grantedBy = req.session.user?.user_id
+        ? new Types.ObjectId(req.session.user.user_id)
+        : null;
+
+      const operations = userIds
+        .filter((userId) => validUserIdSet.has(String(userId)))
+        .map((userId) => {
+          const normalizedUserId = String(userId);
+          const permissions: string[] = [];
+
+          if (viewSet.has(normalizedUserId)) permissions.push("view");
+          if (controlSet.has(normalizedUserId)) permissions.push("control");
+
+          if (permissions.length === 0) {
+            return {
+              deleteOne: {
+                filter: {
+                  userId,
+                  deviceGroupId: findGroup._id,
+                },
+              },
+            };
+          }
+
+          return {
+            updateOne: {
+              filter: {
+                userId,
+                deviceGroupId: findGroup._id,
+              },
+              update: {
+                $set: {
+                  permissions,
+                  status: UserDeviceGroupPermissionStatus.ACTIVE,
+                  grantedBy,
+                },
+              },
+              upsert: true,
+            },
+          };
+        });
+
+      if (operations.length > 0) {
+        await UserDeviceGroupPermission.bulkWrite(operations);
+      }
+
+      return res.redirect(req.get("Referer") || `/dashboard/custom-ui/detail/${groupId}`);
+    } catch (error) {
+      logger.error("Err handleUpdateUserDeviceGroupPermissionPage", error);
+      res.statusCode = 500;
+      return this.renderWithSidebar(res, "page/error");
+    }
+  };
+
 
   handleApiCreateGroup = async (req: Request, res: Response) => {
     try {

@@ -21,7 +21,7 @@ import {
 import { MqttService } from "~/services/mqtt";
 import { logger } from "~/utils/logger";
 import { DeviceMessageService } from "~/services/deviceMessage";
-import { signDecrypt, signEncrypt } from "~/utils/sign";
+import { signDecrypt } from "~/utils/sign";
 import { env } from "~/utils";
 DeviceGroup;
 
@@ -198,8 +198,7 @@ export class DeviceControlControllerBase extends BaseController {
         return res.redirect(redirectUrl);
       }
 
-      const { command } =
-        parsedBody.data as IDeviceControlConnectionCommandDTO;
+      const { command } = parsedBody.data as IDeviceControlConnectionCommandDTO;
 
       logger.info("Device control connection command received", { command });
       const pairingBridgeModel = await DeviceModel.findOne({
@@ -304,23 +303,34 @@ export class DeviceControlControllerBase extends BaseController {
     try {
       const { deviceId } = req.params as any;
       const { sign, value } = req.body as any;
-      const now = Number(Date.now() / 1000).toFixed(0);
-      const en = signEncrypt(`${env.SECRET_KEY_SIGN}|${now}`);
-      console.log(en);
-      const deString = signDecrypt(sign);
-      const secretKey = deString.split("|")[1];
-      const ts = deString.split("|")[0];
-      console.log(now, ts, deString);
-      if (secretKey == env.SECRET_KEY_SIGN) {
-        if (Number(now) - Number(ts) < 30) {
-          await this.deviceMessageService.handleTetelemetry(
-            "",
-            deviceId,
-            value,
-          );
-          return this.handleApiResponse(res, { payload: true }, 200);
-        }
+      const now = Math.floor(Date.now() / 1000);
+      console.log("----", deviceId, value, sign, now);
+
+      let deString = "";
+      try {
+        deString = signDecrypt(sign);
+      } catch (error) {
+        logger.warn("Invalid telemetry sign", {
+          deviceId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        return this.handleApiResponse(res, { isSuccess: false }, 400);
       }
+
+      console.log("----", deviceId, value, sign, deString);
+
+      const [tsRaw, secretKey] = deString.split("|");
+      const ts = Number(tsRaw);
+
+      if (
+        secretKey === env.SECRET_KEY_SIGN &&
+        Number.isInteger(ts) &&
+        Math.abs(now - ts) < 30
+      ) {
+        await this.deviceMessageService.handleTetelemetry("", deviceId, value);
+        return this.handleApiResponse(res, { payload: true }, 200);
+      }
+
       return this.handleApiResponse(res, { isSuccess: false }, 400);
     } catch (error) {
       logger.error("Err handleApiControlDevice", error);
