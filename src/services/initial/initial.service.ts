@@ -15,10 +15,11 @@ export const initialService = async () => {
     await handleInitDefaultDeviceZone();
     await handleInitRootUser();
     await handleInitNotiGroup();
-    await initJobs();
   } else {
     logger.debug(`Init service: skip`);
   }
+
+  await initJobs();
   return;
 };
 const handleInitDefaultDeviceZone = async () => {

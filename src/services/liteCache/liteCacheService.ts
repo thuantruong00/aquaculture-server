@@ -6,7 +6,7 @@ const adapter = new JSONFile<AppSchema>("data/db.json");
 export class LiteCacheService {
   private db: Low<AppSchema>;
   constructor() {
-    this.db = new Low<AppSchema>(adapter, { cache: {}, jobs: [] });
+    this.db = new Low<AppSchema>(adapter, { cache: {} });
   }
   // Khởi tạo database với nhánh cache rỗng
   //   static async initLiteCache() {
@@ -14,16 +14,11 @@ export class LiteCacheService {
 
   //     // Nếu file trống hoặc null → gán schema mặc định
   //     if (!this.db.data) {
-  //       this.db.data = { cache: {}, jobs: [] };
+  //       this.db.data = { cache: {} };
   //     } else {
   //       // Nếu thiếu nhánh cache thì bổ sung
   //       if (!this.db.data.cache) {
   //         this.db.data.cache = {};
-  //       }
-
-  //       // Nếu thiếu nhánh jobs thì bổ sung
-  //       if (!this.db.data.jobs) {
-  //         this.db.data.jobs = [];
   //       }
   //     }
 

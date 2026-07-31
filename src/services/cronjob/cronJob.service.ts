@@ -1,20 +1,19 @@
 import cron, { ScheduledTask } from "node-cron";
 import { Low } from "lowdb";
 import { JSONFile } from "lowdb/node";
-// import { DataSchema, JobEntry } from "./cronJob.interface";
 import { MqttService } from "../mqtt";
 import { actionQueue } from "../queues";
-import { AppSchema, JobEntry } from "../liteCache";
+import { JobEntry, JobStore } from "./cronJob.interface";
 
-const adapter = new JSONFile<AppSchema>("data/db.json");
-const defaultData: AppSchema = { jobs: [], cache: {} };
-const db = new Low<AppSchema>(adapter, defaultData);
+const adapter = new JSONFile<JobStore>("data/jobs.json");
+const defaultData: JobStore = { jobs: [] };
+const db = new Low<JobStore>(adapter, defaultData);
 
 const jobMap: Map<string, ScheduledTask> = new Map();
 const mqttService = new MqttService();
 export async function initJobs(): Promise<void> {
   await db.read().catch(() => {
-    db.data = { jobs: [], cache: {} };
+    db.data = { jobs: [] };
   });
 
   for (const job of db.data.jobs) {
